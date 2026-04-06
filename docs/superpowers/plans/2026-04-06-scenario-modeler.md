@@ -1,0 +1,1721 @@
+# Verdana Scenario Modeler Implementation Plan
+
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+
+**Goal:** Build an interactive HTML scenario modeler that lets Verdana leadership toggle three strategic moves (wholesale, new products, cut Shield), tune assumptions via sliders, view 3-year quarterly projections, and compare pinned scenario configurations side by side.
+
+**Architecture:** Single self-contained HTML file with embedded CSS and JavaScript. Data model and projection engine defined as pure JS functions at the top. DOM rendering functions bind to slider `input` events for real-time recalculation. Pinned scenarios stored as in-memory array of snapshot objects. CSS-rendered stacked bar charts (no external charting library).
+
+**Tech Stack:** Vanilla HTML/CSS/JavaScript, no external dependencies
+
+**Spec:** `docs/superpowers/specs/2026-04-06-scenario-modeler-design.md`
+
+**Output:** `tools/scenario_modeler.html`
+
+---
+
+## Task 1: Scaffold HTML with Data Model, CSS Foundation, and Sticky Header (Zone 1)
+
+**Files:**
+- Create: `tools/scenario_modeler.html`
+
+This task creates the HTML file with the complete data model (BASELINE, scenario defaults), all CSS styles, and the sticky header bar with live KPIs. The page will show just the header on a blank background — subsequent tasks add each zone.
+
+- [ ] **Step 1: Create tools directory**
+
+```bash
+mkdir -p tools
+```
+
+- [ ] **Step 2: Create the HTML file with data model, CSS, and header**
+
+Create `tools/scenario_modeler.html` with the following content. This is the full file scaffold — it includes:
+- Complete `BASELINE` and `DEFAULTS` data objects
+- All CSS styles for every zone (so later tasks only add HTML and JS)
+- The sticky header bar (Zone 1) with placeholder KPI values
+- Empty container divs for Zones 2-5
+- The projection engine functions (pure JS, no DOM)
+- A `recalculate()` function stub that later tasks will flesh out
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verdana — Scenario Modeler</title>
+<style>
+/* ===== RESET & BASE ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: #f8faf7;
+  color: #333;
+  line-height: 1.5;
+}
+
+/* ===== HEADER (Zone 1) ===== */
+.header {
+  position: sticky; top: 0; z-index: 100;
+  background: #2d6a4f;
+  color: #fff;
+  padding: 12px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+.header-brand {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+.header-brand h1 {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+.header-brand .subtitle {
+  font-size: 12px;
+  opacity: 0.7;
+}
+.header-kpis {
+  display: flex;
+  gap: 24px;
+}
+.kpi {
+  text-align: center;
+}
+.kpi-label {
+  font-size: 10px;
+  opacity: 0.7;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.kpi-value {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+/* ===== MOVE CARDS (Zone 2) ===== */
+.moves-zone {
+  padding: 16px 24px;
+  background: #f8faf7;
+  border-bottom: 1px solid #e8e8e8;
+}
+.moves-zone .zone-label {
+  font-size: 10px;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+}
+.moves-grid {
+  display: flex;
+  gap: 12px;
+}
+.move-card {
+  flex: 1;
+  border: 2px solid #ddd;
+  border-radius: 10px;
+  padding: 12px 14px;
+  background: #fff;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s ease;
+  opacity: 0.7;
+}
+.move-card.enabled {
+  opacity: 1;
+}
+.move-card.enabled[data-move="wholesale"] {
+  border-color: #2d6a4f;
+  background: #f0faf0;
+}
+.move-card.enabled[data-move="new_products"] {
+  border-color: #6b4c9a;
+  background: #f5f0fa;
+}
+.move-card.enabled[data-move="cut_shield"] {
+  border-color: #c17817;
+  background: #fdf8f0;
+}
+.move-card-toggle {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 22px;
+  height: 22px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  background: #ddd;
+  color: #999;
+}
+.move-card.enabled .move-card-toggle {
+  color: #fff;
+}
+.move-card.enabled[data-move="wholesale"] .move-card-toggle { background: #2d6a4f; }
+.move-card.enabled[data-move="new_products"] .move-card-toggle { background: #6b4c9a; }
+.move-card.enabled[data-move="cut_shield"] .move-card-toggle { background: #c17817; }
+.move-card-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #666;
+  margin-bottom: 4px;
+  padding-right: 28px;
+}
+.move-card.enabled[data-move="wholesale"] .move-card-title { color: #2d6a4f; }
+.move-card.enabled[data-move="new_products"] .move-card-title { color: #6b4c9a; }
+.move-card.enabled[data-move="cut_shield"] .move-card-title { color: #c17817; }
+.move-card-desc {
+  font-size: 11px;
+  color: #888;
+  margin-bottom: 8px;
+}
+.move-card-impact {
+  display: flex;
+  gap: 14px;
+  font-size: 11px;
+}
+.move-card-impact .label { color: #888; }
+.move-card-impact .positive { color: #2d6a4f; font-weight: 600; }
+.move-card-impact .negative { color: #c0392b; font-weight: 600; }
+.move-card-impact .neutral { color: #333; font-weight: 600; }
+.move-card:not(.enabled) .move-card-impact span:not(.label) { color: #ccc; }
+
+/* ===== SLIDER PANELS (Zone 3) ===== */
+.sliders-zone {
+  padding: 16px 24px;
+  display: flex;
+  gap: 12px;
+  border-bottom: 1px solid #e8e8e8;
+}
+.slider-panel {
+  flex: 1;
+  border-radius: 8px;
+  padding: 12px;
+  transition: all 0.3s ease;
+}
+.slider-panel[data-move="wholesale"] { background: #f8faf7; border-left: 3px solid #2d6a4f; }
+.slider-panel[data-move="new_products"] { background: #faf8fc; border-left: 3px solid #6b4c9a; }
+.slider-panel[data-move="cut_shield"] { background: #fdf8f0; border-left: 3px solid #c17817; }
+.slider-panel.disabled {
+  background: #f5f5f5;
+  border-left: 3px solid #ddd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 120px;
+}
+.slider-panel-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
+}
+.slider-panel[data-move="wholesale"] .slider-panel-title { color: #2d6a4f; }
+.slider-panel[data-move="new_products"] .slider-panel-title { color: #6b4c9a; }
+.slider-panel[data-move="cut_shield"] .slider-panel-title { color: #c17817; }
+.slider-group {
+  margin-bottom: 8px;
+}
+.slider-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: #555;
+  margin-bottom: 3px;
+}
+.slider-label strong {
+  color: #333;
+}
+.slider-group input[type="range"] {
+  width: 100%;
+  height: 5px;
+  -webkit-appearance: none;
+  appearance: none;
+  border-radius: 3px;
+  background: #ddd;
+  outline: none;
+}
+.slider-panel[data-move="wholesale"] input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: #2d6a4f; cursor: pointer;
+}
+.slider-panel[data-move="new_products"] input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: #6b4c9a; cursor: pointer;
+}
+.slider-panel[data-move="cut_shield"] input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: #c17817; cursor: pointer;
+}
+.toggle-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  color: #555;
+  margin-bottom: 8px;
+}
+.toggle-switch {
+  position: relative;
+  width: 36px;
+  height: 20px;
+  background: #ccc;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+.toggle-switch.on { background: #2d6a4f; }
+.toggle-switch[data-color="purple"].on { background: #6b4c9a; }
+.toggle-switch::after {
+  content: '';
+  position: absolute;
+  top: 2px; left: 2px;
+  width: 16px; height: 16px;
+  background: #fff;
+  border-radius: 50%;
+  transition: transform 0.3s;
+}
+.toggle-switch.on::after { transform: translateX(16px); }
+.advanced-toggle {
+  font-size: 10px;
+  cursor: pointer;
+  margin-top: 4px;
+  padding: 4px 0;
+}
+.slider-panel[data-move="wholesale"] .advanced-toggle { color: #2d6a4f; }
+.slider-panel[data-move="new_products"] .advanced-toggle { color: #6b4c9a; }
+.slider-panel[data-move="cut_shield"] .advanced-toggle { color: #c17817; }
+.advanced-content {
+  display: none;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid #e8e8e8;
+}
+.advanced-content.open { display: block; }
+.disabled-placeholder {
+  text-align: center;
+  color: #aaa;
+  font-size: 11px;
+}
+.disabled-placeholder .icon {
+  font-size: 24px;
+  margin-bottom: 4px;
+}
+
+/* ===== PROJECTION AREA (Zone 4) ===== */
+.projection-zone {
+  padding: 16px 24px;
+}
+.projection-top {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.chart-container {
+  flex: 2;
+  background: #fff;
+  border-radius: 8px;
+  padding: 14px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.chart-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: #333;
+}
+.chart-legend {
+  display: flex;
+  gap: 10px;
+  font-size: 10px;
+  color: #666;
+}
+.legend-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  margin-right: 3px;
+  vertical-align: middle;
+}
+.chart-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: 160px;
+}
+.chart-bar-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column-reverse;
+  height: 100%;
+  position: relative;
+}
+.chart-bar-segment {
+  width: 100%;
+  transition: height 0.3s ease;
+  min-height: 0;
+}
+.chart-bar-segment.dtc { background: #2d6a4f; }
+.chart-bar-segment.wholesale { background: #6b4c9a; }
+.chart-bar-segment.new-products { background: #c17817; }
+.chart-bar-segment:first-child { border-radius: 3px 3px 0 0; }
+.chart-bar-label {
+  text-align: center;
+  font-size: 9px;
+  color: #888;
+  padding-top: 4px;
+}
+.chart-year-divider {
+  width: 1px;
+  background: #ddd;
+  height: 100%;
+  flex-shrink: 0;
+}
+.chart-year-labels {
+  display: flex;
+  justify-content: space-around;
+  font-size: 9px;
+  color: #888;
+  margin-top: 4px;
+  border-top: 1px solid #eee;
+  padding-top: 4px;
+}
+.metrics-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.metric-card {
+  border-radius: 8px;
+  padding: 10px 12px;
+  flex: 1;
+}
+.metric-card.margin { background: #f0faf0; }
+.metric-card.investment { background: #f5f0fa; }
+.metric-card.headcount { background: #fdf8f0; }
+.metric-card-label {
+  font-size: 10px;
+  color: #888;
+  margin-bottom: 4px;
+}
+.metric-card-value {
+  font-size: 22px;
+  font-weight: 700;
+}
+.metric-card.margin .metric-card-value { color: #2d6a4f; }
+.metric-card.investment .metric-card-value { color: #6b4c9a; }
+.metric-card.headcount .metric-card-value { color: #c17817; }
+.metric-card-detail {
+  font-size: 10px;
+  color: #555;
+  margin-top: 2px;
+}
+
+/* ===== RISK BAR ===== */
+.risk-bar {
+  background: #fff5f5;
+  border-radius: 8px;
+  padding: 10px 14px;
+  border-left: 3px solid #e74c3c;
+  margin-top: 12px;
+}
+.risk-bar-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: #c0392b;
+  margin-bottom: 8px;
+}
+.risk-chips {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.risk-chip {
+  background: #fff;
+  border: 1px solid #f5c6cb;
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-size: 11px;
+}
+.risk-chip-name {
+  color: #c0392b;
+  font-weight: 600;
+}
+.risk-chip-desc {
+  color: #666;
+}
+.risk-bar.hidden { display: none; }
+
+/* ===== PIN BAR & DRAWER (Zone 5) ===== */
+.pin-bar {
+  padding: 10px 24px;
+  border-top: 1px solid #e8e8e8;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #fff;
+}
+.pin-controls {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.pin-btn {
+  background: #2d6a4f;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 7px 14px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.pin-btn:hover { background: #245a42; }
+.pin-name-input {
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 6px 10px;
+  font-size: 11px;
+  width: 200px;
+}
+.pin-name-input:focus {
+  outline: none;
+  border-color: #2d6a4f;
+}
+.compare-toggle {
+  font-size: 11px;
+  color: #2d6a4f;
+  font-weight: 600;
+  cursor: pointer;
+}
+.compare-toggle:hover { text-decoration: underline; }
+
+.comparison-drawer {
+  background: #f0f4ee;
+  border-top: 2px solid #2d6a4f;
+  padding: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease, padding 0.3s ease;
+}
+.comparison-drawer.open {
+  max-height: 600px;
+  padding: 14px 24px;
+}
+.drawer-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: #2d6a4f;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
+}
+.comparison-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+}
+.comparison-table th {
+  text-align: center;
+  padding: 6px 10px;
+  font-weight: 600;
+  color: #666;
+  border-bottom: 2px solid #2d6a4f;
+}
+.comparison-table th:first-child {
+  text-align: left;
+  color: #888;
+  font-weight: 400;
+}
+.comparison-table td {
+  text-align: center;
+  padding: 5px 10px;
+  border-bottom: 1px solid #ddd;
+}
+.comparison-table td:first-child {
+  text-align: left;
+  color: #666;
+}
+.comparison-table .highlight {
+  background: #e8f5e0;
+}
+.comparison-table .delete-btn {
+  font-size: 10px;
+  color: #c0392b;
+  cursor: pointer;
+  margin-left: 6px;
+  opacity: 0.5;
+}
+.comparison-table .delete-btn:hover { opacity: 1; }
+.comparison-table .scenario-subtitle {
+  font-weight: 400;
+  color: #999;
+  font-size: 10px;
+}
+.no-pins-msg {
+  text-align: center;
+  color: #888;
+  font-size: 12px;
+  padding: 20px;
+}
+
+/* ===== CONTENT WRAPPER ===== */
+.content { max-width: 1200px; margin: 0 auto; }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 900px) {
+  .moves-grid { flex-direction: column; }
+  .sliders-zone { flex-direction: column; }
+  .projection-top { flex-direction: column; }
+  .header { flex-direction: column; gap: 8px; }
+  .header-kpis { flex-wrap: wrap; justify-content: center; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== DATA MODEL ===== -->
+<script>
+// Verdana baseline data from brand definition
+const BASELINE = {
+  annual_revenue: 8000000,
+  monthly_revenue: 667000,
+  quarterly_revenue: 2000000,
+  employees: 60,
+  products: [
+    { id: 'focus', name: 'Verdana Focus', price: 65, cogs: 14.30, margin: 0.78, monthly_units: 3200 },
+    { id: 'calm', name: 'Verdana Calm', price: 55, cogs: 12.10, margin: 0.78, monthly_units: 2800 },
+    { id: 'endure', name: 'Verdana Endure', price: 75, cogs: 18.75, margin: 0.75, monthly_units: 1600 },
+    { id: 'shield', name: 'Verdana Shield', price: 45, cogs: 13.05, margin: 0.71, monthly_units: 1100 },
+    { id: 'restore', name: 'Verdana Restore', price: 85, cogs: 19.55, margin: 0.77, monthly_units: 2100 }
+  ],
+  metrics: {
+    new_customers_monthly: 1400,
+    aov: 120,
+    subscription_rate: 0.34,
+    retention_90day: 0.62,
+    cac: 58,
+    blended_gross_margin: 0.764
+  }
+};
+
+// Scenario state — all moves start disabled
+const scenario = {
+  wholesale: {
+    enabled: false,
+    wf_stores: 85,
+    wf_units_per_store: 24,
+    target_enabled: false,
+    target_stores: 500,
+    target_units_per_store: 12,
+    wholesale_discount: 0.50,
+    target_discount: 0.55,
+    slotting_fees: 50000,
+    dtc_cannibalization: 0.10,
+    ramp_months: 6
+  },
+  new_products: {
+    enabled: false,
+    metabolize_enabled: false,
+    metabolize_price: 70,
+    metabolize_cogs: 16,
+    glow_enabled: false,
+    glow_price: 65,
+    glow_cogs: 13,
+    penetration_rate: 0.15,
+    rd_cost_per_product: 100000,
+    launch_quarter: 3,
+    new_acquisition_monthly: 150,
+    existing_cannibalization: 0.05
+  },
+  cut_shield: {
+    enabled: false,
+    transition_quarter: 2,
+    reallocate_to_marketing: 0.60,
+    retain_as_margin: 0.40
+  }
+};
+
+// Pinned scenarios array
+const pinnedScenarios = [];
+
+// Risk factor definitions
+const RISK_FACTORS = [
+  { id: 'brand_dilution', name: 'Brand Dilution', desc: 'Retail shelf presence may undermine premium DTC positioning', trigger: s => s.wholesale.enabled },
+  { id: 'margin_compression', name: 'Margin Compression', desc: 'Wholesale at ~38% gross vs 76% DTC drags blended margin', trigger: s => s.wholesale.enabled },
+  { id: 'ops_complexity', name: 'Ops Complexity', desc: 'EDI, retail compliance, chargebacks are new capabilities', trigger: s => s.wholesale.enabled },
+  { id: 'dtc_cannibalization', name: 'DTC Cannibalization', desc: 'Some DTC customers shift to retail at lower margin', trigger: s => s.wholesale.enabled },
+  { id: 'execution_distraction', name: 'Execution Distraction', desc: 'R&D + launch while fixing the growth plateau', trigger: s => s.new_products.enabled },
+  { id: 'category_drift', name: 'Category Drift', desc: 'Beauty-from-within moves away from adaptogen core', trigger: s => s.new_products.enabled && s.new_products.glow_enabled },
+  { id: 'inventory_risk', name: 'Inventory Risk', desc: 'New SKU demand is unvalidated', trigger: s => s.new_products.enabled },
+  { id: 'customer_disruption', name: 'Customer Disruption', desc: 'Shield subscribers need migration; some will churn', trigger: s => s.cut_shield.enabled },
+  { id: 'revenue_gap', name: 'Revenue Gap', desc: 'Immediate revenue loss before marketing reallocation yields returns', trigger: s => s.cut_shield.enabled },
+  { id: 'team_morale', name: 'Team Morale', desc: 'Discontinuing a product signals uncertainty', trigger: s => s.cut_shield.enabled },
+  { id: 'bandwidth_risk', name: 'Bandwidth Risk', desc: '60-person team stretched across multiple initiatives', trigger: s => [s.wholesale.enabled, s.new_products.enabled, s.cut_shield.enabled].filter(Boolean).length >= 2 },
+  { id: 'capital_risk', name: 'Capital Risk', desc: 'Significant capital deployment on $8M revenue base', trigger: s => false } // set dynamically based on investment total
+];
+</script>
+
+<!-- ===== ZONE 1: STICKY HEADER ===== -->
+<div class="header">
+  <div class="header-brand">
+    <h1>verdana</h1>
+    <span class="subtitle">Scenario Modeler</span>
+  </div>
+  <div class="header-kpis">
+    <div class="kpi">
+      <div class="kpi-label">Y3 Revenue</div>
+      <div class="kpi-value" id="kpi-revenue">$9.8M</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Blended Margin</div>
+      <div class="kpi-value" id="kpi-margin">76.4%</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">3Y Investment</div>
+      <div class="kpi-value" id="kpi-investment">$0</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Headcount &Delta;</div>
+      <div class="kpi-value" id="kpi-headcount">+0</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Risk Level</div>
+      <div class="kpi-value" id="kpi-risk">●○○</div>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+  <!-- Zone 2: Move Cards -->
+  <div class="moves-zone" id="moves-zone"></div>
+
+  <!-- Zone 3: Slider Panels -->
+  <div class="sliders-zone" id="sliders-zone"></div>
+
+  <!-- Zone 4: Projections -->
+  <div class="projection-zone" id="projection-zone"></div>
+
+  <!-- Zone 5: Pin & Compare -->
+  <div class="pin-bar" id="pin-bar"></div>
+  <div class="comparison-drawer" id="comparison-drawer"></div>
+</div>
+
+<script>
+// ===== PROJECTION ENGINE (pure functions) =====
+
+function computeProjection(s) {
+  const quarters = [];
+  const shield = BASELINE.products.find(p => p.id === 'shield');
+  const shieldQuarterlyRevenue = shield.monthly_units * shield.price * 3;
+  const shieldQuarterlyCogs = shield.monthly_units * shield.cogs * 3;
+  const shieldQuarterlyProfit = shieldQuarterlyRevenue - shieldQuarterlyCogs;
+  const annualGrowthRates = { 1: 0.05, 2: 0.08, 3: 0.10 };
+
+  // Wholesale average retail price (Focus + Calm default)
+  const wholesaleSkus = BASELINE.products.filter(p => p.id === 'focus' || p.id === 'calm');
+  const avgRetailPrice = wholesaleSkus.reduce((sum, p) => sum + p.price, 0) / wholesaleSkus.length;
+  const avgWholesaleCogs = wholesaleSkus.reduce((sum, p) => sum + p.cogs, 0) / wholesaleSkus.length;
+
+  let cumulativeInvestment = 0;
+
+  // One-time investments in Q1
+  if (s.wholesale.enabled) {
+    cumulativeInvestment += 150000; // ops buildout
+    cumulativeInvestment += s.wholesale.slotting_fees;
+    cumulativeInvestment += 50000;  // EDI integration
+    cumulativeInvestment += 30000;  // retail compliance
+  }
+  if (s.new_products.enabled) {
+    const productCount = (s.new_products.metabolize_enabled ? 1 : 0) + (s.new_products.glow_enabled ? 1 : 0);
+    cumulativeInvestment += s.new_products.rd_cost_per_product * productCount;
+    cumulativeInvestment += 30000 * productCount; // launch marketing
+    cumulativeInvestment += 20000 * productCount; // initial inventory
+  }
+  if (s.cut_shield.enabled) {
+    cumulativeInvestment += 15000; // transition costs
+  }
+
+  for (let q = 1; q <= 12; q++) {
+    const year = Math.ceil(q / 4);
+    const growthRate = annualGrowthRates[year];
+    const growthFactor = Math.pow(1 + growthRate, q / 4);
+
+    // DTC
+    let dtcRevenue = BASELINE.quarterly_revenue * growthFactor;
+    let dtcCogs = dtcRevenue * (1 - BASELINE.metrics.blended_gross_margin);
+
+    // Cut Shield effect
+    if (s.cut_shield.enabled && q >= s.cut_shield.transition_quarter) {
+      dtcRevenue -= shieldQuarterlyRevenue;
+      dtcCogs -= shieldQuarterlyCogs;
+      // Marketing reallocation boost
+      const savings = shieldQuarterlyProfit;
+      const marketingReinvestment = savings * s.cut_shield.reallocate_to_marketing;
+      const additionalCustomers = marketingReinvestment / BASELINE.metrics.cac;
+      dtcRevenue += additionalCustomers * BASELINE.metrics.aov;
+      dtcCogs += additionalCustomers * BASELINE.metrics.aov * (1 - BASELINE.metrics.blended_gross_margin);
+    }
+
+    // Wholesale
+    let wholesaleRevenue = 0;
+    let wholesaleCogs = 0;
+    if (s.wholesale.enabled) {
+      const rampQuarters = Math.ceil(s.wholesale.ramp_months / 3);
+      const velocity = Math.min(1, q / rampQuarters);
+      const postRampGrowth = q > rampQuarters ? Math.pow(1.03, q - rampQuarters) : 1;
+
+      const wfQuarterly = s.wholesale.wf_stores * s.wholesale.wf_units_per_store * 3
+        * avgRetailPrice * (1 - s.wholesale.wholesale_discount) * velocity * postRampGrowth;
+
+      let targetQuarterly = 0;
+      if (s.wholesale.target_enabled) {
+        targetQuarterly = s.wholesale.target_stores * s.wholesale.target_units_per_store * 3
+          * avgRetailPrice * (1 - s.wholesale.target_discount) * velocity * postRampGrowth;
+      }
+
+      wholesaleRevenue = wfQuarterly + targetQuarterly;
+      const totalUnits = (s.wholesale.wf_stores * s.wholesale.wf_units_per_store * 3 * velocity * postRampGrowth)
+        + (s.wholesale.target_enabled ? s.wholesale.target_stores * s.wholesale.target_units_per_store * 3 * velocity * postRampGrowth : 0);
+      wholesaleCogs = totalUnits * avgWholesaleCogs;
+
+      // DTC cannibalization
+      dtcRevenue -= dtcRevenue * s.wholesale.dtc_cannibalization;
+      dtcCogs -= dtcCogs * s.wholesale.dtc_cannibalization;
+
+      // Ongoing wholesale marketing cost
+      cumulativeInvestment += 20000;
+    }
+
+    // New Products
+    let newProductRevenue = 0;
+    let newProductCogs = 0;
+    if (s.new_products.enabled && q >= s.new_products.launch_quarter) {
+      const quartersActive = q - s.new_products.launch_quarter + 1;
+      const launchVelocity = quartersActive === 1 ? 0.5 : 1.0;
+      const quarterlyGrowth = Math.pow(1.05, Math.max(0, quartersActive - 1));
+      const existingBase = BASELINE.monthly_revenue / BASELINE.metrics.aov; // approximate customer base
+
+      if (s.new_products.metabolize_enabled) {
+        const existUnits = existingBase * s.new_products.penetration_rate / 4 * launchVelocity * quarterlyGrowth;
+        const newUnits = s.new_products.new_acquisition_monthly * 3 * launchVelocity * quarterlyGrowth;
+        newProductRevenue += (existUnits + newUnits) * s.new_products.metabolize_price;
+        newProductCogs += (existUnits + newUnits) * s.new_products.metabolize_cogs;
+      }
+      if (s.new_products.glow_enabled) {
+        const existUnits = existingBase * s.new_products.penetration_rate / 4 * launchVelocity * quarterlyGrowth;
+        const newUnits = s.new_products.new_acquisition_monthly * 3 * launchVelocity * quarterlyGrowth;
+        newProductRevenue += (existUnits + newUnits) * s.new_products.glow_price;
+        newProductCogs += (existUnits + newUnits) * s.new_products.glow_cogs;
+      }
+
+      // Existing SKU cannibalization
+      dtcRevenue -= dtcRevenue * s.new_products.existing_cannibalization * launchVelocity;
+      dtcCogs -= dtcCogs * s.new_products.existing_cannibalization * launchVelocity;
+    }
+
+    const totalRevenue = dtcRevenue + wholesaleRevenue + newProductRevenue;
+    const totalCogs = dtcCogs + wholesaleCogs + newProductCogs;
+    const grossProfit = totalRevenue - totalCogs;
+    const grossMargin = totalRevenue > 0 ? grossProfit / totalRevenue : 0;
+
+    quarters.push({
+      quarter: q,
+      year: year,
+      revenue: { dtc: dtcRevenue, wholesale: wholesaleRevenue, new_products: newProductRevenue, total: totalRevenue },
+      cogs: { dtc: dtcCogs, wholesale: wholesaleCogs, new_products: newProductCogs, total: totalCogs },
+      gross_profit: grossProfit,
+      gross_margin: grossMargin
+    });
+  }
+
+  // Headcount
+  let headcountDelta = 0;
+  if (s.wholesale.enabled) headcountDelta += 3;
+  if (s.new_products.enabled) headcountDelta += 1;
+  if (s.cut_shield.enabled) headcountDelta -= 1;
+
+  // Risk
+  const enabledCount = [s.wholesale.enabled, s.new_products.enabled, s.cut_shield.enabled].filter(Boolean).length;
+  const riskLevel = enabledCount <= 1 ? 'low' : enabledCount === 2 ? 'medium' : 'high';
+  const activeRisks = RISK_FACTORS.filter(r => {
+    if (r.id === 'capital_risk') return cumulativeInvestment > 500000;
+    return r.trigger(s);
+  });
+
+  // Summaries
+  const y1Revenue = quarters.filter(q => q.year === 1).reduce((sum, q) => sum + q.revenue.total, 0);
+  const y2Revenue = quarters.filter(q => q.year === 2).reduce((sum, q) => sum + q.revenue.total, 0);
+  const y3Revenue = quarters.filter(q => q.year === 3).reduce((sum, q) => sum + q.revenue.total, 0);
+  const y3Margin = quarters.filter(q => q.year === 3).reduce((sum, q) => sum + q.gross_margin, 0) / 4;
+
+  return {
+    quarterly: quarters,
+    summary: {
+      y1_revenue: y1Revenue,
+      y2_revenue: y2Revenue,
+      y3_revenue: y3Revenue,
+      y3_gross_margin: y3Margin,
+      total_investment: cumulativeInvestment,
+      headcount_delta: headcountDelta,
+      risk_level: riskLevel,
+      risk_factors: activeRisks
+    }
+  };
+}
+
+// ===== FORMATTING HELPERS =====
+
+function formatCurrency(n) {
+  if (Math.abs(n) >= 1000000) return '$' + (n / 1000000).toFixed(1) + 'M';
+  if (Math.abs(n) >= 1000) return '$' + Math.round(n / 1000) + 'K';
+  return '$' + Math.round(n);
+}
+
+function formatPercent(n) {
+  return (n * 100).toFixed(1) + '%';
+}
+
+function formatDelta(n) {
+  return (n >= 0 ? '+' : '') + n;
+}
+
+function riskDots(level) {
+  if (level === 'low') return '<span style="color:#2d6a4f">●</span><span style="color:#ddd">●●</span>';
+  if (level === 'medium') return '<span style="color:#c17817">●●</span><span style="color:#ddd">●</span>';
+  return '<span style="color:#c0392b">●●●</span>';
+}
+
+// ===== DEEP COPY HELPER =====
+function deepCopy(obj) {
+  return JSON.parse(JSON.stringify(obj));
+}
+
+// ===== MAIN RENDER & RECALCULATE =====
+
+function recalculate() {
+  const result = computeProjection(scenario);
+  renderHeader(result);
+  renderMoveCards(result);
+  renderSliders();
+  renderProjections(result);
+  renderRiskBar(result);
+  renderPinBar();
+}
+
+function renderHeader(result) {
+  document.getElementById('kpi-revenue').textContent = formatCurrency(result.summary.y3_revenue);
+  document.getElementById('kpi-margin').textContent = formatPercent(result.summary.y3_gross_margin);
+  document.getElementById('kpi-investment').textContent = formatCurrency(result.summary.total_investment);
+  document.getElementById('kpi-headcount').textContent = formatDelta(result.summary.headcount_delta);
+  document.getElementById('kpi-risk').innerHTML = riskDots(result.summary.risk_level);
+}
+
+function renderMoveCards(result) { /* Task 2 */ }
+function renderSliders() { /* Task 3 */ }
+function renderProjections(result) { /* Task 4 */ }
+function renderRiskBar(result) { /* Task 5 */ }
+function renderPinBar() { /* Task 6 */ }
+
+// Initial render
+document.addEventListener('DOMContentLoaded', recalculate);
+</script>
+
+</body>
+</html>
+```
+
+- [ ] **Step 3: Verify the file opens in a browser**
+
+```bash
+open tools/scenario_modeler.html
+```
+
+Expected: Page loads with the green sticky header showing "verdana Scenario Modeler" and five KPIs. The rest of the page is empty. The KPIs should show baseline values: Y3 Revenue ~$9.8M, Margin 76.4%, Investment $0, Headcount +0, Risk ●○○.
+
+- [ ] **Step 4: Commit**
+
+```bash
+git add tools/scenario_modeler.html
+git commit -m "feat: scaffold scenario modeler with data model, CSS, header, and projection engine"
+```
+
+---
+
+## Task 2: Strategic Move Toggle Cards (Zone 2)
+
+**Files:**
+- Modify: `tools/scenario_modeler.html` — replace `renderMoveCards` stub
+
+This task adds the three toggle cards (Wholesale, New Products, Cut Shield). Clicking a card toggles its `enabled` state and triggers a full recalculate.
+
+- [ ] **Step 1: Replace the `renderMoveCards` stub**
+
+Find this line in `tools/scenario_modeler.html`:
+
+```javascript
+function renderMoveCards(result) { /* Task 2 */ }
+```
+
+Replace with:
+
+```javascript
+function renderMoveCards(result) {
+  const zone = document.getElementById('moves-zone');
+  // Only rebuild DOM on first render
+  if (!zone.dataset.initialized) {
+    zone.dataset.initialized = 'true';
+    zone.innerHTML = `
+      <div class="zone-label">Strategic Moves — toggle on/off, then tune below</div>
+      <div class="moves-grid">
+        <div class="move-card ${scenario.wholesale.enabled ? 'enabled' : ''}" data-move="wholesale" onclick="toggleMove('wholesale')">
+          <div class="move-card-toggle">${scenario.wholesale.enabled ? '✓' : '—'}</div>
+          <div class="move-card-title">Expand into Wholesale</div>
+          <div class="move-card-desc">Whole Foods regional, optional Target national</div>
+          <div class="move-card-impact" id="impact-wholesale"></div>
+        </div>
+        <div class="move-card ${scenario.new_products.enabled ? 'enabled' : ''}" data-move="new_products" onclick="toggleMove('new_products')">
+          <div class="move-card-toggle">${scenario.new_products.enabled ? '✓' : '—'}</div>
+          <div class="move-card-title">Launch New Products</div>
+          <div class="move-card-desc">Metabolize (berberine) and/or Glow (beauty)</div>
+          <div class="move-card-impact" id="impact-new_products"></div>
+        </div>
+        <div class="move-card ${scenario.cut_shield.enabled ? 'enabled' : ''}" data-move="cut_shield" onclick="toggleMove('cut_shield')">
+          <div class="move-card-toggle">${scenario.cut_shield.enabled ? '✓' : '—'}</div>
+          <div class="move-card-title">Cut Shield & Reallocate</div>
+          <div class="move-card-desc">Discontinue underperformer, redirect resources</div>
+          <div class="move-card-impact" id="impact-cut_shield"></div>
+        </div>
+      </div>
+    `;
+  }
+
+  // Update card states
+  document.querySelectorAll('.move-card').forEach(card => {
+    const move = card.dataset.move;
+    const enabled = scenario[move].enabled;
+    card.classList.toggle('enabled', enabled);
+    card.querySelector('.move-card-toggle').textContent = enabled ? '✓' : '—';
+  });
+
+  // Compute per-move impact deltas by comparing with baseline
+  const baselineResult = computeProjection({ wholesale: { enabled: false }, new_products: { enabled: false }, cut_shield: { enabled: false } });
+  const baseY3 = baselineResult.summary.y3_revenue;
+  const baseMarg = baselineResult.summary.y3_gross_margin;
+
+  const moves = ['wholesale', 'new_products', 'cut_shield'];
+  moves.forEach(move => {
+    const el = document.getElementById('impact-' + move);
+    if (!scenario[move].enabled) {
+      el.innerHTML = '<span class="label">Revenue:</span> <span>—</span> <span class="label">Margin:</span> <span>—</span> <span class="label">Hires:</span> <span>—</span>';
+      return;
+    }
+    // Compute solo impact of this move
+    const solo = deepCopy(scenario);
+    moves.forEach(m => { if (m !== move) solo[m].enabled = false; });
+    const soloResult = computeProjection(solo);
+    const revDelta = soloResult.summary.y3_revenue - baseY3;
+    const margDelta = soloResult.summary.y3_gross_margin - baseMarg;
+    const hires = soloResult.summary.headcount_delta;
+
+    el.innerHTML = `
+      <span class="label">Revenue:</span> <span class="${revDelta >= 0 ? 'positive' : 'negative'}">${revDelta >= 0 ? '+' : ''}${formatCurrency(revDelta)}</span>
+      <span class="label">Margin:</span> <span class="${margDelta >= 0 ? 'positive' : 'negative'}">${margDelta >= 0 ? '+' : ''}${(margDelta * 100).toFixed(1)}%</span>
+      <span class="label">Hires:</span> <span class="neutral">${formatDelta(hires)}</span>
+    `;
+  });
+}
+
+function toggleMove(move) {
+  scenario[move].enabled = !scenario[move].enabled;
+  // When enabling new_products, auto-enable metabolize if nothing is on
+  if (move === 'new_products' && scenario.new_products.enabled
+      && !scenario.new_products.metabolize_enabled && !scenario.new_products.glow_enabled) {
+    scenario.new_products.metabolize_enabled = true;
+  }
+  // Force slider panel rebuild
+  document.getElementById('sliders-zone').innerHTML = '';
+  document.getElementById('sliders-zone').removeAttribute('data-initialized');
+  recalculate();
+}
+```
+
+- [ ] **Step 2: Verify in browser**
+
+Reload `tools/scenario_modeler.html`. Three cards should appear. Clicking a card should toggle it (color change, checkmark/dash swap, impact metrics appear). Header KPIs should update when cards toggle.
+
+- [ ] **Step 3: Commit**
+
+```bash
+git add tools/scenario_modeler.html
+git commit -m "feat: add strategic move toggle cards (Zone 2)"
+```
+
+---
+
+## Task 3: Slider Panels (Zone 3)
+
+**Files:**
+- Modify: `tools/scenario_modeler.html` — replace `renderSliders` stub
+
+This task adds the slider panels that appear below enabled move cards. Each panel has primary sliders and an advanced toggle section.
+
+- [ ] **Step 1: Replace the `renderSliders` stub**
+
+Find this line:
+
+```javascript
+function renderSliders() { /* Task 3 */ }
+```
+
+Replace with:
+
+```javascript
+function renderSliders() {
+  const zone = document.getElementById('sliders-zone');
+  if (zone.dataset.initialized) return;
+  zone.dataset.initialized = 'true';
+
+  const panels = [];
+
+  // Wholesale panel
+  if (scenario.wholesale.enabled) {
+    panels.push(buildWholesalePanel());
+  } else {
+    panels.push(buildDisabledPanel('wholesale', 'Expand into Wholesale'));
+  }
+
+  // New Products panel
+  if (scenario.new_products.enabled) {
+    panels.push(buildNewProductsPanel());
+  } else {
+    panels.push(buildDisabledPanel('new_products', 'Launch New Products'));
+  }
+
+  // Cut Shield panel
+  if (scenario.cut_shield.enabled) {
+    panels.push(buildCutShieldPanel());
+  } else {
+    panels.push(buildDisabledPanel('cut_shield', 'Cut Shield & Reallocate'));
+  }
+
+  zone.innerHTML = panels.join('');
+  bindSliderEvents();
+}
+
+function buildDisabledPanel(move, name) {
+  return `<div class="slider-panel disabled" data-move="${move}">
+    <div class="disabled-placeholder">
+      <div class="icon">+</div>
+      Enable "${name}" above<br>to configure
+    </div>
+  </div>`;
+}
+
+function buildWholesalePanel() {
+  const s = scenario.wholesale;
+  return `<div class="slider-panel" data-move="wholesale">
+    <div class="slider-panel-title">Wholesale Settings</div>
+    ${buildSlider('wf_stores', 'Whole Foods Stores', s.wf_stores, 0, 85, 1, 'wholesale')}
+    ${buildSlider('wf_units_per_store', 'Units / Store / Month', s.wf_units_per_store, 10, 50, 1, 'wholesale')}
+    ${buildToggleRow('target_enabled', 'Include Target', s.target_enabled, 'wholesale')}
+    ${buildSlider('wholesale_discount', 'Wholesale Discount', Math.round(s.wholesale_discount * 100), 45, 60, 1, 'wholesale', '%')}
+    <div class="advanced-toggle" onclick="toggleAdvanced(this)">&#9656; Advanced settings</div>
+    <div class="advanced-content">
+      ${buildSlider('target_stores', 'Target Stores', s.target_stores, 100, 1800, 50, 'wholesale')}
+      ${buildSlider('target_units_per_store', 'Target Units/Store/Mo', s.target_units_per_store, 5, 30, 1, 'wholesale')}
+      ${buildSlider('target_discount', 'Target Discount', Math.round(s.target_discount * 100), 50, 60, 1, 'wholesale', '%')}
+      ${buildSlider('slotting_fees', 'Slotting Fees', s.slotting_fees / 1000, 0, 500, 10, 'wholesale', 'K')}
+      ${buildSlider('dtc_cannibalization', 'DTC Cannibalization', Math.round(s.dtc_cannibalization * 100), 0, 30, 1, 'wholesale', '%')}
+      ${buildSlider('ramp_months', 'Ramp Months', s.ramp_months, 1, 12, 1, 'wholesale', 'mo')}
+    </div>
+  </div>`;
+}
+
+function buildNewProductsPanel() {
+  const s = scenario.new_products;
+  return `<div class="slider-panel" data-move="new_products">
+    <div class="slider-panel-title">New Products Settings</div>
+    ${buildToggleRow('metabolize_enabled', 'Launch Metabolize', s.metabolize_enabled, 'new_products', 'purple')}
+    ${buildSlider('metabolize_price', 'Metabolize Price', s.metabolize_price, 55, 85, 1, 'new_products', '$')}
+    ${buildToggleRow('glow_enabled', 'Launch Glow', s.glow_enabled, 'new_products', 'purple')}
+    ${buildSlider('glow_price', 'Glow Price', s.glow_price, 55, 85, 1, 'new_products', '$')}
+    ${buildSlider('penetration_rate', 'Y1 Penetration (Existing)', Math.round(s.penetration_rate * 100), 5, 30, 1, 'new_products', '%')}
+    <div class="advanced-toggle" onclick="toggleAdvanced(this)">&#9656; Advanced settings</div>
+    <div class="advanced-content">
+      ${buildSlider('rd_cost_per_product', 'R&D Cost / Product', s.rd_cost_per_product / 1000, 50, 200, 10, 'new_products', 'K')}
+      ${buildSlider('launch_quarter', 'Launch Quarter', s.launch_quarter, 1, 4, 1, 'new_products', 'Q')}
+      ${buildSlider('new_acquisition_monthly', 'New Customers/Mo', s.new_acquisition_monthly, 0, 500, 10, 'new_products')}
+      ${buildSlider('metabolize_cogs', 'Metabolize COGS', s.metabolize_cogs, 12, 22, 1, 'new_products', '$')}
+      ${buildSlider('glow_cogs', 'Glow COGS', s.glow_cogs, 10, 18, 1, 'new_products', '$')}
+      ${buildSlider('existing_cannibalization', 'Existing SKU Cannibal.', Math.round(s.existing_cannibalization * 100), 0, 15, 1, 'new_products', '%')}
+    </div>
+  </div>`;
+}
+
+function buildCutShieldPanel() {
+  const s = scenario.cut_shield;
+  return `<div class="slider-panel" data-move="cut_shield">
+    <div class="slider-panel-title">Cut Shield Settings</div>
+    ${buildSlider('transition_quarter', 'Transition Quarter', s.transition_quarter, 1, 4, 1, 'cut_shield', 'Q')}
+    ${buildSlider('reallocate_to_marketing', 'Reallocate to Marketing', Math.round(s.reallocate_to_marketing * 100), 0, 100, 5, 'cut_shield', '%')}
+    ${buildSlider('retain_as_margin', 'Retain as Margin', Math.round(s.retain_as_margin * 100), 0, 100, 5, 'cut_shield', '%')}
+  </div>`;
+}
+
+function buildSlider(id, label, value, min, max, step, move, suffix) {
+  const displayVal = suffix === '$' ? '$' + value : suffix === 'K' ? '$' + value + 'K' : suffix === 'Q' ? 'Q' + value : value + (suffix || '');
+  return `<div class="slider-group">
+    <div class="slider-label"><span>${label}</span><strong id="val-${id}">${displayVal}</strong></div>
+    <input type="range" min="${min}" max="${max}" step="${step}" value="${value}"
+      data-id="${id}" data-move="${move}" data-suffix="${suffix || ''}">
+  </div>`;
+}
+
+function buildToggleRow(id, label, isOn, move, color) {
+  return `<div class="toggle-row">
+    <span>${label}</span>
+    <div class="toggle-switch ${isOn ? 'on' : ''} ${color ? 'data-color-' + color : ''}"
+      ${color ? 'data-color="' + color + '"' : ''}
+      data-id="${id}" data-move="${move}" onclick="handleToggle(this)"></div>
+  </div>`;
+}
+
+function handleToggle(el) {
+  const id = el.dataset.id;
+  const move = el.dataset.move;
+  scenario[move][id] = !scenario[move][id];
+  el.classList.toggle('on', scenario[move][id]);
+
+  // Rebuild sliders and recalculate
+  const zone = document.getElementById('sliders-zone');
+  zone.innerHTML = '';
+  zone.removeAttribute('data-initialized');
+  recalculate();
+}
+
+function toggleAdvanced(el) {
+  const content = el.nextElementSibling;
+  content.classList.toggle('open');
+  el.innerHTML = content.classList.contains('open') ? '&#9662; Hide advanced' : '&#9656; Advanced settings';
+}
+
+function bindSliderEvents() {
+  document.querySelectorAll('.slider-panel input[type="range"]').forEach(slider => {
+    slider.addEventListener('input', function() {
+      const id = this.dataset.id;
+      const move = this.dataset.move;
+      const suffix = this.dataset.suffix;
+      let val = parseFloat(this.value);
+
+      // Update display
+      const displayEl = document.getElementById('val-' + id);
+      if (suffix === '$') displayEl.textContent = '$' + val;
+      else if (suffix === 'K') displayEl.textContent = '$' + val + 'K';
+      else if (suffix === 'Q') displayEl.textContent = 'Q' + val;
+      else if (suffix === '%') displayEl.textContent = val + '%';
+      else if (suffix === 'mo') displayEl.textContent = val + 'mo';
+      else displayEl.textContent = val;
+
+      // Update scenario state (convert display values back to internal)
+      if (suffix === '%') val = val / 100;
+      if (suffix === 'K') val = val * 1000;
+      scenario[move][id] = val;
+
+      // Link marketing/margin split for cut_shield
+      if (move === 'cut_shield' && id === 'reallocate_to_marketing') {
+        scenario.cut_shield.retain_as_margin = 1 - val;
+        const marginSlider = document.querySelector(`input[data-id="retain_as_margin"]`);
+        if (marginSlider) {
+          marginSlider.value = Math.round((1 - val) * 100);
+          document.getElementById('val-retain_as_margin').textContent = Math.round((1 - val) * 100) + '%';
+        }
+      }
+      if (move === 'cut_shield' && id === 'retain_as_margin') {
+        scenario.cut_shield.reallocate_to_marketing = 1 - val;
+        const mktgSlider = document.querySelector(`input[data-id="reallocate_to_marketing"]`);
+        if (mktgSlider) {
+          mktgSlider.value = Math.round((1 - val) * 100);
+          document.getElementById('val-reallocate_to_marketing').textContent = Math.round((1 - val) * 100) + '%';
+        }
+      }
+
+      // Don't rebuild sliders, just recalculate projections
+      const result = computeProjection(scenario);
+      renderHeader(result);
+      renderMoveCards(result);
+      renderProjections(result);
+      renderRiskBar(result);
+    });
+  });
+}
+```
+
+- [ ] **Step 2: Verify in browser**
+
+Reload the page. Enable Wholesale — its slider panel should appear with sliders for stores, units, discount, etc. Drag a slider — header KPIs should update in real-time. Toggle Target on/off. Click "Advanced settings" to expand. Enable Cut Shield — its panel appears. The marketing/margin sliders should be linked (moving one updates the other).
+
+- [ ] **Step 3: Commit**
+
+```bash
+git add tools/scenario_modeler.html
+git commit -m "feat: add slider panels with real-time recalculation (Zone 3)"
+```
+
+---
+
+## Task 4: Projection Charts and Metrics (Zone 4)
+
+**Files:**
+- Modify: `tools/scenario_modeler.html` — replace `renderProjections` stub
+
+This task adds the stacked bar chart (12 quarters), margin trend, investment card, and headcount card.
+
+- [ ] **Step 1: Replace the `renderProjections` stub**
+
+Find this line:
+
+```javascript
+function renderProjections(result) { /* Task 4 */ }
+```
+
+Replace with:
+
+```javascript
+function renderProjections(result) {
+  const zone = document.getElementById('projection-zone');
+
+  // Find max quarterly revenue for chart scaling
+  const maxRevenue = Math.max(...result.quarterly.map(q => q.revenue.total));
+
+  // Build bar chart HTML
+  let barsHtml = '';
+  result.quarterly.forEach((q, i) => {
+    // Add year dividers
+    if (i === 4 || i === 8) {
+      barsHtml += '<div class="chart-year-divider"></div>';
+    }
+
+    const dtcPct = maxRevenue > 0 ? (q.revenue.dtc / maxRevenue * 100) : 0;
+    const wsPct = maxRevenue > 0 ? (q.revenue.wholesale / maxRevenue * 100) : 0;
+    const npPct = maxRevenue > 0 ? (q.revenue.new_products / maxRevenue * 100) : 0;
+
+    barsHtml += `<div class="chart-bar-group">
+      <div class="chart-bar-label">Q${q.quarter}</div>
+      ${npPct > 0 ? `<div class="chart-bar-segment new-products" style="height:${npPct}%" title="New Products: ${formatCurrency(q.revenue.new_products)}"></div>` : ''}
+      ${wsPct > 0 ? `<div class="chart-bar-segment wholesale" style="height:${wsPct}%" title="Wholesale: ${formatCurrency(q.revenue.wholesale)}"></div>` : ''}
+      <div class="chart-bar-segment dtc" style="height:${dtcPct}%;border-radius:3px 3px 0 0" title="DTC: ${formatCurrency(q.revenue.dtc)}"></div>
+    </div>`;
+  });
+
+  // Margin trend mini-bars
+  const maxMargin = Math.max(...result.quarterly.map(q => q.gross_margin));
+  let marginBarsHtml = '';
+  const yearColors = { 1: '#2d6a4f', 2: '#74a98c', 3: '#4ecca3' };
+  result.quarterly.forEach(q => {
+    const pct = maxMargin > 0 ? (q.gross_margin / maxMargin * 100) : 0;
+    marginBarsHtml += `<div style="flex:1;background:${yearColors[q.year]};height:${pct}%;border-radius:2px 2px 0 0" title="Q${q.quarter}: ${formatPercent(q.gross_margin)}"></div>`;
+  });
+
+  const startMargin = result.quarterly[0].gross_margin;
+  const endMargin = result.quarterly[11].gross_margin;
+  const marginDelta = endMargin - startMargin;
+  const marginArrow = marginDelta >= 0 ? '<span style="color:#2d6a4f">&#9650;</span>' : '<span style="color:#c0392b">&#9660;</span>';
+
+  // Investment breakdown
+  let investBreakdown = [];
+  if (scenario.wholesale.enabled) {
+    investBreakdown.push('WS ops: $250K');
+    investBreakdown.push('Slotting: ' + formatCurrency(scenario.wholesale.slotting_fees));
+  }
+  if (scenario.new_products.enabled) {
+    const count = (scenario.new_products.metabolize_enabled ? 1 : 0) + (scenario.new_products.glow_enabled ? 1 : 0);
+    investBreakdown.push('R&D: ' + formatCurrency(scenario.new_products.rd_cost_per_product * count));
+  }
+  if (scenario.cut_shield.enabled) investBreakdown.push('Transition: $15K');
+  if (scenario.wholesale.enabled) {
+    investBreakdown.push('WS mktg: ' + formatCurrency(20000 * 12));
+  }
+  if (investBreakdown.length === 0) investBreakdown.push('No investment required');
+
+  // Headcount breakdown
+  let hcBreakdown = [];
+  if (scenario.wholesale.enabled) hcBreakdown.push('+3 wholesale ops');
+  if (scenario.new_products.enabled) hcBreakdown.push('+1 product dev');
+  if (scenario.cut_shield.enabled) hcBreakdown.push('-1 Shield FTE');
+  if (hcBreakdown.length === 0) hcBreakdown.push('No team changes');
+
+  zone.innerHTML = `
+    <div class="projection-top">
+      <div class="chart-container">
+        <div class="chart-header">
+          <div class="chart-title">Quarterly Revenue by Source</div>
+          <div class="chart-legend">
+            <span><span class="legend-dot" style="background:#2d6a4f"></span>DTC</span>
+            <span><span class="legend-dot" style="background:#6b4c9a"></span>Wholesale</span>
+            <span><span class="legend-dot" style="background:#c17817"></span>New Products</span>
+          </div>
+        </div>
+        <div class="chart-bars">${barsHtml}</div>
+        <div class="chart-year-labels">
+          <span>&mdash; Year 1 &mdash;</span>
+          <span>&mdash; Year 2 &mdash;</span>
+          <span>&mdash; Year 3 &mdash;</span>
+        </div>
+      </div>
+      <div class="metrics-column">
+        <div class="metric-card margin">
+          <div class="metric-card-label">Gross Margin Trend</div>
+          <div style="display:flex;align-items:flex-end;gap:2px;height:50px;margin:6px 0">${marginBarsHtml}</div>
+          <div class="metric-card-detail">${formatPercent(startMargin)} &rarr; ${formatPercent(endMargin)} ${marginArrow}</div>
+        </div>
+        <div class="metric-card investment">
+          <div class="metric-card-label">Cumulative Investment</div>
+          <div class="metric-card-value">${formatCurrency(result.summary.total_investment)}</div>
+          <div class="metric-card-detail">${investBreakdown.join(' &middot; ')}</div>
+        </div>
+        <div class="metric-card headcount">
+          <div class="metric-card-label">Team by Y3</div>
+          <div class="metric-card-value">${BASELINE.employees + result.summary.headcount_delta} <span style="font-size:12px;font-weight:400">(${formatDelta(result.summary.headcount_delta)})</span></div>
+          <div class="metric-card-detail">${hcBreakdown.join(' &middot; ')}</div>
+        </div>
+      </div>
+    </div>
+    <div id="risk-bar-container"></div>
+  `;
+}
+```
+
+- [ ] **Step 2: Verify in browser**
+
+Reload the page. The projection area should show the stacked bar chart with 12 green DTC bars, year dividers, and labels. Toggle Wholesale on — purple segments should appear in the bars, growing over the ramp period. The margin trend should show declining bars. Investment and headcount cards should update.
+
+- [ ] **Step 3: Commit**
+
+```bash
+git add tools/scenario_modeler.html
+git commit -m "feat: add projection charts and metric cards (Zone 4)"
+```
+
+---
+
+## Task 5: Risk Factors Bar
+
+**Files:**
+- Modify: `tools/scenario_modeler.html` — replace `renderRiskBar` stub
+
+- [ ] **Step 1: Replace the `renderRiskBar` stub**
+
+Find this line:
+
+```javascript
+function renderRiskBar(result) { /* Task 5 */ }
+```
+
+Replace with:
+
+```javascript
+function renderRiskBar(result) {
+  const container = document.getElementById('risk-bar-container');
+  if (!container) return;
+
+  const risks = result.summary.risk_factors;
+  if (risks.length === 0) {
+    container.innerHTML = '';
+    return;
+  }
+
+  const chipsHtml = risks.map(r =>
+    `<div class="risk-chip"><span class="risk-chip-name">${r.name}</span> <span class="risk-chip-desc">— ${r.desc}</span></div>`
+  ).join('');
+
+  container.innerHTML = `
+    <div class="risk-bar">
+      <div class="risk-bar-title">ACTIVE RISK FACTORS (${risks.length})</div>
+      <div class="risk-chips">${chipsHtml}</div>
+    </div>
+  `;
+}
+```
+
+- [ ] **Step 2: Verify in browser**
+
+Enable Wholesale — risk bar appears with Brand Dilution, Margin Compression, Ops Complexity, DTC Cannibalization. Enable a second move — Bandwidth Risk chip should also appear, and header risk level changes to ●●○.
+
+- [ ] **Step 3: Commit**
+
+```bash
+git add tools/scenario_modeler.html
+git commit -m "feat: add risk factors bar with dynamic chip rendering"
+```
+
+---
+
+## Task 6: Pin Bar and Comparison Drawer (Zone 5)
+
+**Files:**
+- Modify: `tools/scenario_modeler.html` — replace `renderPinBar` stub
+
+This is the final interactive feature: pin named scenarios and compare them in a slide-up drawer.
+
+- [ ] **Step 1: Replace the `renderPinBar` stub**
+
+Find this line:
+
+```javascript
+function renderPinBar() { /* Task 6 */ }
+```
+
+Replace with:
+
+```javascript
+function renderPinBar() {
+  const pinBar = document.getElementById('pin-bar');
+  pinBar.innerHTML = `
+    <div class="pin-controls">
+      <button class="pin-btn" onclick="pinScenario()">&#x1F4CC; Pin Current Scenario</button>
+      <input class="pin-name-input" id="pin-name" placeholder='Name: e.g. "Wholesale + Cut Shield"' onkeydown="if(event.key==='Enter')pinScenario()">
+    </div>
+    <div class="compare-toggle" onclick="toggleDrawer()" id="compare-toggle">
+      ${pinnedScenarios.length > 0 ? '&#9650; Compare ' + pinnedScenarios.length + ' Pinned Scenario' + (pinnedScenarios.length !== 1 ? 's' : '') : ''}
+    </div>
+  `;
+  renderDrawer();
+}
+
+function pinScenario() {
+  const nameInput = document.getElementById('pin-name');
+  let name = nameInput.value.trim();
+  if (!name) {
+    // Auto-generate name from enabled moves
+    const parts = [];
+    if (scenario.wholesale.enabled) parts.push('Wholesale');
+    if (scenario.new_products.enabled) {
+      const products = [];
+      if (scenario.new_products.metabolize_enabled) products.push('Metabolize');
+      if (scenario.new_products.glow_enabled) products.push('Glow');
+      parts.push(products.length > 0 ? products.join('+') : 'New Products');
+    }
+    if (scenario.cut_shield.enabled) parts.push('Cut Shield');
+    name = parts.length > 0 ? parts.join(' + ') : 'Baseline (DTC Only)';
+  }
+
+  const result = computeProjection(scenario);
+  pinnedScenarios.push({
+    name: name,
+    config: deepCopy(scenario),
+    results: result
+  });
+
+  nameInput.value = '';
+  renderPinBar();
+
+  // Auto-open drawer
+  const drawer = document.getElementById('comparison-drawer');
+  drawer.classList.add('open');
+}
+
+function unpinScenario(index) {
+  pinnedScenarios.splice(index, 1);
+  renderPinBar();
+}
+
+function toggleDrawer() {
+  const drawer = document.getElementById('comparison-drawer');
+  drawer.classList.toggle('open');
+  const toggle = document.getElementById('compare-toggle');
+  if (drawer.classList.contains('open')) {
+    toggle.innerHTML = '&#9660; Hide Comparison';
+  } else {
+    toggle.innerHTML = '&#9650; Compare ' + pinnedScenarios.length + ' Pinned Scenario' + (pinnedScenarios.length !== 1 ? 's' : '');
+  }
+}
+
+function renderDrawer() {
+  const drawer = document.getElementById('comparison-drawer');
+  if (pinnedScenarios.length === 0) {
+    drawer.innerHTML = '<div class="no-pins-msg">Pin scenarios to compare them side by side</div>';
+    return;
+  }
+
+  const metrics = [
+    { label: 'Y1 Revenue', key: 'y1_revenue', format: formatCurrency },
+    { label: 'Y2 Revenue', key: 'y2_revenue', format: formatCurrency },
+    { label: 'Y3 Revenue', key: 'y3_revenue', format: formatCurrency },
+    { label: 'Y3 Gross Margin', key: 'y3_gross_margin', format: formatPercent },
+    { label: '3Y Investment', key: 'total_investment', format: formatCurrency },
+    { label: 'Headcount Δ', key: 'headcount_delta', format: formatDelta },
+    { label: 'Risk Level', key: 'risk_level', format: v => riskDots(v) + ' ' + v.charAt(0).toUpperCase() + v.slice(1) }
+  ];
+
+  const lastIdx = pinnedScenarios.length - 1;
+
+  let headerCells = '<th>Metric</th>';
+  pinnedScenarios.forEach((p, i) => {
+    headerCells += `<th class="${i === lastIdx ? 'highlight' : ''}">
+      &#x1F4CC; ${p.name}<span class="delete-btn" onclick="unpinScenario(${i})">&#x2715;</span>
+      <br><span class="scenario-subtitle">${describeConfig(p.config)}</span>
+    </th>`;
+  });
+
+  let bodyRows = '';
+  metrics.forEach(m => {
+    let cells = `<td>${m.label}</td>`;
+    pinnedScenarios.forEach((p, i) => {
+      const val = p.results.summary[m.key];
+      cells += `<td class="${i === lastIdx ? 'highlight' : ''}">${m.format(val)}</td>`;
+    });
+    bodyRows += `<tr>${cells}</tr>`;
+  });
+
+  drawer.innerHTML = `
+    <div class="drawer-title">Scenario Comparison</div>
+    <table class="comparison-table">
+      <thead><tr>${headerCells}</tr></thead>
+      <tbody>${bodyRows}</tbody>
+    </table>
+  `;
+}
+
+function describeConfig(config) {
+  const parts = [];
+  if (config.wholesale.enabled) parts.push('WS');
+  if (config.new_products.enabled) parts.push('New SKUs');
+  if (config.cut_shield.enabled) parts.push('Cut Shield');
+  return parts.length > 0 ? parts.join(', ') : 'DTC only';
+}
+```
+
+- [ ] **Step 2: Verify in browser**
+
+Reload the page. The pin bar should appear at the bottom with a button and text input. Pin the baseline scenario (no moves enabled) — drawer should auto-open showing one column. Enable Wholesale, pin as "Wholesale Only". Enable Cut Shield too, pin as "WS + Cut Shield". The comparison table should show three columns with all metrics, the latest one highlighted. Click the X to delete a pinned scenario.
+
+- [ ] **Step 3: Commit**
+
+```bash
+git add tools/scenario_modeler.html
+git commit -m "feat: add pin bar and comparison drawer (Zone 5)"
+```
+
+---
+
+## Task 7: Process Log, Tutorial, and Final Commit
+
+**Files:**
+- Modify: `docs/process_log.md`
+- Create: `tutorials/03_scenario_modeler.md`
+
+- [ ] **Step 1: Update process log**
+
+Prepend a new entry to `docs/process_log.md` (newest first):
+
+```markdown
+## 2026-04-06 — Scenario Modeler
+
+**Prompt:** Build a scenario modeler for Verdana. Model four strategic paths: stay the course (DTC only), expand into wholesale, launch two new products, or cut the underperforming SKU and reallocate resources. For each scenario, project 3-year revenue, margins, required investment, team headcount, and risk factors. Let me compare scenarios side by side and blend them — what if we do wholesale AND cut a SKU? Output as an interactive HTML file.
+
+**What was built:** Interactive HTML scenario modeler (`tools/scenario_modeler.html`) with toggle-based strategic moves, tunable sliders with advanced settings, 12-quarter stacked bar chart projections, margin/investment/headcount metrics, dynamic risk factor chips, and a pinnable comparison drawer for side-by-side analysis.
+
+**Key decisions:**
+- Modeled as baseline + 3 toggleable moves (not 4 separate scenarios) to enable blending via any combination of enabled moves
+- Quarterly granularity (12 quarters) to capture ramp effects, launch timing, and seasonal patterns
+- Pinnable comparison drawer instead of fixed side-by-side to allow unlimited scenario exploration
+- Layout C (full-width builder with slide-up drawer) chosen for maximum chart real estate and no mode-switching
+- Pure CSS bar charts (no external charting library) for self-contained single-file deployment
+- Marketing/margin split as linked sliders maintaining 100% total
+
+**Files created/modified:**
+- `tools/scenario_modeler.html` (created)
+- `docs/superpowers/specs/2026-04-06-scenario-modeler-design.md` (created)
+- `docs/superpowers/plans/2026-04-06-scenario-modeler.md` (created)
+- `docs/process_log.md` (modified)
+- `tutorials/03_scenario_modeler.md` (created)
+```
+
+- [ ] **Step 2: Create tutorial**
+
+Create `tutorials/03_scenario_modeler.md`:
+
+```markdown
+---
+title: "Tutorial: Building the Verdana Scenario Modeler"
+tool: Scenario Modeler
+sequence: 3
+created: 2026-04-06
+---
+
+# Tutorial: Building the Verdana Scenario Modeler
+
+## What We Built
+
+An interactive HTML scenario modeler that lets leadership explore four strategic paths for Verdana — stay the course, expand into wholesale, launch new products, or cut the underperforming Shield SKU — and blend them in any combination.
+
+## The Prompt
+
+> Build a scenario modeler for Verdana. Model four strategic paths: stay the course (DTC only), expand into wholesale, launch two new products, or cut the underperforming SKU and reallocate resources. For each scenario, project 3-year revenue, margins, required investment, team headcount, and risk factors. Let me compare scenarios side by side and blend them — what if we do wholesale AND cut a SKU? Output as an interactive HTML file.
+
+## Key Design Decisions
+
+### 1. Toggle Model Over Fixed Scenarios
+
+Instead of four rigid scenarios, we modeled it as a baseline plus three toggleable strategic moves. This gives 2^3 = 8 possible combinations, including "stay the course" (all off) and any blend like "wholesale + cut Shield."
+
+**Why:** Leadership doesn't think in fixed scenarios — they think "what if we do this AND that?" The toggle model makes blending natural.
+
+### 2. Quarterly Over Annual
+
+We chose 12-quarter projections instead of 3 annual snapshots. This matters because:
+- Wholesale has a 6-month ramp period
+- New products launch mid-year (default Q3)
+- Shield discontinuation has a transition quarter
+- These timing effects disappear in annual views
+
+### 3. Pinnable Comparison Drawer
+
+Rather than a fixed two-panel comparison, users build a scenario, name it, pin it, then explore another configuration. All pinned scenarios appear in a slide-up comparison table.
+
+**Why:** The blending mechanic means you'll want to explore many combinations freely. A fixed comparison forces rebuilding scenarios you already explored.
+
+### 4. Full-Width Layout with Slide-Up Drawer
+
+We chose a full-width builder with the comparison drawer sliding up from the bottom, rather than a sidebar layout or tabbed views.
+
+**Why:** 12 quarters of stacked bar data need horizontal space. The drawer keeps comparison accessible without mode-switching.
+
+## How to Replicate
+
+1. Start with the brand definition (`brand/brand_definition.md`) — it provides all the baseline financial data
+2. Brainstorm the design using the visual companion to explore layout options
+3. Build incrementally: data model → header → toggle cards → sliders → charts → risk bar → pin/compare
+4. Keep calculation logic as pure functions, separate from DOM rendering
+5. Use slider `input` events (not `change`) for real-time recalculation
+
+## Output
+
+`tools/scenario_modeler.html` — open in any browser, no server required.
+```
+
+- [ ] **Step 3: Commit**
+
+```bash
+git add docs/process_log.md tutorials/03_scenario_modeler.md
+git commit -m "docs: add process log and tutorial for scenario modeler"
+```
