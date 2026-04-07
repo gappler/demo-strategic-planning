@@ -1,0 +1,663 @@
+# Competitive Positioning Map Implementation Plan
+
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+
+**Goal:** Build an interactive HTML positioning map that plots Verdana against 8 competitors on a 2D grid with selectable axes and hover detail cards.
+
+**Architecture:** Single self-contained HTML file. Brand data and dimension definitions as JS objects at the top. Nodes rendered as absolutely-positioned divs within a relative container. Position derived from dimension scores (left = xScore%, top = (100 - yScore)%). CSS transitions for axis-change animations. Hover cards via mouseenter/mouseleave with auto-positioning logic.
+
+**Tech Stack:** Vanilla HTML/CSS/JavaScript, no external dependencies
+
+**Spec:** `docs/superpowers/specs/2026-04-06-competitive-positioning-map-design.md`
+
+**Output:** `tools/competitive_positioning_map.html`
+
+---
+
+## Task 1: Create HTML with Data Model, CSS, Header, and Map Grid
+
+**Files:**
+- Create: `tools/competitive_positioning_map.html`
+
+This task creates the complete file with all data, all CSS, the sticky header with axis dropdowns, and the empty map grid with axis labels. No nodes yet.
+
+- [ ] **Step 1: Create the HTML file**
+
+Create `tools/competitive_positioning_map.html`:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verdana — Competitive Positioning Map</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: #f8faf7;
+  color: #333;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Header */
+.header {
+  position: sticky; top: 0; z-index: 100;
+  background: #2d6a4f;
+  color: #fff;
+  padding: 10px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  flex-shrink: 0;
+}
+.header-brand {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+.header-brand h1 {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+.header-brand .subtitle {
+  font-size: 12px;
+  opacity: 0.7;
+}
+.axis-controls {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+.axis-control {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+}
+.axis-control label {
+  opacity: 0.8;
+  font-weight: 600;
+}
+.axis-control select {
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid rgba(255,255,255,0.3);
+  background: rgba(255,255,255,0.15);
+  color: #fff;
+  cursor: pointer;
+  outline: none;
+}
+.axis-control select option {
+  background: #2d6a4f;
+  color: #fff;
+}
+
+/* Map container */
+.map-wrapper {
+  flex: 1;
+  position: relative;
+  padding: 20px 40px 50px 70px;
+  overflow: hidden;
+}
+.map-area {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border: 1px solid #ddd;
+  background: #fff;
+  border-radius: 4px;
+}
+
+/* Grid lines */
+.map-area::before {
+  content: '';
+  position: absolute;
+  left: 50%; top: 0; bottom: 0;
+  border-left: 1px dashed #e0e0e0;
+}
+.map-area::after {
+  content: '';
+  position: absolute;
+  top: 50%; left: 0; right: 0;
+  border-top: 1px dashed #e0e0e0;
+}
+
+/* Axis labels */
+.axis-label {
+  position: absolute;
+  font-size: 11px;
+  color: #888;
+  white-space: nowrap;
+}
+.axis-label-x {
+  bottom: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+}
+.axis-label-y {
+  left: -55px;
+  top: 50%;
+  transform: rotate(-90deg) translateX(-50%);
+  transform-origin: left center;
+  display: flex;
+  gap: 6px;
+}
+.axis-endpoint {
+  position: absolute;
+  font-size: 10px;
+  color: #aaa;
+}
+.axis-endpoint.x-low { bottom: -24px; left: 0; }
+.axis-endpoint.x-high { bottom: -24px; right: 0; }
+.axis-endpoint.y-low { left: -55px; bottom: 0; }
+.axis-endpoint.y-high { left: -55px; top: 0; }
+
+/* Brand nodes */
+.brand-node {
+  position: absolute;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  transition: left 500ms ease, top 500ms ease, transform 200ms ease;
+  z-index: 1;
+  user-select: none;
+}
+.brand-node:hover {
+  transform: scale(1.15);
+  z-index: 50;
+}
+.brand-node.hero {
+  width: 40px;
+  height: 40px;
+  font-size: 10px;
+  border: 3px solid #fff;
+  z-index: 10;
+}
+.brand-node:not(.hero) {
+  width: 28px;
+  height: 28px;
+  font-size: 9px;
+  border: 2px solid rgba(255,255,255,0.6);
+}
+.brand-node.hero:hover {
+  z-index: 50;
+}
+
+/* Verdana persistent label */
+.hero-label {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  color: #2d6a4f;
+  white-space: nowrap;
+  pointer-events: none;
+  transition: left 500ms ease, top 500ms ease;
+}
+
+/* Hover card */
+.hover-card {
+  position: absolute;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  padding: 12px 14px;
+  width: 230px;
+  z-index: 200;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 150ms ease;
+  border-left: 3px solid #ccc;
+}
+.hover-card.visible {
+  opacity: 1;
+}
+.hover-card-name {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+.hover-card-tagline {
+  font-size: 11px;
+  color: #888;
+  margin-bottom: 8px;
+}
+.hover-card-detail {
+  font-size: 11px;
+  color: #555;
+  margin-bottom: 4px;
+  line-height: 1.4;
+}
+.hover-card-vs {
+  font-size: 11px;
+  color: #2d6a4f;
+  font-style: italic;
+  border-top: 1px solid #eee;
+  padding-top: 6px;
+  margin-top: 6px;
+  line-height: 1.4;
+}
+</style>
+</head>
+<body>
+
+<script>
+// ===== DATA MODEL =====
+
+const DIMENSIONS = [
+  { id: 'price', name: 'Price Point', low: 'Budget', high: 'Premium' },
+  { id: 'clinical', name: 'Clinical Rigor', low: 'No Evidence', high: 'RCT-Backed' },
+  { id: 'lifestyle', name: 'Lifestyle Branding', low: 'Clinical/Functional', high: 'Aspirational' },
+  { id: 'transparency', name: 'Ingredient Transparency', low: 'Proprietary Blends', high: 'Full Disclosure' },
+  { id: 'dtc', name: 'DTC Focus', low: 'Retail/Amazon', high: 'Direct-to-Consumer' },
+  { id: 'breadth', name: 'Product Breadth', low: 'Single SKU', high: 'Wide Catalog' }
+];
+
+const BRANDS = [
+  {
+    id: 'verdana', name: 'Verdana', abbr: 'V', color: '#2d6a4f',
+    tagline: 'Clinical transparency adaptogens',
+    products: 'Focus, Calm, Restore, Endure, Shield',
+    scale: '$8M revenue, 60 employees, DTC-only',
+    audience: 'Skeptical professionals, 30\u201350',
+    vs_verdana: null,
+    scores: { price: 70, clinical: 85, lifestyle: 25, transparency: 95, dtc: 95, breadth: 45 },
+    isHero: true
+  },
+  {
+    id: 'ag1', name: 'Athletic Greens (AG1)', abbr: 'AG', color: '#c17817',
+    tagline: 'All-in-one daily nutrition',
+    products: 'AG1 powder, AG1 travel packs',
+    scale: '$600M+ revenue, unicorn valuation, DTC-dominant',
+    audience: 'Busy professionals and fitness enthusiasts, 25\u201345',
+    vs_verdana: 'AG1 is all-in-one; Verdana is targeted. AG1 hides behind proprietary blends; Verdana publishes every dose.',
+    scores: { price: 75, clinical: 40, lifestyle: 70, transparency: 30, dtc: 90, breadth: 10 },
+    isHero: false
+  },
+  {
+    id: 'moonjuice', name: 'Moon Juice', abbr: 'MJ', color: '#e9c46a',
+    tagline: 'Adaptogenic beauty and wellness',
+    products: 'SuperYou, Magnesi-Om, Brain Dust',
+    scale: '$50M+ revenue, retail + DTC, celeb partnerships',
+    audience: 'Wellness-forward women, 25\u201340, aesthetic-driven',
+    vs_verdana: 'Moon Juice sells the lifestyle; Verdana sells the evidence. Overlapping adaptogens, opposite brand voice.',
+    scores: { price: 65, clinical: 20, lifestyle: 95, transparency: 35, dtc: 70, breadth: 55 },
+    isHero: false
+  },
+  {
+    id: 'thorne', name: 'Thorne', abbr: 'Th', color: '#6b4c9a',
+    tagline: 'Practitioner-grade supplements',
+    products: 'Basic Nutrients, MediClear, Creatine',
+    scale: '$200M+ revenue, 200+ SKUs, heavy retail and practitioner channel',
+    audience: 'Healthcare practitioners and their patients, all ages',
+    vs_verdana: 'Thorne has clinical credibility but no consumer personality. Verdana is what Thorne would look like as a DTC brand.',
+    scores: { price: 60, clinical: 90, lifestyle: 10, transparency: 75, dtc: 40, breadth: 95 },
+    isHero: false
+  },
+  {
+    id: 'amazon', name: 'Amazon Supplement Brands', abbr: 'Am', color: '#999999',
+    tagline: 'Lowest price, maximum selection',
+    products: 'Nature Made, NOW Foods, Amazon Basics supplements',
+    scale: 'Multi-billion $ category, thousands of brands, pure marketplace',
+    audience: 'Price-sensitive general consumers',
+    vs_verdana: 'Amazon is the anti-Verdana \u2014 race to the bottom on price, zero transparency, no brand relationship.',
+    scores: { price: 15, clinical: 10, lifestyle: 15, transparency: 10, dtc: 15, breadth: 80 },
+    isHero: false
+  },
+  {
+    id: 'ritual', name: 'Ritual', abbr: 'Rt', color: '#2a9d8f',
+    tagline: 'Traceable, science-backed essentials',
+    products: 'Essential Multivitamin, Essential Protein, Synbiotic+',
+    scale: '$100M+ revenue, DTC-first with recent retail expansion',
+    audience: 'Health-conscious women (expanding to men), 25\u201345',
+    vs_verdana: 'Closest positioning threat \u2014 transparency-led DTC, but vitamins not adaptogens. If Ritual enters adaptogens, they\u2019re the top competitor.',
+    scores: { price: 55, clinical: 70, lifestyle: 60, transparency: 85, dtc: 85, breadth: 35 },
+    isHero: false
+  },
+  {
+    id: 'seed', name: 'Seed', abbr: 'Sd', color: '#e76f51',
+    tagline: 'Microbiome science for systemic health',
+    products: 'DS-01 Daily Synbiotic',
+    scale: '$100M+ revenue, single hero product, DTC-only',
+    audience: 'Science-literate health optimizers, 28\u201345',
+    vs_verdana: 'Seed proves the clinical-transparency DTC model scales. Single SKU vs. Verdana\u2019s five \u2014 different breadth strategy, same trust playbook.',
+    scores: { price: 65, clinical: 90, lifestyle: 50, transparency: 80, dtc: 90, breadth: 15 },
+    isHero: false
+  },
+  {
+    id: 'momentous', name: 'Momentous', abbr: 'Mo', color: '#264653',
+    tagline: 'Performance supplements backed by science',
+    products: 'Creatine, Omega-3, Huberman-partnered line',
+    scale: '$50M+ revenue, DTC + practitioner partnerships',
+    audience: 'Performance-focused men, 25\u201345, podcast-influenced',
+    vs_verdana: 'Momentous owns the male performance niche via podcast partnerships. Verdana could learn from their influencer strategy without the bro-science risk.',
+    scores: { price: 75, clinical: 75, lifestyle: 45, transparency: 65, dtc: 75, breadth: 40 },
+    isHero: false
+  },
+  {
+    id: 'onnit', name: 'Onnit', abbr: 'On', color: '#555555',
+    tagline: 'Total human optimization',
+    products: 'Alpha Brain, Shroom Tech, New Mood',
+    scale: '$100M+ revenue (acquired by Unilever), retail + DTC + Amazon',
+    audience: 'Fitness and wellness enthusiasts, 25\u201345, Joe Rogan audience',
+    vs_verdana: 'Onnit pioneered adaptogen supplements but with proprietary blends and hype-driven marketing \u2014 the opposite of Verdana\u2019s transparency approach.',
+    scores: { price: 55, clinical: 30, lifestyle: 80, transparency: 25, dtc: 50, breadth: 65 },
+    isHero: false
+  }
+];
+
+// Current axis state
+let currentXAxis = 'price';
+let currentYAxis = 'clinical';
+</script>
+
+<!-- Header -->
+<div class="header">
+  <div class="header-brand">
+    <h1>verdana</h1>
+    <span class="subtitle">Competitive Positioning Map</span>
+  </div>
+  <div class="axis-controls">
+    <div class="axis-control">
+      <label>X-Axis:</label>
+      <select id="x-axis-select"></select>
+    </div>
+    <div class="axis-control">
+      <label>Y-Axis:</label>
+      <select id="y-axis-select"></select>
+    </div>
+  </div>
+</div>
+
+<!-- Map -->
+<div class="map-wrapper">
+  <div class="map-area" id="map-area">
+    <!-- Axis endpoint labels -->
+    <div class="axis-endpoint x-low" id="x-low"></div>
+    <div class="axis-endpoint x-high" id="x-high"></div>
+    <div class="axis-endpoint y-low" id="y-low"></div>
+    <div class="axis-endpoint y-high" id="y-high"></div>
+    <!-- Axis name labels -->
+    <div class="axis-label axis-label-x" id="x-axis-label"></div>
+    <div class="axis-label axis-label-y" id="y-axis-label"></div>
+  </div>
+  <!-- Hover card (singleton, repositioned on hover) -->
+  <div class="hover-card" id="hover-card"></div>
+</div>
+
+<script>
+// ===== INITIALIZATION =====
+
+function init() {
+  populateDropdowns();
+  renderNodes();
+  updatePositions();
+  updateAxisLabels();
+  bindEvents();
+}
+
+function populateDropdowns() {
+  const xSelect = document.getElementById('x-axis-select');
+  const ySelect = document.getElementById('y-axis-select');
+  DIMENSIONS.forEach(d => {
+    xSelect.add(new Option(d.name, d.id));
+    ySelect.add(new Option(d.name, d.id));
+  });
+  xSelect.value = currentXAxis;
+  ySelect.value = currentYAxis;
+}
+
+function renderNodes() {
+  const map = document.getElementById('map-area');
+  BRANDS.forEach(brand => {
+    const node = document.createElement('div');
+    node.className = 'brand-node' + (brand.isHero ? ' hero' : '');
+    node.dataset.brandId = brand.id;
+    node.style.background = brand.color;
+    node.textContent = brand.abbr;
+    node.addEventListener('mouseenter', (e) => showHoverCard(brand, node));
+    node.addEventListener('mouseleave', () => hideHoverCard());
+    map.appendChild(node);
+
+    // Verdana persistent label
+    if (brand.isHero) {
+      const label = document.createElement('div');
+      label.className = 'hero-label';
+      label.textContent = 'Verdana';
+      node.appendChild(label);
+    }
+  });
+}
+
+function updatePositions() {
+  const map = document.getElementById('map-area');
+  const nodes = map.querySelectorAll('.brand-node');
+  nodes.forEach(node => {
+    const brand = BRANDS.find(b => b.id === node.dataset.brandId);
+    const xScore = brand.scores[currentXAxis];
+    const yScore = brand.scores[currentYAxis];
+    // Pad positions to keep nodes away from edges (5%-95% range mapped from 0-100 scores)
+    const xPct = 5 + (xScore / 100) * 90;
+    const yPct = 5 + ((100 - yScore) / 100) * 90;
+    const nodeSize = brand.isHero ? 40 : 28;
+    node.style.left = `calc(${xPct}% - ${nodeSize / 2}px)`;
+    node.style.top = `calc(${yPct}% - ${nodeSize / 2}px)`;
+  });
+}
+
+function updateAxisLabels() {
+  const xDim = DIMENSIONS.find(d => d.id === currentXAxis);
+  const yDim = DIMENSIONS.find(d => d.id === currentYAxis);
+  document.getElementById('x-axis-label').textContent = xDim.name;
+  document.getElementById('y-axis-label').textContent = yDim.name;
+  document.getElementById('x-low').textContent = '\u2190 ' + xDim.low;
+  document.getElementById('x-high').textContent = xDim.high + ' \u2192';
+  document.getElementById('y-low').textContent = '\u2190 ' + yDim.low;
+  document.getElementById('y-high').textContent = yDim.high + ' \u2192';
+}
+
+function showHoverCard(brand, node) {
+  const card = document.getElementById('hover-card');
+  const mapWrapper = document.querySelector('.map-wrapper');
+  const mapRect = mapWrapper.getBoundingClientRect();
+  const nodeRect = node.getBoundingClientRect();
+
+  // Build card content
+  let html = `<div class="hover-card-name" style="color:${brand.color}">${brand.name}</div>`;
+  html += `<div class="hover-card-tagline">${brand.tagline}</div>`;
+  html += `<div class="hover-card-detail"><strong>Products:</strong> ${brand.products}</div>`;
+  html += `<div class="hover-card-detail"><strong>Scale:</strong> ${brand.scale}</div>`;
+  html += `<div class="hover-card-detail"><strong>Audience:</strong> ${brand.audience}</div>`;
+  if (brand.vs_verdana) {
+    html += `<div class="hover-card-vs"><strong>vs. Verdana:</strong> ${brand.vs_verdana}</div>`;
+  }
+  card.innerHTML = html;
+  card.style.borderLeftColor = brand.color;
+
+  // Position card
+  const cardWidth = 230;
+  const cardHeight = 200; // approximate
+  const nodeCenter = {
+    x: nodeRect.left + nodeRect.width / 2 - mapRect.left,
+    y: nodeRect.top + nodeRect.height / 2 - mapRect.top
+  };
+
+  let left, top;
+  // Horizontal: default right, flip left if in right 40%
+  const xPct = (nodeRect.left - mapRect.left) / mapRect.width;
+  if (xPct > 0.6) {
+    left = nodeCenter.x - cardWidth - nodeRect.width / 2 - 12;
+  } else {
+    left = nodeCenter.x + nodeRect.width / 2 + 12;
+  }
+
+  // Vertical: center on node, clamp to viewport
+  top = nodeCenter.y - cardHeight / 2;
+  const yPct = (nodeRect.top - mapRect.top) / mapRect.height;
+  if (yPct < 0.2) {
+    top = nodeCenter.y + nodeRect.height / 2 + 8;
+  } else if (yPct > 0.8) {
+    top = nodeCenter.y - cardHeight - nodeRect.height / 2;
+  }
+
+  // Clamp
+  top = Math.max(8, Math.min(top, mapRect.height - cardHeight - 8));
+  left = Math.max(8, Math.min(left, mapRect.width - cardWidth - 8));
+
+  card.style.left = left + 'px';
+  card.style.top = top + 'px';
+  card.classList.add('visible');
+}
+
+function hideHoverCard() {
+  document.getElementById('hover-card').classList.remove('visible');
+}
+
+function bindEvents() {
+  document.getElementById('x-axis-select').addEventListener('change', function() {
+    currentXAxis = this.value;
+    hideHoverCard();
+    updatePositions();
+    updateAxisLabels();
+  });
+  document.getElementById('y-axis-select').addEventListener('change', function() {
+    currentYAxis = this.value;
+    hideHoverCard();
+    updatePositions();
+    updateAxisLabels();
+  });
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+
+</body>
+</html>
+```
+
+- [ ] **Step 2: Verify the file opens in a browser**
+
+```bash
+open tools/competitive_positioning_map.html
+```
+
+Expected: Page loads with green header bar, axis dropdowns defaulting to Price Point / Clinical Rigor. Map area shows 9 brand nodes positioned on the grid. Verdana node is larger with a "Verdana" label. Hovering any node shows a detail card. Changing axis dropdowns animates nodes to new positions.
+
+- [ ] **Step 3: Commit**
+
+```bash
+git add tools/competitive_positioning_map.html
+git commit -m "feat: add competitive positioning map with 9 brands, 6 axes, and hover cards"
+```
+
+---
+
+## Task 2: Process Log and Tutorial
+
+**Files:**
+- Modify: `docs/process_log.md`
+- Create: `tutorials/04_competitive_positioning_map.md`
+
+- [ ] **Step 1: Update process log**
+
+Prepend a new entry to `docs/process_log.md` (newest first, before the "## 2026-04-06 — Scenario Modeler" entry):
+
+```markdown
+## 2026-04-06 — Competitive Positioning Map
+
+**Prompt:** Build a competitive positioning map for Verdana. Plot Verdana against 6-8 real and fictional competitors in the DTC wellness/supplement space on an interactive 2D grid. Let me choose the axes — price vs. quality, clinical rigor vs. lifestyle branding, DTC vs. retail distribution, ingredient transparency vs. proprietary blends. Show each brand as a node with key details on hover. Output as an interactive HTML file.
+
+**What was built:** Interactive HTML positioning map (`tools/competitive_positioning_map.html`) plotting Verdana against 8 real competitors (AG1, Moon Juice, Thorne, Amazon brands, Ritual, Seed, Momentous, Onnit) on a 2D grid with 6 selectable axes and hover detail cards.
+
+**Key decisions:**
+- Free-form axis selection (any of 6 dimensions for either axis) rather than fixed pairings — enables unexpected strategic insights
+- Full-screen map with floating hover cards (Layout A) to maximize visual space
+- All real competitors rather than fictional — more credible for leadership discussions
+- Medium detail hover cards with "vs. Verdana" comparison line — turns each node into a strategic prompt
+- 500ms CSS transitions for axis changes — smooth enough to follow but fast enough to explore
+
+**Files created/modified:**
+- `tools/competitive_positioning_map.html` (created)
+- `docs/superpowers/specs/2026-04-06-competitive-positioning-map-design.md` (created)
+- `docs/superpowers/plans/2026-04-06-competitive-positioning-map.md` (created)
+- `docs/process_log.md` (modified)
+- `tutorials/04_competitive_positioning_map.md` (created)
+```
+
+- [ ] **Step 2: Create tutorial**
+
+Create `tutorials/04_competitive_positioning_map.md`:
+
+```markdown
+---
+title: "Tutorial: Building the Verdana Competitive Positioning Map"
+tool: Competitive Positioning Map
+sequence: 4
+created: 2026-04-06
+---
+
+# Tutorial: Building the Verdana Competitive Positioning Map
+
+## What We Built
+
+An interactive positioning map that plots Verdana against 8 real competitors on a 2D grid. Users select any two of six dimensions for the axes, and brand nodes animate to new positions. Hovering reveals detailed brand profiles.
+
+## The Prompt
+
+> Build a competitive positioning map for Verdana. Plot Verdana against 6-8 real and fictional competitors in the DTC wellness/supplement space on an interactive 2D grid. Let me choose the axes — price vs. quality, clinical rigor vs. lifestyle branding, DTC vs. retail distribution, ingredient transparency vs. proprietary blends. Show each brand as a node with key details on hover. Output as an interactive HTML file.
+
+## Key Design Decisions
+
+### 1. Free-Form Axis Selection
+
+Rather than four fixed axis pairings, we made all six dimensions available for either axis. This gives 30 possible views and lets leadership explore unexpected angles like "transparency vs. price" or "lifestyle branding vs. DTC focus."
+
+### 2. All Real Competitors
+
+We used 9 real brands (including Verdana) rather than mixing in fictional ones. Real brands are more useful for actual positioning conversations — the leadership team already knows these names.
+
+### 3. Full-Screen Map Layout
+
+The map takes the full viewport below the header. Hover cards float next to nodes rather than using a sidebar or bottom panel. A positioning map is fundamentally a visual tool — maximize the map space.
+
+### 4. "vs. Verdana" Comparison Line
+
+Each competitor's hover card ends with a Verdana-specific comparison. This turns every node into a strategic prompt: "What would it take to close this gap?" or "Why are we different here?"
+
+## How to Replicate
+
+1. Define your dimensions (the axes you want to compare brands on) with clear low/high anchors
+2. Score each brand 0-100 on every dimension — this is the hardest part, be honest
+3. Write brand profiles with the comparison angle that matters to your strategy
+4. Position nodes using percentage coordinates from scores
+5. Use CSS transitions for smooth axis-change animations
+
+## Output
+
+`tools/competitive_positioning_map.html` — open in any browser, no server required.
+```
+
+- [ ] **Step 3: Commit**
+
+```bash
+git add docs/process_log.md tutorials/04_competitive_positioning_map.md
+git commit -m "docs: add process log and tutorial for competitive positioning map"
+```
