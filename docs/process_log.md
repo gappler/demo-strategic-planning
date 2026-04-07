@@ -6,6 +6,26 @@ created: 2026-04-06
 
 # Process Log
 
+## 2026-04-06 — Competitive Positioning Map
+
+**Prompt:** Build a competitive positioning map for Verdana. Plot Verdana against 6-8 real and fictional competitors in the DTC wellness/supplement space on an interactive 2D grid. Let me choose the axes — price vs. quality, clinical rigor vs. lifestyle branding, DTC vs. retail distribution, ingredient transparency vs. proprietary blends. Show each brand as a node with key details on hover. Output as an interactive HTML file.
+
+**What was built:** Interactive HTML positioning map (`tools/competitive_positioning_map.html`) plotting Verdana against 8 real competitors (AG1, Moon Juice, Thorne, Amazon brands, Ritual, Seed, Momentous, Onnit) on a 2D grid with 6 selectable axes and hover detail cards.
+
+**Key decisions:**
+- Free-form axis selection (any of 6 dimensions for either axis) rather than fixed pairings — enables unexpected strategic insights
+- Full-screen map with floating hover cards (Layout A) to maximize visual space
+- All real competitors rather than fictional — more credible for leadership discussions
+- Medium detail hover cards with "vs. Verdana" comparison line — turns each node into a strategic prompt
+- 500ms CSS transitions for axis changes — smooth enough to follow but fast enough to explore
+
+**Files created/modified:**
+- `tools/competitive_positioning_map.html` (created)
+- `docs/superpowers/specs/2026-04-06-competitive-positioning-map-design.md` (created)
+- `docs/superpowers/plans/2026-04-06-competitive-positioning-map.md` (created)
+- `docs/process_log.md` (modified)
+- `tutorials/04_competitive_positioning_map.md` (created)
+
 ## 2026-04-06 — Scenario Modeler
 
 **Prompt:** Build a scenario modeler for Verdana. Model four strategic paths: stay the course (DTC only), expand into wholesale, launch two new products, or cut the underperforming SKU and reallocate resources. For each scenario, project 3-year revenue, margins, required investment, team headcount, and risk factors. Let me compare scenarios side by side and blend them — what if we do wholesale AND cut a SKU? Output as an interactive HTML file.
