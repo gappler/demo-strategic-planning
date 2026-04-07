@@ -6,6 +6,27 @@ created: 2026-04-06
 
 # Process Log
 
+## 2026-04-06 — Scenario Modeler
+
+**Prompt:** Build a scenario modeler for Verdana. Model four strategic paths: stay the course (DTC only), expand into wholesale, launch two new products, or cut the underperforming SKU and reallocate resources. For each scenario, project 3-year revenue, margins, required investment, team headcount, and risk factors. Let me compare scenarios side by side and blend them — what if we do wholesale AND cut a SKU? Output as an interactive HTML file.
+
+**What was built:** Interactive HTML scenario modeler (`tools/scenario_modeler.html`) with toggle-based strategic moves, tunable sliders with advanced settings, 12-quarter stacked bar chart projections, margin/investment/headcount metrics, dynamic risk factor chips, and a pinnable comparison drawer for side-by-side analysis.
+
+**Key decisions:**
+- Modeled as baseline + 3 toggleable moves (not 4 separate scenarios) to enable blending via any combination of enabled moves
+- Quarterly granularity (12 quarters) to capture ramp effects, launch timing, and seasonal patterns
+- Pinnable comparison drawer instead of fixed side-by-side to allow unlimited scenario exploration
+- Layout C (full-width builder with slide-up drawer) chosen for maximum chart real estate and no mode-switching
+- Pure CSS bar charts (no external charting library) for self-contained single-file deployment
+- Marketing/margin split as linked sliders maintaining 100% total
+
+**Files created/modified:**
+- `tools/scenario_modeler.html` (created)
+- `docs/superpowers/specs/2026-04-06-scenario-modeler-design.md` (created)
+- `docs/superpowers/plans/2026-04-06-scenario-modeler.md` (created)
+- `docs/process_log.md` (modified)
+- `tutorials/03_scenario_modeler.md` (created)
+
 ## 2026-04-06 — Brand Definition Created
 
 **Prompt:** Create a brand definition for a fictional DTC wellness company called Verdana. They sell a curated line of five adaptogen-based supplement products, priced between $45-$85 each, with an average order value of $120. They're doing $8M in annual revenue with a 60-person team but have hit a growth plateau — revenue has been flat for two quarters. Target audience is health-conscious professionals aged 30-50 who are skeptical of wellness hype and want evidence-backed products. The brand voice is calm, informed, and transparent — never preachy, never miracle-claiming. Include: company overview with current team structure, product line definition with margins, target audience profile, brand positioning, current business challenges, and a strategic planning objective.
