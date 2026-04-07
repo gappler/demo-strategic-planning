@@ -967,7 +967,184 @@ function toggleMove(move) {
   document.getElementById('sliders-zone').removeAttribute('data-initialized');
   recalculate();
 }
-function renderSliders() { /* Task 3 */ }
+function renderSliders() {
+  const zone = document.getElementById('sliders-zone');
+  if (zone.dataset.initialized) return;
+  zone.dataset.initialized = 'true';
+
+  const panels = [];
+
+  // Wholesale panel
+  if (scenario.wholesale.enabled) {
+    panels.push(buildWholesalePanel());
+  } else {
+    panels.push(buildDisabledPanel('wholesale', 'Expand into Wholesale'));
+  }
+
+  // New Products panel
+  if (scenario.new_products.enabled) {
+    panels.push(buildNewProductsPanel());
+  } else {
+    panels.push(buildDisabledPanel('new_products', 'Launch New Products'));
+  }
+
+  // Cut Shield panel
+  if (scenario.cut_shield.enabled) {
+    panels.push(buildCutShieldPanel());
+  } else {
+    panels.push(buildDisabledPanel('cut_shield', 'Cut Shield & Reallocate'));
+  }
+
+  zone.innerHTML = panels.join('');
+  bindSliderEvents();
+}
+
+function buildDisabledPanel(move, name) {
+  return `<div class="slider-panel disabled" data-move="${move}">
+    <div class="disabled-placeholder">
+      <div class="icon">+</div>
+      Enable "${name}" above<br>to configure
+    </div>
+  </div>`;
+}
+
+function buildWholesalePanel() {
+  const s = scenario.wholesale;
+  return `<div class="slider-panel" data-move="wholesale">
+    <div class="slider-panel-title">Wholesale Settings</div>
+    ${buildSlider('wf_stores', 'Whole Foods Stores', s.wf_stores, 0, 85, 1, 'wholesale')}
+    ${buildSlider('wf_units_per_store', 'Units / Store / Month', s.wf_units_per_store, 10, 50, 1, 'wholesale')}
+    ${buildToggleRow('target_enabled', 'Include Target', s.target_enabled, 'wholesale')}
+    ${buildSlider('wholesale_discount', 'Wholesale Discount', Math.round(s.wholesale_discount * 100), 45, 60, 1, 'wholesale', '%')}
+    <div class="advanced-toggle" onclick="toggleAdvanced(this)">&#9656; Advanced settings</div>
+    <div class="advanced-content">
+      ${buildSlider('target_stores', 'Target Stores', s.target_stores, 100, 1800, 50, 'wholesale')}
+      ${buildSlider('target_units_per_store', 'Target Units/Store/Mo', s.target_units_per_store, 5, 30, 1, 'wholesale')}
+      ${buildSlider('target_discount', 'Target Discount', Math.round(s.target_discount * 100), 50, 60, 1, 'wholesale', '%')}
+      ${buildSlider('slotting_fees', 'Slotting Fees', s.slotting_fees / 1000, 0, 500, 10, 'wholesale', 'K')}
+      ${buildSlider('dtc_cannibalization', 'DTC Cannibalization', Math.round(s.dtc_cannibalization * 100), 0, 30, 1, 'wholesale', '%')}
+      ${buildSlider('ramp_months', 'Ramp Months', s.ramp_months, 1, 12, 1, 'wholesale', 'mo')}
+    </div>
+  </div>`;
+}
+
+function buildNewProductsPanel() {
+  const s = scenario.new_products;
+  return `<div class="slider-panel" data-move="new_products">
+    <div class="slider-panel-title">New Products Settings</div>
+    ${buildToggleRow('metabolize_enabled', 'Launch Metabolize', s.metabolize_enabled, 'new_products', 'purple')}
+    ${buildSlider('metabolize_price', 'Metabolize Price', s.metabolize_price, 55, 85, 1, 'new_products', '$')}
+    ${buildToggleRow('glow_enabled', 'Launch Glow', s.glow_enabled, 'new_products', 'purple')}
+    ${buildSlider('glow_price', 'Glow Price', s.glow_price, 55, 85, 1, 'new_products', '$')}
+    ${buildSlider('penetration_rate', 'Y1 Penetration (Existing)', Math.round(s.penetration_rate * 100), 5, 30, 1, 'new_products', '%')}
+    <div class="advanced-toggle" onclick="toggleAdvanced(this)">&#9656; Advanced settings</div>
+    <div class="advanced-content">
+      ${buildSlider('rd_cost_per_product', 'R&D Cost / Product', s.rd_cost_per_product / 1000, 50, 200, 10, 'new_products', 'K')}
+      ${buildSlider('launch_quarter', 'Launch Quarter', s.launch_quarter, 1, 4, 1, 'new_products', 'Q')}
+      ${buildSlider('new_acquisition_monthly', 'New Customers/Mo', s.new_acquisition_monthly, 0, 500, 10, 'new_products')}
+      ${buildSlider('metabolize_cogs', 'Metabolize COGS', s.metabolize_cogs, 12, 22, 1, 'new_products', '$')}
+      ${buildSlider('glow_cogs', 'Glow COGS', s.glow_cogs, 10, 18, 1, 'new_products', '$')}
+      ${buildSlider('existing_cannibalization', 'Existing SKU Cannibal.', Math.round(s.existing_cannibalization * 100), 0, 15, 1, 'new_products', '%')}
+    </div>
+  </div>`;
+}
+
+function buildCutShieldPanel() {
+  const s = scenario.cut_shield;
+  return `<div class="slider-panel" data-move="cut_shield">
+    <div class="slider-panel-title">Cut Shield Settings</div>
+    ${buildSlider('transition_quarter', 'Transition Quarter', s.transition_quarter, 1, 4, 1, 'cut_shield', 'Q')}
+    ${buildSlider('reallocate_to_marketing', 'Reallocate to Marketing', Math.round(s.reallocate_to_marketing * 100), 0, 100, 5, 'cut_shield', '%')}
+    ${buildSlider('retain_as_margin', 'Retain as Margin', Math.round(s.retain_as_margin * 100), 0, 100, 5, 'cut_shield', '%')}
+  </div>`;
+}
+
+function buildSlider(id, label, value, min, max, step, move, suffix) {
+  const displayVal = suffix === '$' ? '$' + value : suffix === 'K' ? '$' + value + 'K' : suffix === 'Q' ? 'Q' + value : value + (suffix || '');
+  return `<div class="slider-group">
+    <div class="slider-label"><span>${label}</span><strong id="val-${id}">${displayVal}</strong></div>
+    <input type="range" min="${min}" max="${max}" step="${step}" value="${value}"
+      data-id="${id}" data-move="${move}" data-suffix="${suffix || ''}">
+  </div>`;
+}
+
+function buildToggleRow(id, label, isOn, move, color) {
+  return `<div class="toggle-row">
+    <span>${label}</span>
+    <div class="toggle-switch ${isOn ? 'on' : ''} ${color ? 'data-color-' + color : ''}"
+      ${color ? 'data-color="' + color + '"' : ''}
+      data-id="${id}" data-move="${move}" onclick="handleToggle(this)"></div>
+  </div>`;
+}
+
+function handleToggle(el) {
+  const id = el.dataset.id;
+  const move = el.dataset.move;
+  scenario[move][id] = !scenario[move][id];
+  el.classList.toggle('on', scenario[move][id]);
+
+  // Rebuild sliders and recalculate
+  const zone = document.getElementById('sliders-zone');
+  zone.innerHTML = '';
+  zone.removeAttribute('data-initialized');
+  recalculate();
+}
+
+function toggleAdvanced(el) {
+  const content = el.nextElementSibling;
+  content.classList.toggle('open');
+  el.innerHTML = content.classList.contains('open') ? '&#9662; Hide advanced' : '&#9656; Advanced settings';
+}
+
+function bindSliderEvents() {
+  document.querySelectorAll('.slider-panel input[type="range"]').forEach(slider => {
+    slider.addEventListener('input', function() {
+      const id = this.dataset.id;
+      const move = this.dataset.move;
+      const suffix = this.dataset.suffix;
+      let val = parseFloat(this.value);
+
+      // Update display
+      const displayEl = document.getElementById('val-' + id);
+      if (suffix === '$') displayEl.textContent = '$' + val;
+      else if (suffix === 'K') displayEl.textContent = '$' + val + 'K';
+      else if (suffix === 'Q') displayEl.textContent = 'Q' + val;
+      else if (suffix === '%') displayEl.textContent = val + '%';
+      else if (suffix === 'mo') displayEl.textContent = val + 'mo';
+      else displayEl.textContent = val;
+
+      // Update scenario state (convert display values back to internal)
+      if (suffix === '%') val = val / 100;
+      if (suffix === 'K') val = val * 1000;
+      scenario[move][id] = val;
+
+      // Link marketing/margin split for cut_shield
+      if (move === 'cut_shield' && id === 'reallocate_to_marketing') {
+        scenario.cut_shield.retain_as_margin = 1 - val;
+        const marginSlider = document.querySelector(`input[data-id="retain_as_margin"]`);
+        if (marginSlider) {
+          marginSlider.value = Math.round((1 - val) * 100);
+          document.getElementById('val-retain_as_margin').textContent = Math.round((1 - val) * 100) + '%';
+        }
+      }
+      if (move === 'cut_shield' && id === 'retain_as_margin') {
+        scenario.cut_shield.reallocate_to_marketing = 1 - val;
+        const mktgSlider = document.querySelector(`input[data-id="reallocate_to_marketing"]`);
+        if (mktgSlider) {
+          mktgSlider.value = Math.round((1 - val) * 100);
+          document.getElementById('val-reallocate_to_marketing').textContent = Math.round((1 - val) * 100) + '%';
+        }
+      }
+
+      // Don't rebuild sliders, just recalculate projections
+      const result = computeProjection(scenario);
+      renderHeader(result);
+      renderMoveCards(result);
+      renderProjections(result);
+      renderRiskBar(result);
+    });
+  });
+}
 function renderProjections(result) { /* Task 4 */ }
 function renderRiskBar(result) { /* Task 5 */ }
 function renderPinBar() { /* Task 6 */ }
