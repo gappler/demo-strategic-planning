@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verdana — Market Sizing Calculator</title>
+<style>
+/* ===== RESET & BASE ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: #f8faf7;
+  color: #333;
+  line-height: 1.5;
+  padding-bottom: 60px;
+}
+
+/* ===== HEADER ===== */
+.header {
+  position: sticky; top: 0; z-index: 100;
+  background: #2d6a4f;
+  color: #fff;
+  padding: 12px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+.header-brand {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+.header-brand h1 {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+.header-brand .subtitle {
+  font-size: 12px;
+  opacity: 0.7;
+}
+.header-kpis {
+  display: flex;
+  gap: 24px;
+}
+.kpi {
+  text-align: center;
+}
+.kpi-label {
+  font-size: 10px;
+  opacity: 0.7;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.kpi-value {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+/* ===== MAIN CONTAINER ===== */
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+/* ===== TAM FUNNEL ===== */
+.funnel-section {
+  margin-bottom: 28px;
+}
+.funnel-section .section-label {
+  font-size: 10px;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+.funnel-bar {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  height: 60px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+.funnel-step {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 6px 12px;
+  color: #fff;
+  position: relative;
+  min-width: 0;
+}
+.funnel-step .funnel-label {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  opacity: 0.85;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+.funnel-step .funnel-value {
+  font-size: 16px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.funnel-step:nth-child(1) { background: #1b4332; flex: 4; }
+.funnel-step:nth-child(2) { background: #2d6a4f; flex: 3; }
+.funnel-step:nth-child(3) { background: #52796f; flex: 2; }
+.funnel-step:nth-child(4) { background: #74a892; flex: 1; min-width: 120px; }
+.funnel-arrow {
+  width: 0; height: 0;
+  border-top: 30px solid transparent;
+  border-bottom: 30px solid transparent;
+  align-self: center;
+}
+
+/* ===== CHANNEL CARD ===== */
+.channel-card {
+  background: #fff;
+  border-radius: 10px;
+  border-left: 5px solid #ccc;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+.channel-card.dtc { border-left-color: #2d6a4f; }
+.channel-card.wholesale { border-left-color: #6b4c9a; }
+.channel-card.new-products { border-left-color: #c17817; }
+
+.channel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 16px 20px 8px;
+}
+.channel-title-group h2 {
+  font-size: 16px;
+  font-weight: 700;
+}
+.channel-title-group .channel-desc {
+  font-size: 12px;
+  color: #888;
+  margin-top: 2px;
+}
+.channel-outputs {
+  display: flex;
+  gap: 20px;
+  text-align: right;
+}
+.channel-output-item .co-label {
+  font-size: 10px;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.channel-output-item .co-value {
+  font-size: 18px;
+  font-weight: 700;
+}
+.channel-card.dtc .co-value { color: #2d6a4f; }
+.channel-card.wholesale .co-value { color: #6b4c9a; }
+.channel-card.new-products .co-value { color: #c17817; }
+
+.channel-body {
+  padding: 4px 20px 16px;
+}
+
+/* ===== SLIDER ROW ===== */
+.slider-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.slider-label {
+  flex: 0 0 220px;
+  font-size: 13px;
+  color: #555;
+}
+.slider-input {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 3px;
+  background: #e0e0e0;
+  outline: none;
+}
+.slider-input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #2d6a4f;
+  cursor: pointer;
+  border: 2px solid #fff;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+.slider-input::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #2d6a4f;
+  cursor: pointer;
+  border: 2px solid #fff;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+/* Channel-specific slider colors */
+.channel-card.dtc .slider-input::-webkit-slider-thumb { background: #2d6a4f; }
+.channel-card.dtc .slider-input::-moz-range-thumb { background: #2d6a4f; }
+.channel-card.wholesale .slider-input::-webkit-slider-thumb { background: #6b4c9a; }
+.channel-card.wholesale .slider-input::-moz-range-thumb { background: #6b4c9a; }
+.channel-card.new-products .slider-input::-webkit-slider-thumb { background: #c17817; }
+.channel-card.new-products .slider-input::-moz-range-thumb { background: #c17817; }
+
+.slider-value {
+  flex: 0 0 80px;
+  text-align: right;
+  font-size: 13px;
+  font-weight: 600;
+  color: #333;
+}
+
+/* ===== TOGGLE SWITCH ===== */
+.toggle-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.toggle-label {
+  flex: 0 0 220px;
+  font-size: 13px;
+  color: #555;
+}
+.toggle-switch {
+  position: relative;
+  width: 44px;
+  height: 24px;
+  flex-shrink: 0;
+}
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: #ccc;
+  border-radius: 24px;
+  transition: 0.2s;
+}
+.toggle-slider::before {
+  content: '';
+  position: absolute;
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background: #fff;
+  border-radius: 50%;
+  transition: 0.2s;
+}
+.toggle-switch input:checked + .toggle-slider { background: #2d6a4f; }
+.channel-card.wholesale .toggle-switch input:checked + .toggle-slider { background: #6b4c9a; }
+.channel-card.new-products .toggle-switch input:checked + .toggle-slider { background: #c17817; }
+.toggle-switch input:checked + .toggle-slider::before { transform: translateX(20px); }
+.toggle-status {
+  font-size: 13px;
+  font-weight: 600;
+  color: #888;
+}
+.toggle-status.on { color: #2d6a4f; }
+.channel-card.wholesale .toggle-status.on { color: #6b4c9a; }
+.channel-card.new-products .toggle-status.on { color: #c17817; }
+
+/* ===== ADVANCED TOGGLE ===== */
+.advanced-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  font-size: 12px;
+  color: #888;
+  border: none;
+  background: none;
+  padding: 4px 0;
+}
+.advanced-toggle:hover { color: #555; }
+.advanced-toggle .arrow {
+  transition: transform 0.2s;
+  font-size: 10px;
+}
+.advanced-toggle .arrow.open { transform: rotate(90deg); }
+
+.advanced-section {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+  border-top: 1px dashed #e8e8e8;
+  padding-top: 0;
+}
+.advanced-section.open {
+  max-height: 600px;
+  padding-top: 12px;
+}
+.advanced-section .slider-label,
+.advanced-section .toggle-label {
+  color: #999;
+}
+.advanced-section .slider-value {
+  color: #777;
+}
+
+/* ===== SKU PILLS ===== */
+.sku-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.sku-label {
+  flex: 0 0 220px;
+  font-size: 13px;
+  color: #999;
+}
+.sku-pills {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.sku-pill {
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 12px;
+  border: 1.5px solid #ccc;
+  background: #fff;
+  cursor: pointer;
+  color: #666;
+  transition: all 0.15s;
+}
+.sku-pill.active {
+  border-color: #6b4c9a;
+  background: #f0ebf5;
+  color: #6b4c9a;
+  font-weight: 600;
+}
+.sku-pill:hover { border-color: #999; }
+
+/* ===== RESET BUTTON ===== */
+.reset-btn {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 4px 14px;
+  font-size: 11px;
+  color: #999;
+  background: none;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.reset-btn:hover { border-color: #999; color: #666; }
+
+/* ===== CANNIBALIZATION NOTICE ===== */
+.cannib-notice {
+  margin-top: 8px;
+  padding: 6px 12px;
+  background: #fdf6ec;
+  border-left: 3px solid #c17817;
+  border-radius: 4px;
+  font-size: 12px;
+  color: #8b6914;
+}
+.channel-card.wholesale .cannib-notice {
+  border-left-color: #6b4c9a;
+  background: #f5f0fa;
+  color: #5a3d82;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 700px) {
+  .header { flex-direction: column; gap: 8px; align-items: flex-start; }
+  .header-kpis { gap: 16px; }
+  .slider-label, .toggle-label, .sku-label { flex: 0 0 140px; }
+  .funnel-step .funnel-label { font-size: 8px; }
+  .funnel-step .funnel-value { font-size: 12px; }
+  .channel-header { flex-direction: column; gap: 8px; }
+  .channel-outputs { text-align: left; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<div class="header">
+  <div class="header-brand">
+    <h1>Verdana</h1>
+    <span class="subtitle">Market Sizing Calculator</span>
+  </div>
+  <div class="header-kpis">
+    <div class="kpi">
+      <div class="kpi-label">Combined Revenue</div>
+      <div class="kpi-value" id="kpi-revenue">$0</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Blended Gross Margin</div>
+      <div class="kpi-value" id="kpi-margin">0%</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Gross Profit</div>
+      <div class="kpi-value" id="kpi-profit">$0</div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- ===== TAM FUNNEL ===== -->
+  <div class="funnel-section">
+    <div class="section-label">Market Context (reference only)</div>
+    <div class="funnel-bar">
+      <div class="funnel-step"><span class="funnel-label">TAM: US Supplements</span><span class="funnel-value">$58B</span></div>
+      <div class="funnel-step"><span class="funnel-label">SAM: Adaptogens</span><span class="funnel-value">$4.2B</span></div>
+      <div class="funnel-step"><span class="funnel-label">SAM: Premium DTC+Retail</span><span class="funnel-value">$840M</span></div>
+      <div class="funnel-step"><span class="funnel-label">SOM: Verdana</span><span class="funnel-value" id="funnel-som">$0</span></div>
+    </div>
+  </div>
+
+  <!-- ===== CHANNEL 1: DTC ===== -->
+  <div class="channel-card dtc">
+    <div class="channel-header">
+      <div class="channel-title-group">
+        <h2>DTC Supplements</h2>
+        <div class="channel-desc">Current direct-to-consumer business</div>
+      </div>
+      <div class="channel-outputs">
+        <div class="channel-output-item">
+          <div class="co-label">Revenue</div>
+          <div class="co-value" id="dtc-revenue">$0</div>
+        </div>
+        <div class="channel-output-item">
+          <div class="co-label">Gross Margin</div>
+          <div class="co-value" id="dtc-margin">0%</div>
+        </div>
+        <div class="channel-output-item">
+          <div class="co-label">Gross Profit</div>
+          <div class="co-value" id="dtc-profit">$0</div>
+        </div>
+      </div>
+    </div>
+    <div class="channel-body">
+      <!-- Primary sliders -->
+      <div class="slider-row">
+        <span class="slider-label">Monthly new customers</span>
+        <input type="range" class="slider-input" id="dtc-new-customers" min="800" max="2500" value="1400" step="10">
+        <span class="slider-value" id="dtc-new-customers-val">1,400</span>
+      </div>
+      <div class="slider-row">
+        <span class="slider-label">Average order value</span>
+        <input type="range" class="slider-input" id="dtc-aov" min="90" max="160" value="120" step="1">
+        <span class="slider-value" id="dtc-aov-val">$120</span>
+      </div>
+      <div class="slider-row">
+        <span class="slider-label">Subscription rate</span>
+        <input type="range" class="slider-input" id="dtc-sub-rate" min="20" max="60" value="34" step="1">
+        <span class="slider-value" id="dtc-sub-rate-val">34%</span>
+      </div>
+      <div class="slider-row">
+        <span class="slider-label">90-day retention</span>
+        <input type="range" class="slider-input" id="dtc-retention" min="40" max="85" value="62" step="1">
+        <span class="slider-value" id="dtc-retention-val">62%</span>
+      </div>
+
+      <div id="dtc-cannib-notice" class="cannib-notice" style="display:none;"></div>
+
+      <button class="advanced-toggle" onclick="toggleAdvanced('dtc')">
+        <span class="arrow" id="dtc-arrow">&#9654;</span> Advanced inputs
+      </button>
+      <div class="advanced-section" id="dtc-advanced">
+        <div class="slider-row">
+          <span class="slider-label">Customer acquisition cost</span>
+          <input type="range" class="slider-input" id="dtc-cac" min="30" max="80" value="58" step="1">
+          <span class="slider-value" id="dtc-cac-val">$58</span>
+        </div>
+        <div class="slider-row">
+          <span class="slider-label">Blended COGS %</span>
+          <input type="range" class="slider-input" id="dtc-cogs" min="18" max="30" value="23.6" step="0.1">
+          <span class="slider-value" id="dtc-cogs-val">23.6%</span>
+        </div>
+        <div class="slider-row">
+          <span class="slider-label">Organic channel share</span>
+          <input type="range" class="slider-input" id="dtc-organic" min="15" max="50" value="25" step="1">
+          <span class="slider-value" id="dtc-organic-val">25%</span>
+        </div>
+        <div class="slider-row">
+          <span class="slider-label">Orders per retained customer/yr</span>
+          <input type="range" class="slider-input" id="dtc-orders-retained" min="4" max="12" value="6" step="1">
+          <span class="slider-value" id="dtc-orders-retained-val">6</span>
+        </div>
+        <div class="slider-row">
+          <span class="slider-label">Free shipping threshold</span>
+          <input type="range" class="slider-input" id="dtc-ship-threshold" min="50" max="120" value="75" step="5">
+          <span class="slider-value" id="dtc-ship-threshold-val">$75</span>
+        </div>
+        <div class="slider-row">
+          <span class="slider-label">Orders qualifying for free ship</span>
+          <input type="range" class="slider-input" id="dtc-ship-qualify" min="70" max="95" value="87" step="1">
+          <span class="slider-value" id="dtc-ship-qualify-val">87%</span>
+        </div>
+        <div class="slider-row">
+          <span class="slider-label">Avg shipping cost per order</span>
+          <input type="range" class="slider-input" id="dtc-ship-cost" min="4" max="12" value="7" step="0.5">
+          <span class="slider-value" id="dtc-ship-cost-val">$7.00</span>
+        </div>
+      </div>
+      <button class="reset-btn" onclick="resetChannel('dtc')">Reset to defaults</button>
+    </div>
+  </div>
+
+  <!-- ===== CHANNEL 2: WHOLESALE ===== -->
+  <div class="channel-card wholesale">
+    <div class="channel-header">
+      <div class="channel-title-group">
+        <h2>Wholesale</h2>
+        <div class="channel-desc">Whole Foods (regional) + Target (national)</div>
+      </div>
+      <div class="channel-outputs">
+        <div class="channel-output-item">
+          <div class="co-label">Revenue</div>
+          <div class="co-value" id="ws-revenue">$0</div>
+        </div>
+        <div class="channel-output-item">
+          <div class="co-label">Gross Margin</div>
+          <div class="co-value" id="ws-margin">0%</div>
+        </div>
+        <div class="channel-output-item">
+          <div class="co-label">Gross Profit</div>
+          <div class="co-value" id="ws-profit">$0</div>
+        </div>
+      </div>
+    </div>
+    <div class="channel-body">
+      <div class="slider-row">
+        <span class="slider-label">Whole Foods stores</span>
+        <input type="range" class="slider-input" id="ws-wf-stores" min="0" max="85" value="85" step="1">
+        <span class="slider-value" id="ws-wf-stores-val">85</span>
+      </div>
+      <div class="slider-row">
+        <span class="slider-label">Units per store per month</span>
+        <input type="range" class="slider-input" id="ws-units-store" min="10" max="50" value="24" step="1">
+        <span class="slider-value" id="ws-units-store-val">24</span>
+      </div>
+      <div class="toggle-row">
+        <span class="toggle-label">Include Target?</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="ws-target-enabled">
+          <span class="toggle-slider"></span>
+        </label>
+        <span class="toggle-status" id="ws-target-enabled-status">Off</span>
+      </div>
+      <div class="slider-row">
+        <span class="slider-label">Wholesale discount off retail</span>
+        <input type="range" class="slider-input" id="ws-discount" min="45" max="60" value="50" step="1">
+        <span class="slider-value" id="ws-discount-val">50%</span>
+      </div>
+
+      <div id="ws-cannib-notice" class="cannib-notice" style="display:none;"></div>
+
+      <button class="advanced-toggle" onclick="toggleAdvanced('ws')">
+        <span class="arrow" id="ws-arrow">&#9654;</span> Advanced inputs
+      </button>
+      <div class="advanced-section" id="ws-advanced">
+        <div class="slider-row">
+          <span class="slider-label">Target stores (if enabled)</span>
+          <input type="range" class="slider-input" id="ws-target-stores" min="100" max="1800" value="500" step="10">
+          <span class="slider-value" id="ws-target-stores-val">500</span>
+        </div>
+        <div class="slider-row">
+          <span class="slider-label">Target units/store/month</span>
+          <input type="range" class="slider-input" id="ws-target-units" min="5" max="30" value="12" step="1">
+          <span class="slider-value" id="ws-target-units-val">12</span>
+        </div>
+        <div class="slider-row">
+          <span class="slider-label">Target discount off retail</span>
+          <input type="range" class="slider-input" id="ws-target-discount" min="50" max="60" value="55" step="1">
+          <span class="slider-value" id="ws-target-discount-val">55%</span>
+        </div>
+        <div class="slider-row">
+          <span class="slider-label">Slotting fees (one-time)</span>
+          <input type="range" class="slider-input" id="ws-slotting" min="0" max="500000" value="50000" step="5000">
+          <span class="slider-value" id="ws-slotting-val">$50K</span>
+        </div>
+        <div class="slider-row">
+          <span class="slider-label">DTC cannibalization</span>
+          <input type="range" class="slider-input" id="ws-cannib" min="0" max="30" value="10" step="1">
+          <span class="slider-value" id="ws-cannib-val">10%</span>
+        </div>
+        <div class="slider-row">
+          <span class="slider-label">Ramp months to full velocity</span>
+          <input type="range" class="slider-input" id="ws-ramp" min="1" max="12" value="6" step="1">
+          <span class="slider-value" id="ws-ramp-val">6</span>
+        </div>
+        <div class="sku-row">
+          <span class="sku-label">SKUs offered</span>
+          <div class="sku-pills" id="ws-sku-pills"></div>
+        </div>
+        <div class="slider-row">
+          <span class="slider-label">Avg retail price (pre-discount)</span>
+          <span class="slider-value" id="ws-avg-price-val" style="flex:1;text-align:left;color:#999;">$60.00</span>
+        </div>
+      </div>
+      <button class="reset-btn" onclick="resetChannel('ws')">Reset to defaults</button>
+    </div>
+  </div>
+
+  <!-- ===== CHANNEL 3: NEW PRODUCTS ===== -->
+  <div class="channel-card new-products">
+    <div class="channel-header">
+      <div class="channel-title-group">
+        <h2>New Product Line</h2>
+        <div class="channel-desc">Metabolize and/or Glow expansion</div>
+      </div>
+      <div class="channel-outputs">
+        <div class="channel-output-item">
+          <div class="co-label">Revenue</div>
+          <div class="co-value" id="np-revenue">$0</div>
+        </div>
+        <div class="channel-output-item">
+          <div class="co-label">Gross Margin</div>
+          <div class="co-value" id="np-margin">0%</div>
+        </div>
+        <div class="channel-output-item">
+          <div class="co-label">Gross Profit</div>
+          <div class="co-value" id="np-profit">$0</div>
+        </div>
+      </div>
+    </div>
+    <div class="channel-body">
+      <div class="toggle-row">
+        <span class="toggle-label">Launch Metabolize?</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="np-metabolize-enabled">
+          <span class="toggle-slider"></span>
+        </label>
+        <span class="toggle-status" id="np-metabolize-enabled-status">Off</span>
+      </div>
+      <div class="slider-row">
+        <span class="slider-label">Metabolize price</span>
+        <input type="range" class="slider-input" id="np-metabolize-price" min="55" max="85" value="70" step="1">
+        <span class="slider-value" id="np-metabolize-price-val">$70</span>
+      </div>
+      <div class="toggle-row">
+        <span class="toggle-label">Launch Glow?</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="np-glow-enabled">
+          <span class="toggle-slider"></span>
+        </label>
+        <span class="toggle-status" id="np-glow-enabled-status">Off</span>
+      </div>
+      <div class="slider-row">
+        <span class="slider-label">Glow price</span>
+        <input type="range" class="slider-input" id="np-glow-price" min="55" max="85" value="65" step="1">
+        <span class="slider-value" id="np-glow-price-val">$65</span>
+      </div>
+      <div class="slider-row">
+        <span class="slider-label">Y1 penetration (existing customers)</span>
+        <input type="range" class="slider-input" id="np-penetration" min="5" max="30" value="15" step="1">
+        <span class="slider-value" id="np-penetration-val">15%</span>
+      </div>
+
+      <div id="np-cannib-notice" class="cannib-notice" style="display:none;"></div>
+
+      <button class="advanced-toggle" onclick="toggleAdvanced('np')">
+        <span class="arrow" id="np-arrow">&#9654;</span> Advanced inputs
+      </button>
+      <div class="advanced-section" id="np-advanced">
+        <div class="slider-row">
+          <span class="slider-label">R&D cost per product</span>
+          <input type="range" class="slider-input" id="np-rd-cost" min="50000" max="200000" value="100000" step="5000">
+          <span class="slider-value" id="np-rd-cost-val">$100K</span>
+        </div>
+        <div class="slider-row">
+          <span class="slider-label">Launch quarter</span>
+          <input type="range" class="slider-input" id="np-launch-q" min="1" max="4" value="3" step="1">
+          <span class="slider-value" id="np-launch-q-val">Q3</span>
+        </div>
+        <div class="slider-row">
+          <span class="slider-label">Cross-sell rate (existing to new)</span>
+          <input type="range" class="slider-input" id="np-cross-sell" min="5" max="25" value="12" step="1">
+          <span class="slider-value" id="np-cross-sell-val">12%</span>
+        </div>
+        <div class="slider-row">
+          <span class="slider-label">New acquisition from new SKU</span>
+          <input type="range" class="slider-input" id="np-new-acq" min="0" max="500" value="150" step="5">
+          <span class="slider-value" id="np-new-acq-val">150/mo</span>
+        </div>
+        <div class="slider-row">
+          <span class="slider-label">Metabolize COGS</span>
+          <input type="range" class="slider-input" id="np-metabolize-cogs" min="12" max="22" value="16" step="0.5">
+          <span class="slider-value" id="np-metabolize-cogs-val">$16.00</span>
+        </div>
+        <div class="slider-row">
+          <span class="slider-label">Glow COGS</span>
+          <input type="range" class="slider-input" id="np-glow-cogs" min="10" max="18" value="13" step="0.5">
+          <span class="slider-value" id="np-glow-cogs-val">$13.00</span>
+        </div>
+        <div class="slider-row">
+          <span class="slider-label">Cannibalization of existing SKUs</span>
+          <input type="range" class="slider-input" id="np-cannib" min="0" max="15" value="5" step="1">
+          <span class="slider-value" id="np-cannib-val">5%</span>
+        </div>
+      </div>
+      <button class="reset-btn" onclick="resetChannel('np')">Reset to defaults</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ===== DATA MODEL ===== */
+const PRODUCTS = [
+  { id: 'focus', name: 'Focus', price: 65, cogs: 14.30, monthly_units: 3200 },
+  { id: 'calm', name: 'Calm', price: 55, cogs: 12.10, monthly_units: 2800 },
+  { id: 'endure', name: 'Endure', price: 75, cogs: 18.75, monthly_units: 1600 },
+  { id: 'shield', name: 'Shield', price: 45, cogs: 13.05, monthly_units: 1100 },
+  { id: 'restore', name: 'Restore', price: 85, cogs: 19.55, monthly_units: 2100 }
+];
+
+const DEFAULTS = {
+  dtc: {
+    'dtc-new-customers': 1400,
+    'dtc-aov': 120,
+    'dtc-sub-rate': 34,
+    'dtc-retention': 62,
+    'dtc-cac': 58,
+    'dtc-cogs': 23.6,
+    'dtc-organic': 25,
+    'dtc-orders-retained': 6,
+    'dtc-ship-threshold': 75,
+    'dtc-ship-qualify': 87,
+    'dtc-ship-cost': 7
+  },
+  ws: {
+    'ws-wf-stores': 85,
+    'ws-units-store': 24,
+    'ws-target-enabled': false,
+    'ws-discount': 50,
+    'ws-target-stores': 500,
+    'ws-target-units': 12,
+    'ws-target-discount': 55,
+    'ws-slotting': 50000,
+    'ws-cannib': 10,
+    'ws-ramp': 6,
+    'ws-skus': ['focus', 'calm']
+  },
+  np: {
+    'np-metabolize-enabled': false,
+    'np-metabolize-price': 70,
+    'np-glow-enabled': false,
+    'np-glow-price': 65,
+    'np-penetration': 15,
+    'np-rd-cost': 100000,
+    'np-launch-q': 3,
+    'np-cross-sell': 12,
+    'np-new-acq': 150,
+    'np-metabolize-cogs': 16,
+    'np-glow-cogs': 13,
+    'np-cannib': 5
+  }
+};
+
+/* ===== STATE ===== */
+let selectedSkus = ['focus', 'calm'];
+
+/* ===== FORMAT HELPERS ===== */
+const intFmt = new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 });
+const dollarFmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
+
+function fmtMoney(val) {
+  if (Math.abs(val) >= 1000000) return '$' + (val / 1000000).toFixed(1) + 'M';
+  if (Math.abs(val) >= 1000) return '$' + (val / 1000).toFixed(0) + 'K';
+  return dollarFmt.format(val);
+}
+
+function fmtPct(val) { return val.toFixed(1) + '%'; }
+function fmtInt(val) { return intFmt.format(Math.round(val)); }
+
+/* ===== DOM HELPERS ===== */
+function getVal(id) { return parseFloat(document.getElementById(id).value); }
+function getChecked(id) { return document.getElementById(id).checked; }
+function setText(id, text) { document.getElementById(id).textContent = text; }
+
+/* ===== SLIDER DISPLAY UPDATE ===== */
+function updateSliderDisplay(id, val) {
+  const el = document.getElementById(id + '-val');
+  if (!el) return;
+  if (id === 'dtc-new-customers') el.textContent = fmtInt(val);
+  else if (id === 'dtc-aov') el.textContent = '$' + Math.round(val);
+  else if (id === 'dtc-sub-rate' || id === 'dtc-retention' || id === 'dtc-cogs' || id === 'dtc-organic' || id === 'dtc-ship-qualify') el.textContent = val + '%';
+  else if (id === 'dtc-cac') el.textContent = '$' + Math.round(val);
+  else if (id === 'dtc-orders-retained') el.textContent = Math.round(val);
+  else if (id === 'dtc-ship-threshold') el.textContent = '$' + Math.round(val);
+  else if (id === 'dtc-ship-cost') el.textContent = '$' + parseFloat(val).toFixed(2);
+  else if (id === 'ws-wf-stores' || id === 'ws-units-store' || id === 'ws-target-units' || id === 'ws-ramp') el.textContent = Math.round(val);
+  else if (id === 'ws-target-stores') el.textContent = fmtInt(val);
+  else if (id === 'ws-discount' || id === 'ws-target-discount' || id === 'ws-cannib') el.textContent = val + '%';
+  else if (id === 'ws-slotting') el.textContent = fmtMoney(val);
+  else if (id === 'np-metabolize-price' || id === 'np-glow-price') el.textContent = '$' + Math.round(val);
+  else if (id === 'np-penetration' || id === 'np-cross-sell' || id === 'np-cannib') el.textContent = val + '%';
+  else if (id === 'np-rd-cost') el.textContent = fmtMoney(val);
+  else if (id === 'np-launch-q') el.textContent = 'Q' + Math.round(val);
+  else if (id === 'np-new-acq') el.textContent = Math.round(val) + '/mo';
+  else if (id === 'np-metabolize-cogs' || id === 'np-glow-cogs') el.textContent = '$' + parseFloat(val).toFixed(2);
+}
+
+/* ===== TOGGLE DISPLAY ===== */
+function updateToggleDisplay(id, checked) {
+  const statusEl = document.getElementById(id + '-status');
+  if (statusEl) {
+    statusEl.textContent = checked ? 'On' : 'Off';
+    statusEl.className = 'toggle-status' + (checked ? ' on' : '');
+  }
+}
+
+/* ===== PURE CALCULATION FUNCTIONS ===== */
+
+function calcDTC(inputs) {
+  const { newCustomers, aov, subRate, retention, cogsPct, ordersPerRetained } = inputs;
+  const subRateDec = subRate / 100;
+  const retentionDec = retention / 100;
+
+  // Subscriber accumulation model over 12 months
+  // Start with existing base: ~10,800 units/month equivalent
+  const existingMonthlyCustomers = 10800 / (aov / 60); // approximate existing customer base from units
+  let totalRevenue = 0;
+  let subscriberPool = 0;
+
+  for (let month = 1; month <= 12; month++) {
+    // New subscribers added this month
+    const newSubs = newCustomers * subRateDec;
+    subscriberPool += newSubs;
+
+    // Apply churn: retention is 90-day, convert to monthly
+    // 90-day retention = r, monthly retention = r^(1/3)
+    const monthlyRetention = Math.pow(retentionDec, 1/3);
+    if (month > 1) {
+      subscriberPool *= monthlyRetention;
+    }
+
+    // Monthly revenue: new one-time orders + subscriber orders
+    const oneTimeOrders = newCustomers * (1 - subRateDec);
+    const subscriberOrders = subscriberPool; // subscribers order once per month on average
+    const monthRevenue = (oneTimeOrders + subscriberOrders) * aov;
+    totalRevenue += monthRevenue;
+  }
+
+  const annualRevenue = totalRevenue;
+  const cogsDec = cogsPct / 100;
+  const grossMargin = 1 - cogsDec;
+  const grossProfit = annualRevenue * grossMargin;
+
+  return { revenue: annualRevenue, margin: grossMargin * 100, profit: grossProfit };
+}
+
+function calcWholesale(inputs) {
+  const { wfStores, unitsPerStore, targetEnabled, discount, targetStores, targetUnits, targetDiscount, slottingFees, rampMonths, skus } = inputs;
+
+  // Calculate average retail price from selected SKUs
+  let avgPrice = 60; // default
+  if (skus.length > 0) {
+    const selectedProducts = PRODUCTS.filter(p => skus.includes(p.id));
+    avgPrice = selectedProducts.reduce((s, p) => s + p.price, 0) / selectedProducts.length;
+  }
+
+  // Update displayed avg price
+  const avgPriceEl = document.getElementById('ws-avg-price-val');
+  if (avgPriceEl) avgPriceEl.textContent = '$' + avgPrice.toFixed(2);
+
+  const discountDec = discount / 100;
+  const targetDiscountDec = targetDiscount / 100;
+
+  // Annual revenue at full velocity
+  const wfAnnualFull = wfStores * unitsPerStore * 12 * avgPrice * (1 - discountDec);
+  const targetAnnualFull = targetEnabled ? targetStores * targetUnits * 12 * avgPrice * (1 - targetDiscountDec) : 0;
+
+  // Ramp factor: linear ramp over ramp_months
+  // Average velocity = (1 + rampMonths) / (2 * 12) for the ramp period, then full for remaining
+  let rampFactor = 1;
+  if (rampMonths > 1) {
+    const rampRevenueFraction = (rampMonths / 12) * ((1 + rampMonths) / (2 * rampMonths));
+    const fullMonths = 12 - rampMonths;
+    rampFactor = (rampRevenueFraction * rampMonths + fullMonths) / 12;
+  }
+
+  const grossRevenue = (wfAnnualFull + targetAnnualFull) * rampFactor;
+
+  // COGS from selected SKUs at wholesale volume
+  let avgCogs = 14; // default
+  if (skus.length > 0) {
+    const selectedProducts = PRODUCTS.filter(p => skus.includes(p.id));
+    avgCogs = selectedProducts.reduce((s, p) => s + p.cogs, 0) / selectedProducts.length;
+  }
+
+  // Total units sold
+  const totalUnitsFull = (wfStores * unitsPerStore * 12) + (targetEnabled ? targetStores * targetUnits * 12 : 0);
+  const totalUnits = totalUnitsFull * rampFactor;
+  const totalCogs = totalUnits * avgCogs;
+  const slottingAmortized = slottingFees; // one-time in Y1
+
+  const grossProfit = grossRevenue - totalCogs - slottingAmortized;
+  const grossMargin = grossRevenue > 0 ? (grossProfit / grossRevenue) * 100 : 0;
+
+  return { revenue: grossRevenue, margin: grossMargin, profit: grossProfit, cannibRevenue: grossRevenue };
+}
+
+function calcNewProducts(inputs, existingCustomerBase) {
+  const { metabolizeEnabled, metabolizePrice, glowEnabled, glowPrice, penetrationRate, rdCost, launchQuarter, crossSellRate, newAcqMonthly, metabolizeCogs, glowCogs } = inputs;
+
+  // Months active = 12 - quarter_start_month + 1
+  // Q1=month1, Q2=month4, Q3=month7, Q4=month10
+  const quarterStartMonth = (launchQuarter - 1) * 3 + 1;
+  const monthsActive = 12 - quarterStartMonth + 1;
+
+  const penetrationDec = penetrationRate / 100;
+
+  let totalRevenue = 0;
+  let totalCogs = 0;
+  let totalRdCost = 0;
+  let productsLaunched = 0;
+
+  if (metabolizeEnabled) {
+    productsLaunched++;
+    const existingUnits = existingCustomerBase * penetrationDec * monthsActive;
+    const newUnits = newAcqMonthly * monthsActive;
+    const units = existingUnits + newUnits;
+    totalRevenue += units * metabolizePrice;
+    totalCogs += units * metabolizeCogs;
+    totalRdCost += rdCost;
+  }
+
+  if (glowEnabled) {
+    productsLaunched++;
+    const existingUnits = existingCustomerBase * penetrationDec * monthsActive;
+    const newUnits = newAcqMonthly * monthsActive;
+    const units = existingUnits + newUnits;
+    totalRevenue += units * glowPrice;
+    totalCogs += units * glowCogs;
+    totalRdCost += rdCost;
+  }
+
+  const grossProfit = totalRevenue - totalCogs - totalRdCost;
+  const grossMargin = totalRevenue > 0 ? (grossProfit / totalRevenue) * 100 : 0;
+
+  return { revenue: totalRevenue, margin: grossMargin, profit: grossProfit };
+}
+
+/* ===== MAIN RECALCULATE ===== */
+function recalculate() {
+  // --- Gather DTC inputs ---
+  const dtcInputs = {
+    newCustomers: getVal('dtc-new-customers'),
+    aov: getVal('dtc-aov'),
+    subRate: getVal('dtc-sub-rate'),
+    retention: getVal('dtc-retention'),
+    cogsPct: getVal('dtc-cogs'),
+    ordersPerRetained: getVal('dtc-orders-retained')
+  };
+
+  // --- Gather Wholesale inputs ---
+  const wsInputs = {
+    wfStores: getVal('ws-wf-stores'),
+    unitsPerStore: getVal('ws-units-store'),
+    targetEnabled: getChecked('ws-target-enabled'),
+    discount: getVal('ws-discount'),
+    targetStores: getVal('ws-target-stores'),
+    targetUnits: getVal('ws-target-units'),
+    targetDiscount: getVal('ws-target-discount'),
+    slottingFees: getVal('ws-slotting'),
+    rampMonths: getVal('ws-ramp'),
+    skus: selectedSkus
+  };
+  const wsCannibPct = getVal('ws-cannib') / 100;
+
+  // --- Gather New Products inputs ---
+  const npInputs = {
+    metabolizeEnabled: getChecked('np-metabolize-enabled'),
+    metabolizePrice: getVal('np-metabolize-price'),
+    glowEnabled: getChecked('np-glow-enabled'),
+    glowPrice: getVal('np-glow-price'),
+    penetrationRate: getVal('np-penetration'),
+    rdCost: getVal('np-rd-cost'),
+    launchQuarter: getVal('np-launch-q'),
+    crossSellRate: getVal('np-cross-sell') / 100,
+    newAcqMonthly: getVal('np-new-acq'),
+    metabolizeCogs: getVal('np-metabolize-cogs'),
+    glowCogs: getVal('np-glow-cogs')
+  };
+  const npCannibPct = getVal('np-cannib') / 100;
+
+  // --- Calculate individual channels ---
+  let dtcResult = calcDTC(dtcInputs);
+  const wsResult = calcWholesale(wsInputs);
+
+  // Existing customer base for new products (monthly active customers approximation)
+  const existingMonthlyCustomers = dtcInputs.newCustomers; // use new customers/month as proxy for active base
+  const npResult = calcNewProducts(npInputs, existingMonthlyCustomers);
+
+  // --- Cross-channel effects ---
+  // Wholesale cannibalization: subtract from DTC
+  const wholesaleActive = wsInputs.wfStores > 0;
+  let dtcCannibAmount = 0;
+  if (wholesaleActive && wsResult.revenue > 0) {
+    dtcCannibAmount = wsResult.revenue * wsCannibPct;
+    dtcResult.revenue -= dtcCannibAmount;
+    dtcResult.profit = dtcResult.revenue * (dtcResult.margin / 100);
+  }
+
+  // New product cannibalization of existing SKUs (reduces DTC revenue slightly)
+  let npCannibAmount = 0;
+  if (npResult.revenue > 0) {
+    npCannibAmount = npResult.revenue * npCannibPct;
+    dtcResult.revenue -= npCannibAmount;
+    dtcResult.profit = dtcResult.revenue * (dtcResult.margin / 100);
+  }
+
+  // --- Update DTC display ---
+  setText('dtc-revenue', fmtMoney(dtcResult.revenue));
+  setText('dtc-margin', fmtPct(dtcResult.margin));
+  setText('dtc-profit', fmtMoney(dtcResult.profit));
+
+  // DTC cannibalization notice
+  const dtcCannibEl = document.getElementById('dtc-cannib-notice');
+  const totalCannib = dtcCannibAmount + npCannibAmount;
+  if (totalCannib > 0) {
+    let msg = '';
+    if (dtcCannibAmount > 0) msg += 'Wholesale cannibalization: -' + fmtMoney(dtcCannibAmount);
+    if (npCannibAmount > 0) {
+      if (msg) msg += ' | ';
+      msg += 'New product cannibalization: -' + fmtMoney(npCannibAmount);
+    }
+    dtcCannibEl.textContent = msg;
+    dtcCannibEl.style.display = 'block';
+  } else {
+    dtcCannibEl.style.display = 'none';
+  }
+
+  // --- Update Wholesale display ---
+  setText('ws-revenue', fmtMoney(wsResult.revenue));
+  setText('ws-margin', fmtPct(wsResult.margin));
+  setText('ws-profit', fmtMoney(wsResult.profit));
+
+  const wsCannibEl = document.getElementById('ws-cannib-notice');
+  if (dtcCannibAmount > 0) {
+    wsCannibEl.textContent = 'DTC impact: -' + fmtMoney(dtcCannibAmount) + ' shifted from DTC to wholesale';
+    wsCannibEl.style.display = 'block';
+  } else {
+    wsCannibEl.style.display = 'none';
+  }
+
+  // --- Update New Products display ---
+  setText('np-revenue', fmtMoney(npResult.revenue));
+  setText('np-margin', npResult.revenue > 0 ? fmtPct(npResult.margin) : '0.0%');
+  setText('np-profit', fmtMoney(npResult.profit));
+
+  const npCannibEl = document.getElementById('np-cannib-notice');
+  if (npCannibAmount > 0) {
+    npCannibEl.textContent = 'Existing SKU cannibalization: -' + fmtMoney(npCannibAmount) + ' shifted from existing products';
+    npCannibEl.style.display = 'block';
+  } else {
+    npCannibEl.style.display = 'none';
+  }
+
+  // --- Combined KPIs ---
+  const combinedRevenue = dtcResult.revenue + wsResult.revenue + npResult.revenue;
+  const combinedProfit = dtcResult.profit + wsResult.profit + npResult.profit;
+  const blendedMargin = combinedRevenue > 0 ? (combinedProfit / combinedRevenue) * 100 : 0;
+
+  setText('kpi-revenue', fmtMoney(combinedRevenue));
+  setText('kpi-margin', fmtPct(blendedMargin));
+  setText('kpi-profit', fmtMoney(combinedProfit));
+
+  // --- Update SOM in funnel ---
+  setText('funnel-som', fmtMoney(combinedRevenue));
+
+  // --- Update toggle displays ---
+  updateToggleDisplay('ws-target-enabled', wsInputs.targetEnabled);
+  updateToggleDisplay('np-metabolize-enabled', npInputs.metabolizeEnabled);
+  updateToggleDisplay('np-glow-enabled', npInputs.glowEnabled);
+}
+
+/* ===== ADVANCED TOGGLE ===== */
+function toggleAdvanced(channel) {
+  const section = document.getElementById(channel + '-advanced');
+  const arrow = document.getElementById(channel + '-arrow');
+  section.classList.toggle('open');
+  arrow.classList.toggle('open');
+}
+
+/* ===== RESET CHANNEL ===== */
+function resetChannel(channel) {
+  const defaults = DEFAULTS[channel];
+  for (const [id, val] of Object.entries(defaults)) {
+    if (id.endsWith('-skus')) {
+      // Special: SKU pills
+      selectedSkus = [...val];
+      renderSkuPills();
+      continue;
+    }
+    const el = document.getElementById(id);
+    if (!el) continue;
+    if (el.type === 'checkbox') {
+      el.checked = val;
+    } else {
+      el.value = val;
+    }
+    updateSliderDisplay(id, val);
+  }
+  recalculate();
+}
+
+/* ===== SKU PILLS ===== */
+function renderSkuPills() {
+  const container = document.getElementById('ws-sku-pills');
+  container.innerHTML = '';
+  PRODUCTS.forEach(p => {
+    const pill = document.createElement('button');
+    pill.className = 'sku-pill' + (selectedSkus.includes(p.id) ? ' active' : '');
+    pill.textContent = p.name;
+    pill.onclick = () => {
+      if (selectedSkus.includes(p.id)) {
+        if (selectedSkus.length > 1) {
+          selectedSkus = selectedSkus.filter(s => s !== p.id);
+        }
+      } else {
+        selectedSkus.push(p.id);
+      }
+      renderSkuPills();
+      recalculate();
+    };
+    container.appendChild(pill);
+  });
+}
+
+/* ===== EVENT BINDING ===== */
+function init() {
+  // Bind all range sliders
+  const sliders = document.querySelectorAll('input[type="range"]');
+  sliders.forEach(slider => {
+    slider.addEventListener('input', () => {
+      updateSliderDisplay(slider.id, slider.value);
+      recalculate();
+    });
+    // Initialize display
+    updateSliderDisplay(slider.id, slider.value);
+  });
+
+  // Bind all toggles
+  const toggles = document.querySelectorAll('.toggle-switch input[type="checkbox"]');
+  toggles.forEach(toggle => {
+    toggle.addEventListener('input', () => {
+      recalculate();
+    });
+    updateToggleDisplay(toggle.id, toggle.checked);
+  });
+
+  // Render SKU pills
+  renderSkuPills();
+
+  // Initial calculation
+  recalculate();
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
