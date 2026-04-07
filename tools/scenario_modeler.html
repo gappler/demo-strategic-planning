@@ -1247,7 +1247,27 @@ function renderProjections(result) {
     <div id="risk-bar-container"></div>
   `;
 }
-function renderRiskBar(result) { /* Task 5 */ }
+function renderRiskBar(result) {
+  const container = document.getElementById('risk-bar-container');
+  if (!container) return;
+
+  const risks = result.summary.risk_factors;
+  if (risks.length === 0) {
+    container.innerHTML = '';
+    return;
+  }
+
+  const chipsHtml = risks.map(r =>
+    `<div class="risk-chip"><span class="risk-chip-name">${r.name}</span> <span class="risk-chip-desc">— ${r.desc}</span></div>`
+  ).join('');
+
+  container.innerHTML = `
+    <div class="risk-bar">
+      <div class="risk-bar-title">ACTIVE RISK FACTORS (${risks.length})</div>
+      <div class="risk-chips">${chipsHtml}</div>
+    </div>
+  `;
+}
 function renderPinBar() { /* Task 6 */ }
 
 // Initial render
