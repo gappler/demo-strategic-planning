@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verdana — Executive Strategy Summary FY2027</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: #f8faf7;
+  color: #333;
+  line-height: 1.6;
+}
+.page {
+  max-width: 800px;
+  margin: 0 auto;
+  background: #fff;
+  min-height: 100vh;
+  box-shadow: 0 0 30px rgba(0,0,0,0.06);
+}
+
+/* Hero Header */
+.hero {
+  background: #2d6a4f;
+  color: #fff;
+  padding: 48px 40px;
+  text-align: center;
+}
+.hero-eyebrow {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  opacity: 0.7;
+  margin-bottom: 8px;
+}
+.hero h1 {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  margin-bottom: 6px;
+}
+.hero-date {
+  font-size: 12px;
+  opacity: 0.6;
+}
+
+/* Sections */
+.section {
+  padding: 32px 40px;
+  border-bottom: 1px solid #eee;
+}
+.section:last-child { border-bottom: none; }
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.section-number {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  flex-shrink: 0;
+}
+.section-number.green { background: #2d6a4f; }
+.section-number.red { background: #c0392b; }
+.section-number.purple { background: #6b4c9a; }
+.section-title {
+  font-size: 18px;
+  font-weight: 700;
+}
+.section-title.green { color: #2d6a4f; }
+.section-title.red { color: #c0392b; }
+.section-title.purple { color: #6b4c9a; }
+
+/* Narrative text */
+.narrative {
+  font-size: 14px;
+  color: #444;
+  line-height: 1.7;
+  margin-bottom: 16px;
+}
+
+/* KPI cards */
+.kpi-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+.kpi-card {
+  flex: 1;
+  background: #fff;
+  border: 1px solid #e8e8e8;
+  border-radius: 8px;
+  padding: 12px;
+  text-align: center;
+}
+.kpi-label {
+  font-size: 11px;
+  color: #888;
+  margin-bottom: 4px;
+}
+.kpi-value {
+  font-size: 22px;
+  font-weight: 700;
+}
+.kpi-value.green { color: #2d6a4f; }
+.kpi-value.red { color: #c0392b; }
+.kpi-value.neutral { color: #333; }
+
+/* Recommendation callout */
+.recommendation {
+  background: #f0faf0;
+  border-left: 4px solid #2d6a4f;
+  border-radius: 0 8px 8px 0;
+  padding: 16px 20px;
+  margin-bottom: 20px;
+}
+.recommendation h3 {
+  font-size: 16px;
+  font-weight: 700;
+  color: #2d6a4f;
+  margin-bottom: 6px;
+}
+.recommendation p {
+  font-size: 14px;
+  color: #444;
+  line-height: 1.6;
+}
+
+/* Rationale cards */
+.rationale-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.rationale-card {
+  flex: 1;
+  background: #f8faf7;
+  border-radius: 8px;
+  padding: 14px;
+}
+.rationale-card h4 {
+  font-size: 13px;
+  font-weight: 700;
+  color: #2d6a4f;
+  margin-bottom: 4px;
+}
+.rationale-card p {
+  font-size: 12px;
+  color: #555;
+  line-height: 1.5;
+}
+
+/* Evidence section */
+.evidence-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
+}
+.evidence-item {
+  margin-bottom: 12px;
+}
+.evidence-item h4 {
+  font-size: 13px;
+  font-weight: 600;
+  color: #2d6a4f;
+  margin-bottom: 2px;
+}
+.evidence-item p {
+  font-size: 13px;
+  color: #555;
+  line-height: 1.6;
+}
+
+/* Projection table */
+.projection-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  margin-bottom: 16px;
+}
+.projection-table th {
+  text-align: center;
+  padding: 8px 12px;
+  border-bottom: 2px solid #2d6a4f;
+  font-weight: 600;
+}
+.projection-table th:first-child {
+  text-align: left;
+  color: #888;
+  font-weight: 400;
+}
+.projection-table th.recommended {
+  color: #2d6a4f;
+  background: #f0faf0;
+}
+.projection-table th.baseline {
+  color: #888;
+  font-weight: 400;
+}
+.projection-table td {
+  text-align: center;
+  padding: 8px 12px;
+  border-bottom: 1px solid #eee;
+}
+.projection-table td:first-child {
+  text-align: left;
+  color: #555;
+}
+.projection-table td.recommended {
+  background: #f0faf0;
+  font-weight: 600;
+}
+.projection-table .delta-positive { color: #2d6a4f; }
+.projection-table .delta-negative { color: #c17817; }
+
+.net-impact {
+  background: #f8faf7;
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 13px;
+  color: #444;
+  line-height: 1.6;
+}
+.net-impact strong { color: #2d6a4f; }
+
+/* Risk rows */
+.risk-row {
+  background: #fff5f5;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 8px;
+  display: flex;
+  gap: 16px;
+  align-items: baseline;
+}
+.risk-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: #c0392b;
+  white-space: nowrap;
+  min-width: 130px;
+}
+.risk-desc {
+  font-size: 13px;
+  color: #555;
+  flex: 1;
+}
+.risk-mitigate {
+  font-size: 12px;
+  color: #2d6a4f;
+  font-style: italic;
+  min-width: 200px;
+}
+
+/* Contingency cards */
+.contingency-row {
+  display: flex;
+  gap: 12px;
+}
+.contingency-card {
+  flex: 1;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 16px;
+}
+.contingency-card h4 {
+  font-size: 14px;
+  font-weight: 700;
+  color: #6b4c9a;
+  margin-bottom: 6px;
+}
+.contingency-card p {
+  font-size: 12px;
+  color: #555;
+  line-height: 1.5;
+  margin-bottom: 6px;
+}
+.contingency-trigger {
+  font-size: 12px;
+  color: #c17817;
+  font-style: italic;
+}
+
+/* Next steps */
+.step-item {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 8px 10px;
+  background: #f8faf7;
+  border-radius: 6px;
+  margin-bottom: 6px;
+}
+.step-checkbox {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #2d6a4f;
+  border-radius: 4px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.step-text {
+  font-size: 13px;
+  color: #444;
+}
+.step-owner {
+  font-size: 11px;
+  color: #888;
+  font-style: italic;
+}
+
+/* Print */
+@media print {
+  body { background: #fff; }
+  .page { box-shadow: none; max-width: 100%; }
+  .hero { padding: 24px; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-eyebrow">Verdana FY2027 Strategic Plan</div>
+    <h1>Executive Strategy Summary</h1>
+    <div class="hero-date">Prepared April 2026 &middot; Confidential</div>
+  </div>
+
+  <!-- SECTION 1: EXECUTIVE OVERVIEW -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number green">1</div>
+      <div class="section-title green">Executive Overview</div>
+    </div>
+    <p class="narrative">
+      Verdana is an $8M annual revenue direct-to-consumer adaptogen supplement company with 60 employees. Built on a foundation of clinical transparency &mdash; publishing dosages, sourcing, and third-party test results that most brands hide &mdash; Verdana has earned the trust of health-conscious professionals who are skeptical of wellness hype.
+    </p>
+    <p class="narrative">
+      However, the company has hit a growth plateau. Revenue has been flat for two consecutive quarters. Customer acquisition cost has risen 41% year-over-year to $58, driven by increasing Meta CPMs, iOS privacy changes, and podcast ad saturation. Monthly new customers have declined from 1,800 to 1,400 over the past six months, and the LTV:CAC ratio has dropped from 5.2:1 to 3.8:1.
+    </p>
+    <p class="narrative">
+      The leadership team faces three interconnected strategic decisions: whether to expand into wholesale retail (Whole Foods and Target have both expressed interest), how to handle the underperforming Shield SKU (volume down 18% YoY, highest return rate), and whether to launch new products from the R&D pipeline (Metabolize and Glow). The company cannot pursue all options simultaneously &mdash; this document recommends a path and projects its impact.
+    </p>
+    <div class="kpi-row">
+      <div class="kpi-card">
+        <div class="kpi-label">Current Revenue</div>
+        <div class="kpi-value green">$8.0M</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Gross Margin</div>
+        <div class="kpi-value green">76.4%</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">CAC</div>
+        <div class="kpi-value red">$58 &#9650;41%</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Team</div>
+        <div class="kpi-value neutral">60</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 2: RECOMMENDATION -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number green">2</div>
+      <div class="section-title green">Recommended Strategic Direction</div>
+    </div>
+    <div class="recommendation">
+      <h3>Selective Expansion: Wholesale + Cut Shield</h3>
+      <p>
+        Enter Whole Foods regional (85 stores, Pacific Northwest and Northern California) while discontinuing the underperforming Shield SKU. Reallocate Shield resources &mdash; 60% to marketing for CAC reduction, 40% to margin improvement. Hold new product launches (Metabolize, Glow) for Year 2, contingent on wholesale success.
+      </p>
+    </div>
+
+    <div class="rationale-row">
+      <div class="rationale-card">
+        <h4>Revenue Unlock</h4>
+        <p>Wholesale adds $2.1M in Year 3 revenue while DTC optimization continues to compound. Two growth engines instead of one.</p>
+      </div>
+      <div class="rationale-card">
+        <h4>Margin Defense</h4>
+        <p>Cutting Shield reclaims 1.2% blended margin, partially offsetting wholesale margin drag. Net gross profit increases despite lower margin rate.</p>
+      </div>
+      <div class="rationale-card">
+        <h4>Manageable Risk</h4>
+        <p>Two strategic moves, not three. Keeps execution bandwidth focused for a 60-person team. Medium risk profile with clear contingencies.</p>
+      </div>
+    </div>
+
+    <div class="evidence-label">Supporting Evidence from Planning Analysis</div>
+
+    <div class="evidence-item">
+      <h4>Scenario Modeler</h4>
+      <p>The Wholesale + Cut Shield combination projects $12.4M Year 3 revenue versus $9.8M baseline &mdash; a $2.6M uplift. Adding new products would push to a high-risk profile for only $2.2M additional upside, an unfavorable risk-to-reward ratio for a company of Verdana&rsquo;s scale.</p>
+    </div>
+    <div class="evidence-item">
+      <h4>Market Sizing</h4>
+      <p>Whole Foods at 85 stores with 24 units per store per month at 50% wholesale discount yields meaningful revenue with a manageable 6-month ramp. Target national is deferred until Whole Foods proves the retail model. DTC cannibalization is modeled conservatively at 10%.</p>
+    </div>
+    <div class="evidence-item">
+      <h4>OKR Alignment</h4>
+      <p>This path maps directly to the Base Case OKR framework: reduce CAC from $58 to $45, grow subscription rate from 34% to 40%, and rationalize the product portfolio. Shield discontinuation frees R&D and marketing bandwidth for the objectives that matter most.</p>
+    </div>
+    <div class="evidence-item">
+      <h4>Competitive Positioning</h4>
+      <p>Verdana&rsquo;s transparency score (95/100) is its strongest moat. Whole Foods&rsquo; premium health aisle reinforces clinical positioning rather than diluting it &mdash; unlike Target, which carries brand dilution risk. The closest competitive threat is Ritual (85/100 transparency, $100M+ scale). Establishing retail presence now builds a distribution advantage before Ritual potentially enters adaptogens.</p>
+    </div>
+  </div>
+
+  <!-- SECTION 3: FINANCIAL PROJECTIONS -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number green">3</div>
+      <div class="section-title green">3-Year Financial Projections</div>
+    </div>
+    <table class="projection-table">
+      <thead>
+        <tr>
+          <th>Metric</th>
+          <th class="baseline">Baseline<br>(Stay the Course)</th>
+          <th class="recommended">Recommended<br>(WS + Cut Shield)</th>
+          <th>Delta</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Y1 Revenue</td><td>$8.4M</td><td class="recommended">$9.1M</td><td class="delta-positive">+$700K</td></tr>
+        <tr><td>Y2 Revenue</td><td>$9.1M</td><td class="recommended">$10.8M</td><td class="delta-positive">+$1.7M</td></tr>
+        <tr><td>Y3 Revenue</td><td>$9.8M</td><td class="recommended">$12.4M</td><td class="delta-positive">+$2.6M</td></tr>
+        <tr><td>Y3 Gross Margin</td><td>76.4%</td><td class="recommended">68.2%</td><td class="delta-negative">-8.2%</td></tr>
+        <tr><td>Y3 Gross Profit</td><td>$7.5M</td><td class="recommended">$8.5M</td><td class="delta-positive">+$1.0M</td></tr>
+        <tr><td>3Y Cumulative Investment</td><td>$0</td><td class="recommended">$420K</td><td class="delta-negative">+$420K</td></tr>
+        <tr><td>Y3 Headcount</td><td>60</td><td class="recommended">64</td><td>+4</td></tr>
+      </tbody>
+    </table>
+    <div class="net-impact">
+      <strong>Net impact:</strong> $2.6M additional Year 3 revenue at the cost of 8.2% margin compression and $420K cumulative investment. Year 3 gross profit reaches $8.5M under the recommended path versus $7.5M at baseline &mdash; a $1.0M improvement in absolute profit despite the lower margin rate. The investment pays back within Year 1 wholesale revenue.
+    </div>
+  </div>
+
+  <!-- SECTION 4: RISKS -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number red">4</div>
+      <div class="section-title red">Key Risks &amp; Mitigations</div>
+    </div>
+    <div class="risk-row">
+      <div class="risk-name">Brand Dilution</div>
+      <div class="risk-desc">Retail shelf presence may undermine premium DTC positioning and the clinical trust Verdana has built.</div>
+      <div class="risk-mitigate">Start regional (Whole Foods only), monitor brand sentiment quarterly, maintain premium in-store presentation.</div>
+    </div>
+    <div class="risk-row">
+      <div class="risk-name">Margin Compression</div>
+      <div class="risk-desc">Wholesale at ~38% gross versus 76% DTC drags the blended margin by 8.2 percentage points.</div>
+      <div class="risk-mitigate">Track gross profit dollars, not margin %. Shield savings offset ~1.2%. Negotiate toward 45% discount at volume.</div>
+    </div>
+    <div class="risk-row">
+      <div class="risk-name">Ops Complexity</div>
+      <div class="risk-desc">EDI integration, retail compliance, and chargeback management are entirely new capabilities for the team.</div>
+      <div class="risk-mitigate">Hire wholesale ops team before launch. Budget $150K for systems buildout. 6-month ramp protects against early stumbles.</div>
+    </div>
+    <div class="risk-row">
+      <div class="risk-name">DTC Cannibalization</div>
+      <div class="risk-desc">Some existing DTC customers may shift to retail purchases at lower margin, reducing per-customer profitability.</div>
+      <div class="risk-mitigate">Model 10% cannibalization (conservative). Monitor DTC metrics weekly post-launch. Geographic overlap analysis.</div>
+    </div>
+    <div class="risk-row">
+      <div class="risk-name">Customer Disruption</div>
+      <div class="risk-desc">Shield subscribers need a migration path. Some will churn entirely rather than switch products.</div>
+      <div class="risk-mitigate">Proactive communication plan. Offer Focus or Calm as replacement with transition discount. Target &lt; 5% subscriber loss.</div>
+    </div>
+  </div>
+
+  <!-- SECTION 5: CONTINGENCIES -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number purple">5</div>
+      <div class="section-title purple">What If We&rsquo;re Wrong? Contingency Paths</div>
+    </div>
+    <div class="contingency-row">
+      <div class="contingency-card">
+        <h4>Path B &mdash; Escalate (All Three Moves)</h4>
+        <p>If wholesale exceeds expectations, add the Metabolize launch to the plan. This raises the Year 3 ceiling to $14.6M but pushes to a high-risk profile with $720K investment and +7 headcount.</p>
+        <p>The logic: prove wholesale ops capability first, then layer on product launch complexity from a position of strength.</p>
+        <div class="contingency-trigger">Trigger: Wholesale gross margin &gt; 42% by Q2 Year 1</div>
+      </div>
+      <div class="contingency-card">
+        <h4>Path C &mdash; Retreat (DTC Only)</h4>
+        <p>If wholesale underperforms, pause the expansion and redirect investment into DTC optimization, subscription growth, and loyalty program development. Year 3 floor: $9.8M revenue, low risk.</p>
+        <p>This is not failure &mdash; it&rsquo;s the original business model, optimized. The DTC channel still has room to grow through CAC reduction and retention improvement.</p>
+        <div class="contingency-trigger">Trigger: Wholesale revenue &lt; 30% of projection by Q2 Year 1</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 6: NEXT STEPS -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number green">6</div>
+      <div class="section-title green">Immediate Next Steps (30 Days)</div>
+    </div>
+    <div class="step-item">
+      <div class="step-checkbox"></div>
+      <div>
+        <div class="step-text">Brief full team on strategic direction &mdash; all-hands by April 10</div>
+        <div class="step-owner">Owner: CEO</div>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-checkbox"></div>
+      <div>
+        <div class="step-text">Begin Shield wind-down analysis &mdash; customer migration plan draft by April 15</div>
+        <div class="step-owner">Owner: VP Product</div>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-checkbox"></div>
+      <div>
+        <div class="step-text">Engage Whole Foods broker/consultant for retail compliance readiness &mdash; by April 20</div>
+        <div class="step-owner">Owner: VP Operations</div>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-checkbox"></div>
+      <div>
+        <div class="step-text">Initiate Whole Foods partnership discussions &mdash; request terms sheet by April 30</div>
+        <div class="step-owner">Owner: VP Operations</div>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-checkbox"></div>
+      <div>
+        <div class="step-text">Post wholesale ops job descriptions &mdash; target 2 hires by June 1</div>
+        <div class="step-owner">Owner: COO</div>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-checkbox"></div>
+      <div>
+        <div class="step-text">Set up trigger-point dashboard &mdash; CAC, wholesale margin, and revenue vs plan tracked weekly</div>
+        <div class="step-owner">Owner: CFO</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
