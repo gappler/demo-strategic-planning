@@ -6,6 +6,44 @@ created: 2026-04-06
 
 # Process Log
 
+## 2026-04-06 — Market Sizing Calculator
+
+**Prompt:** Build the Verdana Market Sizing Calculator as a single self-contained interactive HTML file, implementing the full design spec with three channels (DTC Supplements, Wholesale, New Product Line), cross-channel cannibalization effects, TAM funnel, and floating header KPIs.
+
+**What was built:** An interactive market sizing calculator with real-time slider controls across three revenue channels. Features subscriber accumulation modeling for DTC, linear wholesale ramp, new product launch timing, and cross-channel cannibalization effects. All calculations update instantly via slider input events.
+
+**Key decisions:**
+- Used subscriber accumulation model with monthly churn derived from 90-day retention rate for realistic DTC projections
+- Wholesale cannibalization modeled as a percentage of wholesale revenue subtracted from DTC channel
+- Linear ramp factor for wholesale accounts for gradual store rollout over configurable months
+- SKU pill selection for wholesale dynamically updates average retail price and COGS
+- Progressive disclosure hides advanced inputs behind expandable sections with slide animation
+- Pure calculation functions separated from DOM rendering for maintainability
+
+**Files created/modified:**
+- `tools/market_sizing_calculator.html` (created)
+- `tutorials/06_market_sizing_calculator.md` (created)
+- `docs/process_log.md` (modified)
+
+## 2026-04-06 — OKR Goal Setting Tool
+
+**Prompt:** Build the Verdana OKR Goal Setting Tool as a single self-contained interactive HTML file. Create `tools/okr_goal_setting.html` implementing a sidebar with scenario switcher (Base $9.5M, Upside $12M, Downside $7.5M), strategic context, trigger points, and live resource summary. Main area has function filter pills and a 2-column card grid showing all 14 objectives with key results, on/off toggles, and expand/collapse detail. Scenario switching animates cards, function filters toggle visibility, and resource summary recalculates in real-time.
+
+**What was built:** Interactive OKR planning dashboard (`tools/okr_goal_setting.html`) with all 14 objectives across Marketing (4), Product (4), Operations (3), and Finance (3), each with scenario-specific key results and resource allocations. Three scenario modes with animated transitions, function filter pills, per-objective toggles, and expandable card detail.
+
+**Key decisions:**
+- Stored objectives as a flat array with per-scenario resources and key results, referenced by ID from each scenario — avoids duplicating shared objectives while allowing scenario-specific KR targets
+- Function filter pills support multi-select (multiple functions active simultaneously) with "All" as a reset
+- Card toggle disables objectives and immediately recalculates the sidebar resource summary (headcount, budget, objective count, KR count)
+- Wellness light theme with earthy muted colors per spec: Marketing #2d6a4f, Product #6b4c9a, Operations #c17817, Finance #2e7d9e
+- Cards animate with slide-in on scenario switch to visually distinguish which objectives changed
+- Expand/collapse uses max-height CSS transition for smooth inline expansion without layout jumps
+
+**Files created/modified:**
+- `tools/okr_goal_setting.html` (created)
+- `docs/process_log.md` (modified)
+- `tutorials/06_okr_goal_setting.md` (created)
+
 ## 2026-04-06 — Executive Strategy Summary
 
 **Prompt:** Build a tool that reads all the Verdana data — the brand definition, OKR goals, market sizing results, scenario model outputs, and competitive positioning — and generates a polished executive strategy summary. Include an executive overview, recommended strategic direction with rationale, 3-year financial projections, key risks, and immediate next steps. Output as both a formatted HTML presentation and a markdown document.

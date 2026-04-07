@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verdana — FY2027 OKR Planning</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --page-bg: #f8faf7;
+  --sidebar-bg: #eef4ec;
+  --card-bg: #ffffff;
+  --primary: #2d6a4f;
+  --secondary: #74a98c;
+  --text-dark: #1a2e1a;
+  --text-mid: #4a5e4a;
+  --text-light: #7a8e7a;
+  --border: #d4ddd0;
+  --marketing: #2d6a4f;
+  --product: #6b4c9a;
+  --operations: #c17817;
+  --finance: #2e7d9e;
+  --transition: 300ms ease;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--page-bg);
+  color: var(--text-dark);
+  display: flex;
+  min-height: 100vh;
+  line-height: 1.5;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 280px;
+  min-width: 280px;
+  background: var(--sidebar-bg);
+  border-right: 1px solid var(--border);
+  padding: 28px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  height: 100vh;
+  position: fixed;
+  overflow-y: auto;
+}
+
+.sidebar-brand {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--primary);
+  text-transform: lowercase;
+  letter-spacing: -0.5px;
+}
+
+.sidebar-subtitle {
+  font-size: 13px;
+  color: var(--text-light);
+  margin-top: 2px;
+  font-weight: 500;
+}
+
+.sidebar-section-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-light);
+  margin-bottom: 8px;
+}
+
+/* Scenario Switcher */
+.scenario-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.scenario-btn {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  background: var(--card-bg);
+  cursor: pointer;
+  transition: all var(--transition);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.scenario-btn:hover {
+  border-color: var(--secondary);
+}
+
+.scenario-btn.active {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: #fff;
+}
+
+.scenario-btn .revenue {
+  font-size: 13px;
+  font-weight: 500;
+  opacity: 0.8;
+}
+
+/* Context Block */
+.context-block {
+  background: var(--card-bg);
+  border-radius: 8px;
+  padding: 14px;
+  font-size: 13px;
+  color: var(--text-mid);
+  line-height: 1.55;
+  border: 1px solid var(--border);
+}
+
+.context-block .posture {
+  font-weight: 700;
+  color: var(--primary);
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+
+/* Trigger Points */
+.trigger-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.trigger-item {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-size: 12px;
+  color: var(--text-mid);
+  line-height: 1.5;
+}
+
+.trigger-item .direction {
+  font-weight: 700;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 2px;
+}
+
+.trigger-item .direction.up { color: var(--marketing); }
+.trigger-item .direction.down { color: #b85c3a; }
+
+/* Resource Summary */
+.resource-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.resource-stat {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  text-align: center;
+}
+
+.resource-stat .value {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.resource-stat .label {
+  font-size: 11px;
+  color: var(--text-light);
+  margin-top: 2px;
+}
+
+/* Main Area */
+.main {
+  flex: 1;
+  margin-left: 280px;
+  padding: 28px 32px;
+}
+
+/* Filter Pills */
+.filter-bar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.filter-pill {
+  padding: 7px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all var(--transition);
+  background: var(--card-bg);
+  color: var(--text-mid);
+}
+
+.filter-pill:hover {
+  opacity: 0.85;
+}
+
+.filter-pill.active {
+  color: #fff;
+}
+
+.filter-pill[data-fn="all"] { border-color: var(--text-light); }
+.filter-pill[data-fn="all"].active { background: var(--text-dark); border-color: var(--text-dark); }
+.filter-pill[data-fn="marketing"] { border-color: var(--marketing); }
+.filter-pill[data-fn="marketing"].active { background: var(--marketing); border-color: var(--marketing); }
+.filter-pill[data-fn="product"] { border-color: var(--product); }
+.filter-pill[data-fn="product"].active { background: var(--product); border-color: var(--product); }
+.filter-pill[data-fn="operations"] { border-color: var(--operations); }
+.filter-pill[data-fn="operations"].active { background: var(--operations); border-color: var(--operations); }
+.filter-pill[data-fn="finance"] { border-color: var(--finance); }
+.filter-pill[data-fn="finance"].active { background: var(--finance); border-color: var(--finance); }
+
+/* Card Grid */
+.card-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+@media (max-width: 960px) {
+  .card-grid { grid-template-columns: 1fr; }
+}
+
+/* Objective Card */
+.obj-card {
+  background: var(--card-bg);
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  padding: 18px 20px;
+  transition: all var(--transition);
+  cursor: pointer;
+  position: relative;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+
+.obj-card:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.obj-card.disabled {
+  opacity: 0.45;
+  filter: grayscale(0.6);
+}
+
+.obj-card.slide-in {
+  animation: slideIn 300ms ease forwards;
+}
+
+.obj-card.slide-out {
+  animation: slideOut 300ms ease forwards;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideOut {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(-16px); }
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.card-meta {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.fn-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  color: #fff;
+}
+
+.fn-label.marketing { background: var(--marketing); }
+.fn-label.product { background: var(--product); }
+.fn-label.operations { background: var(--operations); }
+.fn-label.finance { background: var(--finance); }
+
+.resource-tag {
+  font-size: 11px;
+  color: var(--text-light);
+  background: var(--page-bg);
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+/* Toggle Switch */
+.toggle-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.toggle-switch {
+  width: 36px;
+  height: 20px;
+  background: #ccc;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background var(--transition);
+  position: relative;
+  border: none;
+  padding: 0;
+}
+
+.toggle-switch::after {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  background: #fff;
+  border-radius: 50%;
+  top: 2px;
+  left: 2px;
+  transition: transform var(--transition);
+}
+
+.toggle-switch.on {
+  background: var(--primary);
+}
+
+.toggle-switch.on::after {
+  transform: translateX(16px);
+}
+
+.card-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: 6px;
+  line-height: 1.35;
+}
+
+.card-addresses {
+  font-size: 12px;
+  color: var(--text-light);
+  margin-bottom: 10px;
+}
+
+.card-addresses strong {
+  color: var(--text-mid);
+}
+
+.kr-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.kr-list li {
+  font-size: 13px;
+  color: var(--text-mid);
+  padding-left: 16px;
+  position: relative;
+  line-height: 1.45;
+}
+
+.kr-list li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--secondary);
+  font-weight: 700;
+}
+
+.kr-from-to {
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.kr-timeline {
+  font-size: 11px;
+  color: var(--text-light);
+  font-style: italic;
+}
+
+/* Expanded Detail */
+.card-detail {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 300ms ease, padding 300ms ease;
+}
+
+.card-detail.open {
+  max-height: 600px;
+  padding-top: 12px;
+}
+
+.detail-section {
+  border-top: 1px solid var(--border);
+  padding-top: 12px;
+  margin-top: 4px;
+}
+
+.detail-section h4 {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-light);
+  margin-bottom: 8px;
+}
+
+.detail-kr-item {
+  margin-bottom: 10px;
+  padding-left: 12px;
+  border-left: 2px solid var(--border);
+}
+
+.detail-kr-item .metric {
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--text-dark);
+}
+
+.detail-kr-item .target {
+  font-size: 12px;
+  color: var(--text-mid);
+}
+
+.detail-kr-item .timeline {
+  font-size: 11px;
+  color: var(--text-light);
+}
+
+.scenario-tag {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 2px 6px;
+  border-radius: 3px;
+  background: var(--page-bg);
+  color: var(--text-light);
+  margin-left: 6px;
+}
+</style>
+</head>
+<body>
+
+<aside class="sidebar" id="sidebar">
+  <div>
+    <div class="sidebar-brand">verdana</div>
+    <div class="sidebar-subtitle">FY2027 OKR Planning</div>
+  </div>
+
+  <div>
+    <div class="sidebar-section-title">Scenario</div>
+    <div class="scenario-buttons" id="scenarioBtns"></div>
+  </div>
+
+  <div id="contextBlock"></div>
+
+  <div id="triggerBlock"></div>
+
+  <div>
+    <div class="sidebar-section-title">Resource Summary</div>
+    <div class="resource-grid" id="resourceGrid"></div>
+  </div>
+</aside>
+
+<main class="main" id="main">
+  <div class="filter-bar" id="filterBar"></div>
+  <div class="card-grid" id="cardGrid"></div>
+</main>
+
+<script>
+// ============================================================
+// DATA MODEL
+// ============================================================
+
+const DATA = {
+  company: {
+    name: "Verdana",
+    revenue: "$8M",
+    employees: 60,
+    challenges: [
+      "Growth Plateau",
+      "Rising CAC",
+      "Wholesale Question",
+      "Shield Underperformance",
+      "Subscription Gap"
+    ]
+  },
+  scenarios: {
+    base: {
+      id: "base",
+      name: "Base Case",
+      revenue_target: "$9.5M",
+      posture: "Stabilize & Optimize",
+      context_summary: "Fix the growth engine before expanding. Conservative resource allocation. Reduce CAC from $58 to $45, grow subscription rate from 34% to 40%, discontinue Shield, no wholesale this year.",
+      triggers: [
+        { condition: "CAC < $42 by Q2", direction: "up", target_scenario: "Upside" },
+        { condition: "CAC > $65 by Q2", direction: "down", target_scenario: "Downside" }
+      ],
+      objectives: [1, 2, 3, 5, 6, 9, 11, 12, 13]
+    },
+    upside: {
+      id: "upside",
+      name: "Upside",
+      revenue_target: "$12M",
+      posture: "Selective Expansion",
+      context_summary: "Everything in Base, plus selective growth bets. Whole Foods regional wholesale launch (85 stores), launch Verdana Metabolize (berberine SKU), wholesale operations buildout.",
+      triggers: [
+        { condition: "Wholesale gross margin > 42% by Q2", direction: "up", target_scenario: "Evaluate Target national" },
+        { condition: "Wholesale < 30% of revenue projection", direction: "down", target_scenario: "Pause expansion" }
+      ],
+      objectives: [1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13]
+    },
+    downside: {
+      id: "downside",
+      name: "Downside",
+      revenue_target: "$7.5M",
+      posture: "Protect Margins",
+      context_summary: "Defensive posture focused on profitability and cash preservation. Cut marketing spend 20%, freeze hiring, consolidate to top 3 SKUs (Focus, Calm, Restore), focus on subscriber LTV over new acquisition.",
+      triggers: [
+        { condition: "Revenue > $8.5M annualized run rate by Q2", direction: "up", target_scenario: "Base" },
+        { condition: "Cash runway < 9 months", direction: "down", target_scenario: "Restructure" }
+      ],
+      objectives: [1, 2, 3, 8, 9, 12, 14]
+    }
+  },
+  objectives: [
+    {
+      id: 1,
+      function: "marketing",
+      title: "Reduce Customer Acquisition Cost",
+      addresses: ["Growth Plateau", "Rising CAC"],
+      shared: true,
+      scenarios: ["base", "upside", "downside"],
+      resources: {
+        base: { hires: 2, budget: 80000 },
+        upside: { hires: 2, budget: 80000 },
+        downside: { hires: 0, budget: 0 }
+      },
+      key_results: {
+        base: [
+          { metric: "Reduce blended CAC", from: "$58", to: "$45", timeline: "By Q4" },
+          { metric: "Increase Meta ROAS", from: "2.1x", to: "3.0x", timeline: "By Q3" },
+          { metric: "Reduce payback period", from: "7 months", to: "5 months", timeline: "By Q4" }
+        ],
+        upside: [
+          { metric: "Reduce blended CAC", from: "$58", to: "$48", timeline: "By Q4" },
+          { metric: "Increase Meta ROAS", from: "2.1x", to: "2.8x", timeline: "By Q3" },
+          { metric: "Reduce payback period", from: "7 months", to: "5.5 months", timeline: "By Q4" }
+        ],
+        downside: [
+          { metric: "Hold CAC with 20% less spend", from: "$58", to: "$50", timeline: "By Q4" },
+          { metric: "Shift budget to organic channels", from: "15%", to: "30% of mix", timeline: "By Q3" },
+          { metric: "Reduce paid media spend", from: "$1.2M", to: "$960K", timeline: "By Q1" }
+        ]
+      }
+    },
+    {
+      id: 2,
+      function: "marketing",
+      title: "Grow Subscription & Retention",
+      addresses: ["Subscription Gap (34% vs 40% industry)", "Month-3 Churn"],
+      shared: true,
+      scenarios: ["base", "upside", "downside"],
+      resources: {
+        base: { hires: 1, budget: 40000 },
+        upside: { hires: 1, budget: 40000 },
+        downside: { hires: 1, budget: 40000 }
+      },
+      key_results: {
+        base: [
+          { metric: "Increase subscription rate", from: "34%", to: "40%", timeline: "By Q4" },
+          { metric: "Improve 90-day retention", from: "62%", to: "70%", timeline: "By Q3" },
+          { metric: "Launch loyalty program", from: "None", to: "Live with 2,000+ members", timeline: "By Q2" }
+        ],
+        upside: [
+          { metric: "Increase subscription rate", from: "34%", to: "42%", timeline: "By Q4" },
+          { metric: "Improve 90-day retention", from: "62%", to: "72%", timeline: "By Q3" },
+          { metric: "Launch loyalty + referral program", from: "None", to: "Live with 3,000+ members", timeline: "By Q2" }
+        ],
+        downside: [
+          { metric: "Increase subscription rate", from: "34%", to: "38%", timeline: "By Q4" },
+          { metric: "Improve 90-day retention", from: "62%", to: "68%", timeline: "By Q3" },
+          { metric: "Launch basic loyalty program", from: "None", to: "Live with 1,500+ members", timeline: "By Q3" }
+        ]
+      }
+    },
+    {
+      id: 3,
+      function: "marketing",
+      title: "Diversify Acquisition Channels",
+      addresses: ["Rising CAC", "Channel Concentration"],
+      shared: true,
+      scenarios: ["base", "upside", "downside"],
+      resources: {
+        base: { hires: 0, budget: 30000 },
+        upside: { hires: 0, budget: 30000 },
+        downside: { hires: 0, budget: 30000 }
+      },
+      key_results: {
+        base: [
+          { metric: "Grow organic channel share", from: "25%", to: "35%", timeline: "By Q4" },
+          { metric: "Launch 2 new channel pilots", from: "0", to: "2 channels tested", timeline: "By Q2" },
+          { metric: "Improve attribution accuracy", from: "60%", to: "80% tracked", timeline: "By Q3" }
+        ],
+        upside: [
+          { metric: "Grow organic channel share", from: "25%", to: "35%", timeline: "By Q4" },
+          { metric: "Launch 3 new channel pilots", from: "0", to: "3 channels tested", timeline: "By Q2" },
+          { metric: "Improve attribution accuracy", from: "60%", to: "85% tracked", timeline: "By Q3" }
+        ],
+        downside: [
+          { metric: "Grow organic channel share", from: "25%", to: "40%", timeline: "By Q4" },
+          { metric: "Launch 2 low-cost channel pilots", from: "0", to: "2 channels tested", timeline: "By Q2" },
+          { metric: "Improve attribution accuracy", from: "60%", to: "75% tracked", timeline: "By Q3" }
+        ]
+      }
+    },
+    {
+      id: 4,
+      function: "marketing",
+      title: "Launch Wholesale Marketing Support",
+      addresses: ["Wholesale Question (Whole Foods)"],
+      shared: false,
+      scenarios: ["upside"],
+      resources: {
+        upside: { hires: 1, budget: 60000 }
+      },
+      key_results: {
+        upside: [
+          { metric: "Create retail-ready packaging", from: "DTC-only packaging", to: "Retail-compliant for all SKUs", timeline: "By Q1" },
+          { metric: "Develop in-store POS materials", from: "None", to: "Full POS kit for 85 stores", timeline: "By Q2" },
+          { metric: "Execute co-marketing plan with Whole Foods", from: "No retail partnerships", to: "Joint launch campaign live", timeline: "By Q3" }
+        ]
+      }
+    },
+    {
+      id: 5,
+      function: "product",
+      title: "Rationalize Product Portfolio",
+      addresses: ["Shield Underperformance", "Margin Pressure"],
+      shared: true,
+      scenarios: ["base", "upside"],
+      resources: {
+        base: { hires: 0, budget: 20000 },
+        upside: { hires: 0, budget: 20000 }
+      },
+      key_results: {
+        base: [
+          { metric: "Shield ship-or-sunset decision", from: "Under review", to: "Decision executed", timeline: "By Q1" },
+          { metric: "Improve blended gross margin", from: "76.4%", to: "78%", timeline: "By Q4" },
+          { metric: "Reduce SKU count if warranted", from: "5 SKUs", to: "4 SKUs", timeline: "By Q2" }
+        ],
+        upside: [
+          { metric: "Shield ship-or-sunset decision", from: "Under review", to: "Decision executed", timeline: "By Q1" },
+          { metric: "Improve blended gross margin", from: "76.4%", to: "78.5%", timeline: "By Q4" },
+          { metric: "Optimize portfolio for wholesale + DTC", from: "DTC-only mix", to: "Dual-channel optimized", timeline: "By Q3" }
+        ]
+      }
+    },
+    {
+      id: 6,
+      function: "product",
+      title: "Optimize Subscription Experience",
+      addresses: ["Subscription Gap", "Retention"],
+      shared: true,
+      scenarios: ["base", "upside"],
+      resources: {
+        base: { hires: 0, budget: 15000 },
+        upside: { hires: 0, budget: 15000 }
+      },
+      key_results: {
+        base: [
+          { metric: "Launch flexible subscription cadence", from: "30/60 day only", to: "30/45/60/90 day options", timeline: "By Q2" },
+          { metric: "Optimize bundle recommendations", from: "Manual", to: "Algorithmic with 15% uptake", timeline: "By Q3" },
+          { metric: "Improve subscriber NPS", from: "42", to: "55", timeline: "By Q4" }
+        ],
+        upside: [
+          { metric: "Launch flexible subscription cadence", from: "30/60 day only", to: "30/45/60/90 day options", timeline: "By Q2" },
+          { metric: "Optimize bundle with new SKUs", from: "Manual", to: "Algorithmic with 20% uptake", timeline: "By Q3" },
+          { metric: "Improve subscriber NPS", from: "42", to: "58", timeline: "By Q4" }
+        ]
+      }
+    },
+    {
+      id: 7,
+      function: "product",
+      title: "Launch Verdana Metabolize",
+      addresses: ["Growth Plateau (new revenue stream)"],
+      shared: false,
+      scenarios: ["upside"],
+      resources: {
+        upside: { hires: 1, budget: 120000 }
+      },
+      key_results: {
+        upside: [
+          { metric: "Finalize formulation & testing", from: "R&D phase", to: "Production-ready", timeline: "By Q1" },
+          { metric: "Launch Metabolize to market", from: "Not launched", to: "Live on DTC + Whole Foods", timeline: "By Q3" },
+          { metric: "Achieve monthly unit sales", from: "0", to: "500 units/month", timeline: "By Q4" }
+        ]
+      }
+    },
+    {
+      id: 8,
+      function: "product",
+      title: "Consolidate to Core Three SKUs",
+      addresses: ["Margin Pressure", "Resource Constraints"],
+      shared: false,
+      scenarios: ["downside"],
+      resources: {
+        downside: { hires: 0, budget: 10000 }
+      },
+      key_results: {
+        downside: [
+          { metric: "Sunset Shield and Endure", from: "5 SKUs active", to: "3 SKUs (Focus, Calm, Restore)", timeline: "By Q2" },
+          { metric: "Reallocate R&D to top 3 products", from: "Split across 5", to: "Focused on 3", timeline: "By Q2" },
+          { metric: "Improve blended gross margin", from: "76.4%", to: "78%", timeline: "By Q3" }
+        ]
+      }
+    },
+    {
+      id: 9,
+      function: "operations",
+      title: "Reduce Fulfillment Cost per Order",
+      addresses: ["Margin Pressure", "Shipping Costs +15% YoY"],
+      shared: true,
+      scenarios: ["base", "upside", "downside"],
+      resources: {
+        base: { hires: 0, budget: 30000 },
+        upside: { hires: 0, budget: 30000 },
+        downside: { hires: 0, budget: 30000 }
+      },
+      key_results: {
+        base: [
+          { metric: "Reduce shipping cost per order", from: "$8.20", to: "$6.80", timeline: "By Q3" },
+          { metric: "Improve returns rate", from: "4.2%", to: "3.0%", timeline: "By Q4" },
+          { metric: "Optimize free shipping threshold", from: "$75", to: "Test $85 threshold", timeline: "By Q2" }
+        ],
+        upside: [
+          { metric: "Reduce shipping cost per order", from: "$8.20", to: "$6.50", timeline: "By Q3" },
+          { metric: "Improve returns rate", from: "4.2%", to: "2.8%", timeline: "By Q4" },
+          { metric: "Optimize free shipping threshold", from: "$75", to: "Test $85 threshold", timeline: "By Q2" }
+        ],
+        downside: [
+          { metric: "Reduce shipping cost per order", from: "$8.20", to: "$7.00", timeline: "By Q3" },
+          { metric: "Improve returns rate", from: "4.2%", to: "3.2%", timeline: "By Q4" },
+          { metric: "Raise free shipping threshold", from: "$75", to: "$95", timeline: "By Q1" }
+        ]
+      }
+    },
+    {
+      id: 10,
+      function: "operations",
+      title: "Build Wholesale Operations Capability",
+      addresses: ["Wholesale Question (operational readiness)"],
+      shared: false,
+      scenarios: ["upside"],
+      resources: {
+        upside: { hires: 2, budget: 150000 }
+      },
+      key_results: {
+        upside: [
+          { metric: "EDI integration live", from: "No EDI capability", to: "Live with Whole Foods", timeline: "By Q2" },
+          { metric: "Retail compliance certified", from: "Not certified", to: "Fully compliant", timeline: "By Q2" },
+          { metric: "Wholesale fulfillment process", from: "No process", to: "Documented & tested", timeline: "By Q3" }
+        ]
+      }
+    },
+    {
+      id: 11,
+      function: "operations",
+      title: "Improve Supply Chain Resilience",
+      addresses: ["KSM-66 cost increase (22%)", "Ingredient sourcing risk"],
+      shared: true,
+      scenarios: ["base", "upside"],
+      resources: {
+        base: { hires: 0, budget: 20000 },
+        upside: { hires: 0, budget: 20000 }
+      },
+      key_results: {
+        base: [
+          { metric: "Secondary supplier for top 3 ingredients", from: "Single source", to: "Dual source qualified", timeline: "By Q3" },
+          { metric: "Build inventory buffer", from: "45-day supply", to: "90-day supply", timeline: "By Q2" },
+          { metric: "Reduce COGS through sourcing", from: "Current rates", to: "5% reduction", timeline: "By Q4" }
+        ],
+        upside: [
+          { metric: "Secondary supplier for top 3 ingredients", from: "Single source", to: "Dual source qualified", timeline: "By Q3" },
+          { metric: "Build inventory buffer", from: "45-day supply", to: "90-day supply", timeline: "By Q2" },
+          { metric: "Negotiate volume pricing for wholesale scale", from: "Current rates", to: "8% reduction", timeline: "By Q4" }
+        ]
+      }
+    },
+    {
+      id: 12,
+      function: "finance",
+      title: "Maintain Healthy Cash Position",
+      addresses: ["Growth Plateau", "Strategic Uncertainty"],
+      shared: true,
+      scenarios: ["base", "upside", "downside"],
+      resources: {
+        base: { hires: 0, budget: 10000 },
+        upside: { hires: 0, budget: 10000 },
+        downside: { hires: 0, budget: 10000 }
+      },
+      key_results: {
+        base: [
+          { metric: "Maintain cash runway", from: "14 months", to: "12+ months", timeline: "Ongoing" },
+          { metric: "Monthly P&L variance", from: "8% avg", to: "< 5%", timeline: "By Q2" },
+          { metric: "Scenario reporting cadence", from: "Quarterly", to: "Monthly", timeline: "By Q1" }
+        ],
+        upside: [
+          { metric: "Maintain cash runway", from: "14 months", to: "12+ months", timeline: "Ongoing" },
+          { metric: "Monthly P&L variance", from: "8% avg", to: "< 5%", timeline: "By Q2" },
+          { metric: "Scenario reporting cadence", from: "Quarterly", to: "Monthly", timeline: "By Q1" }
+        ],
+        downside: [
+          { metric: "Maintain cash runway", from: "14 months", to: "15+ months", timeline: "Ongoing" },
+          { metric: "Monthly P&L variance", from: "8% avg", to: "< 3%", timeline: "By Q2" },
+          { metric: "Weekly cash flow monitoring", from: "Monthly", to: "Weekly", timeline: "By Q1" }
+        ]
+      }
+    },
+    {
+      id: 13,
+      function: "finance",
+      title: "Build Decision-Grade Financial Reporting",
+      addresses: ["Strategic Planning needs"],
+      shared: true,
+      scenarios: ["base", "upside"],
+      resources: {
+        base: { hires: 1, budget: 60000 },
+        upside: { hires: 1, budget: 60000 }
+      },
+      key_results: {
+        base: [
+          { metric: "Monthly scenario dashboard", from: "No dashboard", to: "Live with 3 scenarios", timeline: "By Q2" },
+          { metric: "Trigger point monitoring", from: "Manual", to: "Automated alerts", timeline: "By Q2" },
+          { metric: "Board reporting package", from: "Ad hoc", to: "Standardized monthly", timeline: "By Q1" }
+        ],
+        upside: [
+          { metric: "Monthly scenario dashboard", from: "No dashboard", to: "Live with 3 scenarios + wholesale", timeline: "By Q2" },
+          { metric: "Trigger point monitoring", from: "Manual", to: "Automated alerts", timeline: "By Q2" },
+          { metric: "Board reporting package", from: "Ad hoc", to: "Standardized monthly", timeline: "By Q1" }
+        ]
+      }
+    },
+    {
+      id: 14,
+      function: "finance",
+      title: "Execute Cost Reduction Program",
+      addresses: ["Margin Protection", "Cash Preservation"],
+      shared: false,
+      scenarios: ["downside"],
+      resources: {
+        downside: { hires: 0, budget: 5000 }
+      },
+      key_results: {
+        downside: [
+          { metric: "Reduce operating expenses", from: "Current opex", to: "15% reduction", timeline: "By Q2" },
+          { metric: "Renegotiate top 5 vendor contracts", from: "Current terms", to: "10% average savings", timeline: "By Q2" },
+          { metric: "Eliminate non-essential spend", from: "Unaudited", to: "Zero non-essential", timeline: "By Q1" }
+        ]
+      }
+    }
+  ]
+};
+
+// ============================================================
+// STATE
+// ============================================================
+
+let state = {
+  currentScenario: 'base',
+  activeFunctions: new Set(['all']),
+  enabledObjectives: new Set(),
+  expandedCard: null
+};
+
+// Initialize all objectives as enabled
+DATA.objectives.forEach(o => state.enabledObjectives.add(o.id));
+
+// ============================================================
+// HELPERS
+// ============================================================
+
+function getScenarioObjectives(scenarioId) {
+  const scenario = DATA.scenarios[scenarioId];
+  return DATA.objectives.filter(o => scenario.objectives.includes(o.id));
+}
+
+function getResourcesForObjective(obj, scenarioId) {
+  return obj.resources[scenarioId] || { hires: 0, budget: 0 };
+}
+
+function getKRsForObjective(obj, scenarioId) {
+  return obj.key_results[scenarioId] || [];
+}
+
+function formatBudget(amount) {
+  if (amount >= 1000) return '$' + (amount / 1000).toFixed(0) + 'K';
+  return '$' + amount;
+}
+
+function computeResourceSummary() {
+  const objs = getScenarioObjectives(state.currentScenario);
+  let hires = 0, budget = 0, objCount = 0, krCount = 0;
+  objs.forEach(o => {
+    if (!state.enabledObjectives.has(o.id)) return;
+    const res = getResourcesForObjective(o, state.currentScenario);
+    const krs = getKRsForObjective(o, state.currentScenario);
+    hires += res.hires;
+    budget += res.budget;
+    objCount++;
+    krCount += krs.length;
+  });
+  return { hires, budget, objCount, krCount };
+}
+
+// ============================================================
+// RENDER: SIDEBAR
+// ============================================================
+
+function renderScenarioButtons() {
+  const container = document.getElementById('scenarioBtns');
+  container.innerHTML = '';
+  ['base', 'upside', 'downside'].forEach(id => {
+    const s = DATA.scenarios[id];
+    const btn = document.createElement('button');
+    btn.className = 'scenario-btn' + (state.currentScenario === id ? ' active' : '');
+    btn.innerHTML = `<span>${s.name}</span><span class="revenue">${s.revenue_target}</span>`;
+    btn.onclick = (e) => {
+      e.stopPropagation();
+      switchScenario(id);
+    };
+    container.appendChild(btn);
+  });
+}
+
+function renderContext() {
+  const s = DATA.scenarios[state.currentScenario];
+  const container = document.getElementById('contextBlock');
+  container.innerHTML = `
+    <div class="sidebar-section-title">Strategic Context</div>
+    <div class="context-block">
+      <div class="posture">${s.posture}</div>
+      <div>${s.context_summary}</div>
+    </div>
+  `;
+}
+
+function renderTriggers() {
+  const s = DATA.scenarios[state.currentScenario];
+  const container = document.getElementById('triggerBlock');
+  let html = '<div class="sidebar-section-title">Trigger Points</div><div class="trigger-list">';
+  s.triggers.forEach(t => {
+    html += `<div class="trigger-item">
+      <div class="direction ${t.direction}">${t.direction === 'up' ? '↑ Upgrade' : '↓ Downgrade'}</div>
+      <div>${t.condition} → ${t.target_scenario}</div>
+    </div>`;
+  });
+  html += '</div>';
+  container.innerHTML = html;
+}
+
+function renderResourceSummary() {
+  const summary = computeResourceSummary();
+  const container = document.getElementById('resourceGrid');
+  container.innerHTML = `
+    <div class="resource-stat"><div class="value">+${summary.hires}</div><div class="label">Headcount</div></div>
+    <div class="resource-stat"><div class="value">${formatBudget(summary.budget)}</div><div class="label">Budget</div></div>
+    <div class="resource-stat"><div class="value">${summary.objCount}</div><div class="label">Objectives</div></div>
+    <div class="resource-stat"><div class="value">${summary.krCount}</div><div class="label">Key Results</div></div>
+  `;
+}
+
+// ============================================================
+// RENDER: FILTER BAR
+// ============================================================
+
+function renderFilterBar() {
+  const container = document.getElementById('filterBar');
+  container.innerHTML = '';
+  const functions = [
+    { id: 'all', label: 'All' },
+    { id: 'marketing', label: 'Marketing' },
+    { id: 'product', label: 'Product' },
+    { id: 'operations', label: 'Operations' },
+    { id: 'finance', label: 'Finance' }
+  ];
+  functions.forEach(fn => {
+    const pill = document.createElement('button');
+    pill.className = 'filter-pill' + (state.activeFunctions.has(fn.id) ? ' active' : '');
+    pill.setAttribute('data-fn', fn.id);
+    pill.textContent = fn.label;
+    pill.onclick = () => toggleFilter(fn.id);
+    container.appendChild(pill);
+  });
+}
+
+function toggleFilter(fnId) {
+  if (fnId === 'all') {
+    state.activeFunctions = new Set(['all']);
+  } else {
+    state.activeFunctions.delete('all');
+    if (state.activeFunctions.has(fnId)) {
+      state.activeFunctions.delete(fnId);
+      if (state.activeFunctions.size === 0) state.activeFunctions.add('all');
+    } else {
+      state.activeFunctions.add(fnId);
+    }
+  }
+  renderFilterBar();
+  renderCards();
+}
+
+// ============================================================
+// RENDER: CARDS
+// ============================================================
+
+function renderCards(animate) {
+  const container = document.getElementById('cardGrid');
+  container.innerHTML = '';
+  const objs = getScenarioObjectives(state.currentScenario);
+  const showAll = state.activeFunctions.has('all');
+
+  objs.forEach(obj => {
+    if (!showAll && !state.activeFunctions.has(obj.function)) return;
+
+    const card = document.createElement('div');
+    const isEnabled = state.enabledObjectives.has(obj.id);
+    const isExpanded = state.expandedCard === obj.id;
+    card.className = 'obj-card' + (isEnabled ? '' : ' disabled') + (animate ? ' slide-in' : '');
+    card.setAttribute('data-id', obj.id);
+
+    const res = getResourcesForObjective(obj, state.currentScenario);
+    const krs = getKRsForObjective(obj, state.currentScenario);
+    const resText = (res.hires > 0 ? res.hires + ' hire' + (res.hires > 1 ? 's' : '') : 'No hires') + ' · ' + formatBudget(res.budget);
+
+    let krHtml = '';
+    krs.forEach(kr => {
+      krHtml += `<li><span class="kr-from-to">${kr.metric}:</span> ${kr.from} → ${kr.to} <span class="kr-timeline">${kr.timeline}</span></li>`;
+    });
+
+    // Expanded detail
+    let detailHtml = '';
+    if (isExpanded) {
+      let detailKrs = '';
+      krs.forEach(kr => {
+        detailKrs += `<div class="detail-kr-item">
+          <div class="metric">${kr.metric}</div>
+          <div class="target">From: ${kr.from} → To: ${kr.to}</div>
+          <div class="timeline">${kr.timeline}</div>
+        </div>`;
+      });
+
+      const scenarioLabel = obj.shared ? 'Shared across scenarios' : DATA.scenarios[state.currentScenario].name + ' only';
+      detailHtml = `<div class="detail-section">
+        <h4>Full Key Result Detail <span class="scenario-tag">${scenarioLabel}</span></h4>
+        ${detailKrs}
+        <div style="margin-top:10px;font-size:12px;color:var(--text-light);">
+          <strong>Resources:</strong> ${resText}<br>
+          <strong>Addresses:</strong> ${obj.addresses.join(', ')}
+        </div>
+      </div>`;
+    }
+
+    card.innerHTML = `
+      <div class="card-header">
+        <div class="card-meta">
+          <span class="fn-label ${obj.function}">${obj.function}</span>
+          <span class="resource-tag">${resText}</span>
+        </div>
+        <div class="toggle-wrap">
+          <button class="toggle-switch ${isEnabled ? 'on' : ''}" data-toggle="${obj.id}" title="Toggle objective"></button>
+        </div>
+      </div>
+      <div class="card-title">${obj.title}</div>
+      <div class="card-addresses"><strong>Addresses:</strong> ${obj.addresses.join(', ')}</div>
+      <ul class="kr-list">${krHtml}</ul>
+      <div class="card-detail ${isExpanded ? 'open' : ''}">${detailHtml}</div>
+    `;
+
+    // Toggle switch handler
+    const toggleBtn = card.querySelector('.toggle-switch');
+    toggleBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (state.enabledObjectives.has(obj.id)) {
+        state.enabledObjectives.delete(obj.id);
+      } else {
+        state.enabledObjectives.add(obj.id);
+      }
+      renderCards();
+      renderResourceSummary();
+    });
+
+    // Card click -> expand/collapse
+    card.addEventListener('click', (e) => {
+      if (e.target.closest('.toggle-wrap')) return;
+      state.expandedCard = state.expandedCard === obj.id ? null : obj.id;
+      renderCards();
+    });
+
+    container.appendChild(card);
+  });
+}
+
+// ============================================================
+// SCENARIO SWITCHING
+// ============================================================
+
+function switchScenario(scenarioId) {
+  if (state.currentScenario === scenarioId) return;
+  state.currentScenario = scenarioId;
+  state.expandedCard = null;
+  renderScenarioButtons();
+  renderContext();
+  renderTriggers();
+  renderResourceSummary();
+  renderCards(true);
+}
+
+// ============================================================
+// INIT
+// ============================================================
+
+function init() {
+  renderScenarioButtons();
+  renderContext();
+  renderTriggers();
+  renderResourceSummary();
+  renderFilterBar();
+  renderCards();
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
