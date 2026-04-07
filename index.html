@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verdana Strategic Planning — Guided Tour</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: #f8faf7;
+  color: #333;
+  line-height: 1.6;
+}
+
+/* Hero */
+.hero {
+  background: #2d6a4f;
+  color: #fff;
+  padding: 60px 40px;
+  text-align: center;
+}
+.hero-eyebrow {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  opacity: 0.6;
+  margin-bottom: 10px;
+}
+.hero h1 {
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  margin-bottom: 8px;
+}
+.hero p {
+  font-size: 15px;
+  opacity: 0.8;
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.7;
+}
+
+/* Page container */
+.page {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* Tool card */
+.tool-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  margin: 32px 0;
+  overflow: hidden;
+}
+.tool-header {
+  padding: 24px 28px;
+  border-bottom: 1px solid #eee;
+}
+.tool-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #2d6a4f;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  margin-right: 10px;
+  vertical-align: middle;
+}
+.tool-number.pending {
+  background: #aaa;
+}
+.tool-name {
+  font-size: 20px;
+  font-weight: 700;
+  color: #2d6a4f;
+  vertical-align: middle;
+}
+.tool-name.pending {
+  color: #888;
+}
+.tool-status {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-left: 10px;
+  vertical-align: middle;
+}
+.tool-status.built {
+  background: #e8f5e0;
+  color: #2d6a4f;
+}
+.tool-status.designed {
+  background: #f0f0f0;
+  color: #888;
+}
+.tool-problem {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #555;
+  line-height: 1.6;
+}
+
+/* Prompt block */
+.tool-prompt {
+  padding: 16px 28px;
+  background: #f8faf7;
+  border-bottom: 1px solid #eee;
+}
+.prompt-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #888;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.prompt-text {
+  font-size: 13px;
+  color: #444;
+  line-height: 1.6;
+  font-style: italic;
+}
+
+/* Preview */
+.tool-preview {
+  padding: 0;
+  position: relative;
+  background: #f0f0f0;
+}
+.tool-preview iframe {
+  width: 100%;
+  height: 500px;
+  border: none;
+  display: block;
+}
+.tool-preview-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: linear-gradient(transparent, rgba(255,255,255,0.9));
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 12px;
+}
+.open-tool-btn {
+  display: inline-block;
+  background: #2d6a4f;
+  color: #fff;
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 16px;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+.open-tool-btn:hover {
+  background: #245a42;
+}
+
+/* Designed-only card */
+.tool-spec-summary {
+  padding: 20px 28px;
+}
+.tool-spec-summary p {
+  font-size: 13px;
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 8px;
+}
+.spec-link {
+  font-size: 12px;
+  color: #2d6a4f;
+  text-decoration: none;
+  font-weight: 600;
+}
+.spec-link:hover {
+  text-decoration: underline;
+}
+
+/* Footer */
+.footer {
+  text-align: center;
+  padding: 40px 24px;
+  font-size: 12px;
+  color: #aaa;
+}
+.footer a {
+  color: #2d6a4f;
+  text-decoration: none;
+}
+
+/* Nav dots */
+.nav {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  padding: 24px 0 0;
+}
+.nav-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #2d6a4f;
+}
+.nav-dot.pending {
+  background: #ccc;
+}
+.nav-label {
+  font-size: 10px;
+  color: #888;
+  text-align: center;
+  margin-top: 6px;
+}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">Verdana FY2027</div>
+  <h1>Strategic Planning Toolkit</h1>
+  <p>A suite of interactive tools built to help Verdana's leadership navigate the growth plateau and chart a path forward. Each tool was built with a single prompt.</p>
+  <div class="nav">
+    <div class="nav-dot pending"></div>
+    <div class="nav-dot pending"></div>
+    <div class="nav-dot"></div>
+    <div class="nav-dot"></div>
+    <div class="nav-dot"></div>
+  </div>
+  <div class="nav-label">5 tools &middot; 3 built &middot; 2 designed</div>
+</div>
+
+<div class="page">
+
+  <!-- TOOL 1: OKR GOAL SETTING (designed, not built) -->
+  <div class="tool-card">
+    <div class="tool-header">
+      <span class="tool-number pending">1</span>
+      <span class="tool-name pending">OKR Goal Setting Tool</span>
+      <span class="tool-status designed">Designed</span>
+      <p class="tool-problem">Verdana needs to align 60 people around annual objectives, but the goals change depending on which strategic scenario plays out. This tool lets leadership switch between Base ($9.5M), Upside ($12M), and Downside ($7.5M) scenarios and see how objectives, key results, and resource requirements cascade across Marketing, Product, Operations, and Finance.</p>
+    </div>
+    <div class="tool-prompt">
+      <div class="prompt-label">The Prompt</div>
+      <div class="prompt-text">"Build an OKR and annual goal setting tool for Verdana. Organize objectives by function across three strategic scenarios. Let me toggle objectives on/off and see resource impact in real time."</div>
+    </div>
+    <div class="tool-spec-summary">
+      <p>Design spec complete with full OKR data model, 14 objectives across 4 functions, scenario-switching UI with sidebar layout, and objective toggle cards with resource recalculation. Ready for implementation.</p>
+      <a class="spec-link" href="docs/superpowers/specs/2026-04-06-okr-goal-setting-tool-design.md">View Design Spec &rarr;</a>
+    </div>
+  </div>
+
+  <!-- TOOL 2: MARKET SIZING CALCULATOR (designed, not built) -->
+  <div class="tool-card">
+    <div class="tool-header">
+      <span class="tool-number pending">2</span>
+      <span class="tool-name pending">Market Sizing Calculator</span>
+      <span class="tool-status designed">Designed</span>
+      <p class="tool-problem">Before Verdana can decide between DTC optimization, wholesale expansion, or new product launches, leadership needs to quantify each lever. This calculator models three revenue channels with adjustable assumptions and real-time cross-channel effects like DTC cannibalization from wholesale.</p>
+    </div>
+    <div class="tool-prompt">
+      <div class="prompt-label">The Prompt</div>
+      <div class="prompt-text">"Build a market sizing calculator for Verdana. Model DTC, wholesale, and new product channels with adjustable sliders. Show TAM/SAM/SOM funnel and cross-channel cannibalization effects."</div>
+    </div>
+    <div class="tool-spec-summary">
+      <p>Design spec complete with three channel models (DTC, Wholesale, New Products), primary and advanced sliders for each, TAM funnel visualization, and cross-channel cannibalization logic. Ready for implementation.</p>
+      <a class="spec-link" href="docs/superpowers/specs/2026-04-06-market-sizing-calculator-design.md">View Design Spec &rarr;</a>
+    </div>
+  </div>
+
+  <!-- TOOL 3: SCENARIO MODELER (built) -->
+  <div class="tool-card">
+    <div class="tool-header">
+      <span class="tool-number">3</span>
+      <span class="tool-name">Scenario Modeler</span>
+      <span class="tool-status built">Built</span>
+      <p class="tool-problem">Verdana can't pursue wholesale, new products, and product rationalization all at once. This modeler lets leadership toggle three strategic moves on/off, tune assumptions with sliders, and see 3-year quarterly projections for revenue, margins, investment, headcount, and risk. Pin named scenarios and compare them side by side.</p>
+    </div>
+    <div class="tool-prompt">
+      <div class="prompt-label">The Prompt</div>
+      <div class="prompt-text">"Build a scenario modeler for Verdana. Model four strategic paths: stay the course (DTC only), expand into wholesale, launch two new products, or cut the underperforming SKU and reallocate resources. For each scenario, project 3-year revenue, margins, required investment, team headcount, and risk factors. Let me compare scenarios side by side and blend them — what if we do wholesale AND cut a SKU? Output as an interactive HTML file."</div>
+    </div>
+    <div class="tool-preview">
+      <iframe src="tools/scenario_modeler.html" loading="lazy"></iframe>
+      <div class="tool-preview-overlay">
+        <a class="open-tool-btn" href="tools/scenario_modeler.html" target="_blank">Open Full Tool &rarr;</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOOL 4: COMPETITIVE POSITIONING MAP (built) -->
+  <div class="tool-card">
+    <div class="tool-header">
+      <span class="tool-number">4</span>
+      <span class="tool-name">Competitive Positioning Map</span>
+      <span class="tool-status built">Built</span>
+      <p class="tool-problem">Verdana competes against AG1, Moon Juice, Thorne, Ritual, Seed, and others — but how exactly? This interactive map plots 9 brands on a 2D grid with 6 selectable axes (price, clinical rigor, lifestyle branding, transparency, DTC focus, product breadth). Hover any brand to see how it compares to Verdana.</p>
+    </div>
+    <div class="tool-prompt">
+      <div class="prompt-label">The Prompt</div>
+      <div class="prompt-text">"Build a competitive positioning map for Verdana. Plot Verdana against 6-8 real and fictional competitors in the DTC wellness/supplement space on an interactive 2D grid. Let me choose the axes — price vs. quality, clinical rigor vs. lifestyle branding, DTC vs. retail distribution, ingredient transparency vs. proprietary blends. Show each brand as a node with key details on hover. Output as an interactive HTML file."</div>
+    </div>
+    <div class="tool-preview">
+      <iframe src="tools/competitive_positioning_map.html" loading="lazy"></iframe>
+      <div class="tool-preview-overlay">
+        <a class="open-tool-btn" href="tools/competitive_positioning_map.html" target="_blank">Open Full Tool &rarr;</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOOL 5: EXECUTIVE STRATEGY SUMMARY (built) -->
+  <div class="tool-card">
+    <div class="tool-header">
+      <span class="tool-number">5</span>
+      <span class="tool-name">Executive Strategy Summary</span>
+      <span class="tool-status built">Built</span>
+      <p class="tool-problem">After exploring scenarios, sizing markets, and mapping competitors, leadership needs one document that synthesizes everything into a recommendation the board can review. This summary recommends "Wholesale + Cut Shield," backs it with evidence from each tool, projects 3-year financials, maps risks, and defines contingency triggers.</p>
+    </div>
+    <div class="tool-prompt">
+      <div class="prompt-label">The Prompt</div>
+      <div class="prompt-text">"Build a tool that reads all the Verdana data — the brand definition, OKR goals, market sizing results, scenario model outputs, and competitive positioning — and generates a polished executive strategy summary. Include an executive overview, recommended strategic direction with rationale, 3-year financial projections, key risks, and immediate next steps. Output as both a formatted HTML presentation and a markdown document."</div>
+    </div>
+    <div class="tool-preview">
+      <iframe src="tools/executive_strategy_summary.html" loading="lazy"></iframe>
+      <div class="tool-preview-overlay">
+        <a class="open-tool-btn" href="tools/executive_strategy_summary.html" target="_blank">Open Full Tool &rarr;</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <p>Verdana Strategic Planning Toolkit &middot; Built April 2026</p>
+  <p>Each tool is a self-contained HTML file &mdash; no server, no dependencies, no build step.</p>
+</div>
+
+</body>
+</html>
