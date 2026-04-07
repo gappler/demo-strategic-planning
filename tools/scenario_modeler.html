@@ -1268,7 +1268,121 @@ function renderRiskBar(result) {
     </div>
   `;
 }
-function renderPinBar() { /* Task 6 */ }
+function renderPinBar() {
+  const pinBar = document.getElementById('pin-bar');
+  pinBar.innerHTML = `
+    <div class="pin-controls">
+      <button class="pin-btn" onclick="pinScenario()">&#x1F4CC; Pin Current Scenario</button>
+      <input class="pin-name-input" id="pin-name" placeholder='Name: e.g. "Wholesale + Cut Shield"' onkeydown="if(event.key==='Enter')pinScenario()">
+    </div>
+    <div class="compare-toggle" onclick="toggleDrawer()" id="compare-toggle">
+      ${pinnedScenarios.length > 0 ? '&#9650; Compare ' + pinnedScenarios.length + ' Pinned Scenario' + (pinnedScenarios.length !== 1 ? 's' : '') : ''}
+    </div>
+  `;
+  renderDrawer();
+}
+
+function pinScenario() {
+  const nameInput = document.getElementById('pin-name');
+  let name = nameInput.value.trim();
+  if (!name) {
+    // Auto-generate name from enabled moves
+    const parts = [];
+    if (scenario.wholesale.enabled) parts.push('Wholesale');
+    if (scenario.new_products.enabled) {
+      const products = [];
+      if (scenario.new_products.metabolize_enabled) products.push('Metabolize');
+      if (scenario.new_products.glow_enabled) products.push('Glow');
+      parts.push(products.length > 0 ? products.join('+') : 'New Products');
+    }
+    if (scenario.cut_shield.enabled) parts.push('Cut Shield');
+    name = parts.length > 0 ? parts.join(' + ') : 'Baseline (DTC Only)';
+  }
+
+  const result = computeProjection(scenario);
+  pinnedScenarios.push({
+    name: name,
+    config: deepCopy(scenario),
+    results: result
+  });
+
+  nameInput.value = '';
+  renderPinBar();
+
+  // Auto-open drawer
+  const drawer = document.getElementById('comparison-drawer');
+  drawer.classList.add('open');
+}
+
+function unpinScenario(index) {
+  pinnedScenarios.splice(index, 1);
+  renderPinBar();
+}
+
+function toggleDrawer() {
+  const drawer = document.getElementById('comparison-drawer');
+  drawer.classList.toggle('open');
+  const toggle = document.getElementById('compare-toggle');
+  if (drawer.classList.contains('open')) {
+    toggle.innerHTML = '&#9660; Hide Comparison';
+  } else {
+    toggle.innerHTML = '&#9650; Compare ' + pinnedScenarios.length + ' Pinned Scenario' + (pinnedScenarios.length !== 1 ? 's' : '');
+  }
+}
+
+function renderDrawer() {
+  const drawer = document.getElementById('comparison-drawer');
+  if (pinnedScenarios.length === 0) {
+    drawer.innerHTML = '<div class="no-pins-msg">Pin scenarios to compare them side by side</div>';
+    return;
+  }
+
+  const metrics = [
+    { label: 'Y1 Revenue', key: 'y1_revenue', format: formatCurrency },
+    { label: 'Y2 Revenue', key: 'y2_revenue', format: formatCurrency },
+    { label: 'Y3 Revenue', key: 'y3_revenue', format: formatCurrency },
+    { label: 'Y3 Gross Margin', key: 'y3_gross_margin', format: formatPercent },
+    { label: '3Y Investment', key: 'total_investment', format: formatCurrency },
+    { label: 'Headcount Δ', key: 'headcount_delta', format: formatDelta },
+    { label: 'Risk Level', key: 'risk_level', format: v => riskDots(v) + ' ' + v.charAt(0).toUpperCase() + v.slice(1) }
+  ];
+
+  const lastIdx = pinnedScenarios.length - 1;
+
+  let headerCells = '<th>Metric</th>';
+  pinnedScenarios.forEach((p, i) => {
+    headerCells += `<th class="${i === lastIdx ? 'highlight' : ''}">
+      &#x1F4CC; ${p.name}<span class="delete-btn" onclick="unpinScenario(${i})">&#x2715;</span>
+      <br><span class="scenario-subtitle">${describeConfig(p.config)}</span>
+    </th>`;
+  });
+
+  let bodyRows = '';
+  metrics.forEach(m => {
+    let cells = `<td>${m.label}</td>`;
+    pinnedScenarios.forEach((p, i) => {
+      const val = p.results.summary[m.key];
+      cells += `<td class="${i === lastIdx ? 'highlight' : ''}">${m.format(val)}</td>`;
+    });
+    bodyRows += `<tr>${cells}</tr>`;
+  });
+
+  drawer.innerHTML = `
+    <div class="drawer-title">Scenario Comparison</div>
+    <table class="comparison-table">
+      <thead><tr>${headerCells}</tr></thead>
+      <tbody>${bodyRows}</tbody>
+    </table>
+  `;
+}
+
+function describeConfig(config) {
+  const parts = [];
+  if (config.wholesale.enabled) parts.push('WS');
+  if (config.new_products.enabled) parts.push('New SKUs');
+  if (config.cut_shield.enabled) parts.push('Cut Shield');
+  return parts.length > 0 ? parts.join(', ') : 'DTC only';
+}
 
 // Initial render
 document.addEventListener('DOMContentLoaded', recalculate);
