@@ -889,7 +889,84 @@ function renderHeader(result) {
   document.getElementById('kpi-risk').innerHTML = riskDots(result.summary.risk_level);
 }
 
-function renderMoveCards(result) { /* Task 2 */ }
+function renderMoveCards(result) {
+  const zone = document.getElementById('moves-zone');
+  // Only rebuild DOM on first render
+  if (!zone.dataset.initialized) {
+    zone.dataset.initialized = 'true';
+    zone.innerHTML = `
+      <div class="zone-label">Strategic Moves — toggle on/off, then tune below</div>
+      <div class="moves-grid">
+        <div class="move-card ${scenario.wholesale.enabled ? 'enabled' : ''}" data-move="wholesale" onclick="toggleMove('wholesale')">
+          <div class="move-card-toggle">${scenario.wholesale.enabled ? '✓' : '—'}</div>
+          <div class="move-card-title">Expand into Wholesale</div>
+          <div class="move-card-desc">Whole Foods regional, optional Target national</div>
+          <div class="move-card-impact" id="impact-wholesale"></div>
+        </div>
+        <div class="move-card ${scenario.new_products.enabled ? 'enabled' : ''}" data-move="new_products" onclick="toggleMove('new_products')">
+          <div class="move-card-toggle">${scenario.new_products.enabled ? '✓' : '—'}</div>
+          <div class="move-card-title">Launch New Products</div>
+          <div class="move-card-desc">Metabolize (berberine) and/or Glow (beauty)</div>
+          <div class="move-card-impact" id="impact-new_products"></div>
+        </div>
+        <div class="move-card ${scenario.cut_shield.enabled ? 'enabled' : ''}" data-move="cut_shield" onclick="toggleMove('cut_shield')">
+          <div class="move-card-toggle">${scenario.cut_shield.enabled ? '✓' : '—'}</div>
+          <div class="move-card-title">Cut Shield & Reallocate</div>
+          <div class="move-card-desc">Discontinue underperformer, redirect resources</div>
+          <div class="move-card-impact" id="impact-cut_shield"></div>
+        </div>
+      </div>
+    `;
+  }
+
+  // Update card states
+  document.querySelectorAll('.move-card').forEach(card => {
+    const move = card.dataset.move;
+    const enabled = scenario[move].enabled;
+    card.classList.toggle('enabled', enabled);
+    card.querySelector('.move-card-toggle').textContent = enabled ? '✓' : '—';
+  });
+
+  // Compute per-move impact deltas by comparing with baseline
+  const baselineResult = computeProjection({ wholesale: { enabled: false }, new_products: { enabled: false }, cut_shield: { enabled: false } });
+  const baseY3 = baselineResult.summary.y3_revenue;
+  const baseMarg = baselineResult.summary.y3_gross_margin;
+
+  const moves = ['wholesale', 'new_products', 'cut_shield'];
+  moves.forEach(move => {
+    const el = document.getElementById('impact-' + move);
+    if (!scenario[move].enabled) {
+      el.innerHTML = '<span class="label">Revenue:</span> <span>—</span> <span class="label">Margin:</span> <span>—</span> <span class="label">Hires:</span> <span>—</span>';
+      return;
+    }
+    // Compute solo impact of this move
+    const solo = deepCopy(scenario);
+    moves.forEach(m => { if (m !== move) solo[m].enabled = false; });
+    const soloResult = computeProjection(solo);
+    const revDelta = soloResult.summary.y3_revenue - baseY3;
+    const margDelta = soloResult.summary.y3_gross_margin - baseMarg;
+    const hires = soloResult.summary.headcount_delta;
+
+    el.innerHTML = `
+      <span class="label">Revenue:</span> <span class="${revDelta >= 0 ? 'positive' : 'negative'}">${revDelta >= 0 ? '+' : ''}${formatCurrency(revDelta)}</span>
+      <span class="label">Margin:</span> <span class="${margDelta >= 0 ? 'positive' : 'negative'}">${margDelta >= 0 ? '+' : ''}${(margDelta * 100).toFixed(1)}%</span>
+      <span class="label">Hires:</span> <span class="neutral">${formatDelta(hires)}</span>
+    `;
+  });
+}
+
+function toggleMove(move) {
+  scenario[move].enabled = !scenario[move].enabled;
+  // When enabling new_products, auto-enable metabolize if nothing is on
+  if (move === 'new_products' && scenario.new_products.enabled
+      && !scenario.new_products.metabolize_enabled && !scenario.new_products.glow_enabled) {
+    scenario.new_products.metabolize_enabled = true;
+  }
+  // Force slider panel rebuild
+  document.getElementById('sliders-zone').innerHTML = '';
+  document.getElementById('sliders-zone').removeAttribute('data-initialized');
+  recalculate();
+}
 function renderSliders() { /* Task 3 */ }
 function renderProjections(result) { /* Task 4 */ }
 function renderRiskBar(result) { /* Task 5 */ }
