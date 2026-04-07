@@ -1071,7 +1071,7 @@ function buildSlider(id, label, value, min, max, step, move, suffix) {
 function buildToggleRow(id, label, isOn, move, color) {
   return `<div class="toggle-row">
     <span>${label}</span>
-    <div class="toggle-switch ${isOn ? 'on' : ''} ${color ? 'data-color-' + color : ''}"
+    <div class="toggle-switch ${isOn ? 'on' : ''}"
       ${color ? 'data-color="' + color + '"' : ''}
       data-id="${id}" data-move="${move}" onclick="handleToggle(this)"></div>
   </div>`;
@@ -1188,7 +1188,7 @@ function renderProjections(result) {
   // Investment breakdown
   let investBreakdown = [];
   if (scenario.wholesale.enabled) {
-    investBreakdown.push('WS ops: $250K');
+    investBreakdown.push('WS ops: $230K');
     investBreakdown.push('Slotting: ' + formatCurrency(scenario.wholesale.slotting_fees));
   }
   if (scenario.new_products.enabled) {
