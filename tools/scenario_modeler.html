@@ -1145,7 +1145,108 @@ function bindSliderEvents() {
     });
   });
 }
-function renderProjections(result) { /* Task 4 */ }
+function renderProjections(result) {
+  const zone = document.getElementById('projection-zone');
+
+  // Find max quarterly revenue for chart scaling
+  const maxRevenue = Math.max(...result.quarterly.map(q => q.revenue.total));
+
+  // Build bar chart HTML
+  let barsHtml = '';
+  result.quarterly.forEach((q, i) => {
+    // Add year dividers
+    if (i === 4 || i === 8) {
+      barsHtml += '<div class="chart-year-divider"></div>';
+    }
+
+    const dtcPct = maxRevenue > 0 ? (q.revenue.dtc / maxRevenue * 100) : 0;
+    const wsPct = maxRevenue > 0 ? (q.revenue.wholesale / maxRevenue * 100) : 0;
+    const npPct = maxRevenue > 0 ? (q.revenue.new_products / maxRevenue * 100) : 0;
+
+    barsHtml += `<div class="chart-bar-group">
+      <div class="chart-bar-label">Q${q.quarter}</div>
+      ${npPct > 0 ? `<div class="chart-bar-segment new-products" style="height:${npPct}%" title="New Products: ${formatCurrency(q.revenue.new_products)}"></div>` : ''}
+      ${wsPct > 0 ? `<div class="chart-bar-segment wholesale" style="height:${wsPct}%" title="Wholesale: ${formatCurrency(q.revenue.wholesale)}"></div>` : ''}
+      <div class="chart-bar-segment dtc" style="height:${dtcPct}%;border-radius:3px 3px 0 0" title="DTC: ${formatCurrency(q.revenue.dtc)}"></div>
+    </div>`;
+  });
+
+  // Margin trend mini-bars
+  const maxMargin = Math.max(...result.quarterly.map(q => q.gross_margin));
+  let marginBarsHtml = '';
+  const yearColors = { 1: '#2d6a4f', 2: '#74a98c', 3: '#4ecca3' };
+  result.quarterly.forEach(q => {
+    const pct = maxMargin > 0 ? (q.gross_margin / maxMargin * 100) : 0;
+    marginBarsHtml += `<div style="flex:1;background:${yearColors[q.year]};height:${pct}%;border-radius:2px 2px 0 0" title="Q${q.quarter}: ${formatPercent(q.gross_margin)}"></div>`;
+  });
+
+  const startMargin = result.quarterly[0].gross_margin;
+  const endMargin = result.quarterly[11].gross_margin;
+  const marginDelta = endMargin - startMargin;
+  const marginArrow = marginDelta >= 0 ? '<span style="color:#2d6a4f">&#9650;</span>' : '<span style="color:#c0392b">&#9660;</span>';
+
+  // Investment breakdown
+  let investBreakdown = [];
+  if (scenario.wholesale.enabled) {
+    investBreakdown.push('WS ops: $250K');
+    investBreakdown.push('Slotting: ' + formatCurrency(scenario.wholesale.slotting_fees));
+  }
+  if (scenario.new_products.enabled) {
+    const count = (scenario.new_products.metabolize_enabled ? 1 : 0) + (scenario.new_products.glow_enabled ? 1 : 0);
+    investBreakdown.push('R&D: ' + formatCurrency(scenario.new_products.rd_cost_per_product * count));
+  }
+  if (scenario.cut_shield.enabled) investBreakdown.push('Transition: $15K');
+  if (scenario.wholesale.enabled) {
+    investBreakdown.push('WS mktg: ' + formatCurrency(20000 * 12));
+  }
+  if (investBreakdown.length === 0) investBreakdown.push('No investment required');
+
+  // Headcount breakdown
+  let hcBreakdown = [];
+  if (scenario.wholesale.enabled) hcBreakdown.push('+3 wholesale ops');
+  if (scenario.new_products.enabled) hcBreakdown.push('+1 product dev');
+  if (scenario.cut_shield.enabled) hcBreakdown.push('-1 Shield FTE');
+  if (hcBreakdown.length === 0) hcBreakdown.push('No team changes');
+
+  zone.innerHTML = `
+    <div class="projection-top">
+      <div class="chart-container">
+        <div class="chart-header">
+          <div class="chart-title">Quarterly Revenue by Source</div>
+          <div class="chart-legend">
+            <span><span class="legend-dot" style="background:#2d6a4f"></span>DTC</span>
+            <span><span class="legend-dot" style="background:#6b4c9a"></span>Wholesale</span>
+            <span><span class="legend-dot" style="background:#c17817"></span>New Products</span>
+          </div>
+        </div>
+        <div class="chart-bars">${barsHtml}</div>
+        <div class="chart-year-labels">
+          <span>&mdash; Year 1 &mdash;</span>
+          <span>&mdash; Year 2 &mdash;</span>
+          <span>&mdash; Year 3 &mdash;</span>
+        </div>
+      </div>
+      <div class="metrics-column">
+        <div class="metric-card margin">
+          <div class="metric-card-label">Gross Margin Trend</div>
+          <div style="display:flex;align-items:flex-end;gap:2px;height:50px;margin:6px 0">${marginBarsHtml}</div>
+          <div class="metric-card-detail">${formatPercent(startMargin)} &rarr; ${formatPercent(endMargin)} ${marginArrow}</div>
+        </div>
+        <div class="metric-card investment">
+          <div class="metric-card-label">Cumulative Investment</div>
+          <div class="metric-card-value">${formatCurrency(result.summary.total_investment)}</div>
+          <div class="metric-card-detail">${investBreakdown.join(' &middot; ')}</div>
+        </div>
+        <div class="metric-card headcount">
+          <div class="metric-card-label">Team by Y3</div>
+          <div class="metric-card-value">${BASELINE.employees + result.summary.headcount_delta} <span style="font-size:12px;font-weight:400">(${formatDelta(result.summary.headcount_delta)})</span></div>
+          <div class="metric-card-detail">${hcBreakdown.join(' &middot; ')}</div>
+        </div>
+      </div>
+    </div>
+    <div id="risk-bar-container"></div>
+  `;
+}
 function renderRiskBar(result) { /* Task 5 */ }
 function renderPinBar() { /* Task 6 */ }
 
