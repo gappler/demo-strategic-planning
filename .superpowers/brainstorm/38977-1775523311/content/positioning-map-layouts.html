@@ -1,0 +1,169 @@
+<h2>Competitive Positioning Map — Layout Approach</h2>
+<p class="subtitle">How should the map, axis controls, and brand details be organized?</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Full-Screen Map + Floating Controls</h3>
+      <div class="mockup" style="margin:12px 0">
+        <div class="mockup-body" style="padding:0;min-height:260px;font-size:11px;position:relative;background:#f8faf7">
+          <!-- Header -->
+          <div style="background:#2d6a4f;color:#fff;padding:8px 14px;display:flex;justify-content:space-between;align-items:center">
+            <div><strong>verdana</strong> <span style="opacity:0.6;font-size:10px">Competitive Positioning Map</span></div>
+            <div style="display:flex;gap:8px;font-size:10px">
+              <span>X: <select style="font-size:10px;padding:1px 4px;border-radius:3px;border:1px solid rgba(255,255,255,0.3);background:rgba(255,255,255,0.15);color:#fff"><option>Price Point</option></select></span>
+              <span>Y: <select style="font-size:10px;padding:1px 4px;border-radius:3px;border:1px solid rgba(255,255,255,0.3);background:rgba(255,255,255,0.15);color:#fff"><option>Clinical Rigor</option></select></span>
+            </div>
+          </div>
+          <!-- Map area -->
+          <div style="position:relative;height:220px;margin:10px 40px 30px 50px">
+            <!-- Y axis label -->
+            <div style="position:absolute;left:-45px;top:50%;transform:rotate(-90deg) translateX(50%);font-size:9px;color:#888;white-space:nowrap">← Low Clinical Rigor · · · High Clinical Rigor →</div>
+            <!-- X axis label -->
+            <div style="position:absolute;bottom:-22px;left:50%;transform:translateX(-50%);font-size:9px;color:#888">← Budget · · · Premium →</div>
+            <!-- Grid -->
+            <div style="position:absolute;inset:0;border:1px solid #ddd;background:linear-gradient(rgba(45,106,79,0.02), rgba(45,106,79,0.02))">
+              <div style="position:absolute;left:50%;top:0;bottom:0;border-left:1px dashed #ddd"></div>
+              <div style="position:absolute;top:50%;left:0;right:0;border-top:1px dashed #ddd"></div>
+            </div>
+            <!-- Brand nodes -->
+            <div style="position:absolute;left:65%;top:22%;width:36px;height:36px;background:#2d6a4f;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:8px;font-weight:700;box-shadow:0 2px 6px rgba(0,0,0,0.2);border:2px solid #fff;z-index:2">V</div>
+            <div style="position:absolute;left:70%;top:35%;width:28px;height:28px;background:#6b4c9a;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:7px;font-weight:600">Th</div>
+            <div style="position:absolute;left:50%;top:55%;width:28px;height:28px;background:#c17817;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:7px;font-weight:600">AG1</div>
+            <div style="position:absolute;left:45%;top:30%;width:28px;height:28px;background:#e76f51;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:7px;font-weight:600">Sd</div>
+            <div style="position:absolute;left:58%;top:70%;width:28px;height:28px;background:#e9c46a;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#333;font-size:7px;font-weight:600">MJ</div>
+            <div style="position:absolute;left:20%;top:75%;width:28px;height:28px;background:#aaa;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:7px;font-weight:600">Am</div>
+            <div style="position:absolute;left:75%;top:48%;width:28px;height:28px;background:#2a9d8f;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:7px;font-weight:600">Rt</div>
+            <div style="position:absolute;left:60%;top:42%;width:28px;height:28px;background:#264653;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:7px;font-weight:600">Mo</div>
+            <div style="position:absolute;left:30%;top:60%;width:28px;height:28px;background:#555;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:7px;font-weight:600">On</div>
+            <!-- Hover card -->
+            <div style="position:absolute;left:65%;top:2%;margin-left:24px;background:#fff;border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,0.15);padding:10px 12px;width:180px;z-index:10;border-left:3px solid #2d6a4f">
+              <div style="font-weight:700;color:#2d6a4f;font-size:12px">Verdana</div>
+              <div style="font-size:9px;color:#888;margin-bottom:4px">Clinical transparency adaptogens</div>
+              <div style="font-size:9px;color:#555;margin-bottom:3px">Products: Focus, Calm, Endure, Restore, Shield</div>
+              <div style="font-size:9px;color:#555;margin-bottom:3px">Revenue: $8M · 60 employees</div>
+              <div style="font-size:9px;color:#555;margin-bottom:3px">Audience: Skeptical professionals, 30-50</div>
+              <div style="font-size:9px;color:#2d6a4f;font-style:italic;border-top:1px solid #eee;padding-top:3px;margin-top:3px">vs. Thorne: consumer brand with personality vs. practitioner catalog</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p><strong>Map takes full viewport.</strong> Axis dropdowns in the header bar. Brand nodes float on the grid. Hover cards appear next to the node. Maximum visual space for the map itself. Clean, focused.</p>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Map + Side Panel</h3>
+      <div class="mockup" style="margin:12px 0">
+        <div class="mockup-body" style="padding:0;min-height:260px;font-size:11px;display:flex">
+          <!-- Side panel -->
+          <div style="width:200px;background:#eef4ec;padding:12px;border-right:1px solid #d4e4d0;flex-shrink:0">
+            <div style="font-weight:700;color:#2d6a4f;font-size:12px;margin-bottom:10px">Axis Controls</div>
+            <div style="margin-bottom:8px">
+              <div style="font-size:9px;color:#888;margin-bottom:2px">X-AXIS</div>
+              <select style="width:100%;font-size:10px;padding:4px;border-radius:4px;border:1px solid #ccc"><option>Price Point</option></select>
+            </div>
+            <div style="margin-bottom:12px">
+              <div style="font-size:9px;color:#888;margin-bottom:2px">Y-AXIS</div>
+              <select style="width:100%;font-size:10px;padding:4px;border-radius:4px;border:1px solid #ccc"><option>Clinical Rigor</option></select>
+            </div>
+            <div style="border-top:1px solid #d4e4d0;padding-top:10px;margin-top:4px">
+              <div style="font-size:9px;color:#888;margin-bottom:6px">BRANDS</div>
+              <div style="display:flex;flex-direction:column;gap:4px">
+                <div style="display:flex;align-items:center;gap:6px;font-size:10px"><div style="width:10px;height:10px;background:#2d6a4f;border-radius:50%"></div><strong>Verdana</strong></div>
+                <div style="display:flex;align-items:center;gap:6px;font-size:10px"><div style="width:10px;height:10px;background:#6b4c9a;border-radius:50%"></div>Thorne</div>
+                <div style="display:flex;align-items:center;gap:6px;font-size:10px"><div style="width:10px;height:10px;background:#c17817;border-radius:50%"></div>AG1</div>
+                <div style="display:flex;align-items:center;gap:6px;font-size:10px"><div style="width:10px;height:10px;background:#e76f51;border-radius:50%"></div>Seed</div>
+                <div style="display:flex;align-items:center;gap:6px;font-size:10px"><div style="width:10px;height:10px;background:#e9c46a;border-radius:50%"></div>Moon Juice</div>
+                <div style="display:flex;align-items:center;gap:6px;font-size:10px"><div style="width:10px;height:10px;background:#aaa;border-radius:50%"></div>Amazon</div>
+                <div style="display:flex;align-items:center;gap:6px;font-size:10px"><div style="width:10px;height:10px;background:#2a9d8f;border-radius:50%"></div>Ritual</div>
+                <div style="display:flex;align-items:center;gap:6px;font-size:10px"><div style="width:10px;height:10px;background:#264653;border-radius:50%"></div>Momentous</div>
+              </div>
+            </div>
+            <div style="border-top:1px solid #d4e4d0;padding-top:10px;margin-top:10px">
+              <div style="font-weight:600;color:#2d6a4f;font-size:11px">Selected: Verdana</div>
+              <div style="font-size:9px;color:#555;margin-top:4px">Clinical transparency adaptogens</div>
+              <div style="font-size:9px;color:#555">$8M rev · 60 employees</div>
+              <div style="font-size:9px;color:#555">5 SKUs, DTC-only</div>
+            </div>
+          </div>
+          <!-- Map -->
+          <div style="flex:1;position:relative;background:#f8faf7;padding:10px">
+            <div style="position:relative;height:240px;margin:0 20px 20px 30px">
+              <div style="position:absolute;left:-25px;top:50%;transform:rotate(-90deg) translateX(50%);font-size:8px;color:#888;white-space:nowrap">Clinical Rigor →</div>
+              <div style="position:absolute;bottom:-16px;left:50%;transform:translateX(-50%);font-size:8px;color:#888">Price Point →</div>
+              <div style="position:absolute;inset:0;border:1px solid #ddd">
+                <div style="position:absolute;left:50%;top:0;bottom:0;border-left:1px dashed #ddd"></div>
+                <div style="position:absolute;top:50%;left:0;right:0;border-top:1px dashed #ddd"></div>
+              </div>
+              <div style="position:absolute;left:65%;top:22%;width:32px;height:32px;background:#2d6a4f;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:8px;font-weight:700;box-shadow:0 2px 6px rgba(0,0,0,0.2);border:2px solid #fff">V</div>
+              <div style="position:absolute;left:70%;top:35%;width:24px;height:24px;background:#6b4c9a;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:7px">Th</div>
+              <div style="position:absolute;left:50%;top:55%;width:24px;height:24px;background:#c17817;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:7px">AG</div>
+              <div style="position:absolute;left:45%;top:30%;width:24px;height:24px;background:#e76f51;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:7px">Sd</div>
+              <div style="position:absolute;left:58%;top:70%;width:24px;height:24px;background:#e9c46a;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#333;font-size:7px">MJ</div>
+              <div style="position:absolute;left:20%;top:75%;width:24px;height:24px;background:#aaa;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:7px">Am</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p><strong>Persistent side panel with brand legend and details.</strong> Clicking a brand node selects it — details appear in the side panel instead of a hover card. Axis controls live in the sidebar. More structured, but sidebar steals ~200px from the map.</p>
+    </div>
+  </div>
+
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Full-Screen Map + Click-to-Expand Cards</h3>
+      <div class="mockup" style="margin:12px 0">
+        <div class="mockup-body" style="padding:0;min-height:260px;font-size:11px;position:relative;background:#f8faf7">
+          <!-- Header -->
+          <div style="background:#2d6a4f;color:#fff;padding:8px 14px;display:flex;justify-content:space-between;align-items:center">
+            <div><strong>verdana</strong> <span style="opacity:0.6;font-size:10px">Competitive Positioning Map</span></div>
+            <div style="display:flex;gap:8px;font-size:10px">
+              <span>X: <select style="font-size:10px;padding:1px 4px;border-radius:3px;border:1px solid rgba(255,255,255,0.3);background:rgba(255,255,255,0.15);color:#fff"><option>Price Point</option></select></span>
+              <span>Y: <select style="font-size:10px;padding:1px 4px;border-radius:3px;border:1px solid rgba(255,255,255,0.3);background:rgba(255,255,255,0.15);color:#fff"><option>Clinical Rigor</option></select></span>
+            </div>
+          </div>
+          <!-- Map + bottom cards -->
+          <div style="position:relative;height:170px;margin:10px 40px 8px 50px">
+            <div style="position:absolute;left:-45px;top:50%;transform:rotate(-90deg) translateX(50%);font-size:9px;color:#888;white-space:nowrap">Clinical Rigor →</div>
+            <div style="position:absolute;bottom:-18px;left:50%;transform:translateX(-50%);font-size:9px;color:#888">Price Point →</div>
+            <div style="position:absolute;inset:0;border:1px solid #ddd">
+              <div style="position:absolute;left:50%;top:0;bottom:0;border-left:1px dashed #ddd"></div>
+              <div style="position:absolute;top:50%;left:0;right:0;border-top:1px dashed #ddd"></div>
+            </div>
+            <div style="position:absolute;left:65%;top:18%;width:32px;height:32px;background:#2d6a4f;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:8px;font-weight:700;box-shadow:0 2px 6px rgba(0,0,0,0.2);border:3px solid #fff">V</div>
+            <div style="position:absolute;left:70%;top:32%;width:24px;height:24px;background:#6b4c9a;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:7px">Th</div>
+            <div style="position:absolute;left:50%;top:52%;width:24px;height:24px;background:#c17817;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:7px">AG</div>
+            <div style="position:absolute;left:45%;top:28%;width:24px;height:24px;background:#e76f51;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:7px">Sd</div>
+          </div>
+          <!-- Bottom card strip -->
+          <div style="padding:6px 14px;display:flex;gap:6px;overflow-x:auto;border-top:1px solid #e8e8e8;background:#fff">
+            <div style="flex-shrink:0;border:2px solid #2d6a4f;border-radius:8px;padding:6px 10px;min-width:140px;background:#f0faf0">
+              <div style="font-weight:700;color:#2d6a4f;font-size:10px">Verdana ★</div>
+              <div style="font-size:8px;color:#555">$8M · DTC only · 5 SKUs</div>
+              <div style="font-size:8px;color:#888;margin-top:2px">Clinical transparency</div>
+            </div>
+            <div style="flex-shrink:0;border:1px solid #ddd;border-radius:8px;padding:6px 10px;min-width:140px">
+              <div style="font-weight:600;color:#6b4c9a;font-size:10px">Thorne</div>
+              <div style="font-size:8px;color:#555">$200M+ · Retail+DTC · 200+ SKUs</div>
+              <div style="font-size:8px;color:#888;margin-top:2px">Practitioner-grade</div>
+            </div>
+            <div style="flex-shrink:0;border:1px solid #ddd;border-radius:8px;padding:6px 10px;min-width:140px">
+              <div style="font-weight:600;color:#c17817;font-size:10px">AG1</div>
+              <div style="font-size:8px;color:#555">$600M+ · DTC · 1 SKU</div>
+              <div style="font-size:8px;color:#888;margin-top:2px">All-in-one greens</div>
+            </div>
+            <div style="flex-shrink:0;border:1px solid #ddd;border-radius:8px;padding:6px 10px;min-width:140px;opacity:0.5">
+              <div style="font-weight:600;color:#888;font-size:10px">+ 5 more →</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p><strong>Map on top, scrollable brand cards at bottom.</strong> Click a node to highlight it and scroll its card into view. Cards provide persistent context without obscuring the map. Good for presentations — you can see the map AND reference brand details.</p>
+    </div>
+  </div>
+</div>

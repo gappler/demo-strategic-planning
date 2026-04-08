@@ -1,0 +1,330 @@
+<h2>Scenario Modeler — Full UI Design</h2>
+<p class="subtitle">This is the complete layout. Scroll to review each zone, then let me know if it feels right.</p>
+
+<div class="mockup" style="margin:20px 0">
+  <div class="mockup-header">Full Page Layout — Scenario Modeler</div>
+  <div class="mockup-body" style="padding:0;font-size:11px">
+
+    <!-- HEADER BAR -->
+    <div style="background:#2d6a4f;color:#fff;padding:10px 16px;display:flex;justify-content:space-between;align-items:center">
+      <div>
+        <span style="font-weight:700;font-size:14px;letter-spacing:-0.5px">verdana</span>
+        <span style="opacity:0.6;font-size:11px;margin-left:8px">Scenario Modeler</span>
+      </div>
+      <div style="display:flex;gap:20px;font-size:11px">
+        <div style="text-align:center"><div style="opacity:0.6;font-size:9px">Y3 Revenue</div><div style="font-weight:700;font-size:15px">$12.4M</div></div>
+        <div style="text-align:center"><div style="opacity:0.6;font-size:9px">Blended Margin</div><div style="font-weight:700;font-size:15px">68.2%</div></div>
+        <div style="text-align:center"><div style="opacity:0.6;font-size:9px">3Y Investment</div><div style="font-weight:700;font-size:15px">$420K</div></div>
+        <div style="text-align:center"><div style="opacity:0.6;font-size:9px">Headcount Δ</div><div style="font-weight:700;font-size:15px">+5</div></div>
+        <div style="text-align:center"><div style="opacity:0.6;font-size:9px">Risk Level</div><div style="font-weight:700;font-size:15px">●●○</div></div>
+      </div>
+    </div>
+
+    <!-- ZONE 1: STRATEGIC MOVE CARDS -->
+    <div style="padding:12px 16px;background:#f8faf7;border-bottom:1px solid #e8e8e8">
+      <div style="font-size:9px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Strategic Moves — toggle on/off, then tune below</div>
+      <div style="display:flex;gap:10px">
+        <!-- Wholesale: ON -->
+        <div style="flex:1;border:2px solid #2d6a4f;border-radius:10px;padding:10px 12px;background:#f0faf0;cursor:pointer;position:relative">
+          <div style="position:absolute;top:8px;right:8px;background:#2d6a4f;color:#fff;width:18px;height:18px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:10px">✓</div>
+          <div style="font-weight:700;color:#2d6a4f;font-size:12px;margin-bottom:4px">Expand into Wholesale</div>
+          <div style="font-size:10px;color:#555;margin-bottom:6px">Whole Foods regional, optional Target national</div>
+          <div style="display:flex;gap:12px;font-size:10px">
+            <div><span style="color:#888">Revenue:</span> <span style="color:#2d6a4f;font-weight:600">+$2.1M</span></div>
+            <div><span style="color:#888">Margin:</span> <span style="color:#c17817;font-weight:600">-8.2%</span></div>
+            <div><span style="color:#888">Hires:</span> <span style="font-weight:600">+3</span></div>
+          </div>
+        </div>
+        <!-- New Products: OFF -->
+        <div style="flex:1;border:2px solid #ddd;border-radius:10px;padding:10px 12px;background:#fff;cursor:pointer;position:relative;opacity:0.7">
+          <div style="position:absolute;top:8px;right:8px;background:#ddd;width:18px;height:18px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:10px;color:#999">—</div>
+          <div style="font-weight:700;color:#666;font-size:12px;margin-bottom:4px">Launch New Products</div>
+          <div style="font-size:10px;color:#888;margin-bottom:6px">Metabolize (berberine) and/or Glow (beauty)</div>
+          <div style="display:flex;gap:12px;font-size:10px;color:#aaa">
+            <div>Revenue: —</div>
+            <div>Margin: —</div>
+            <div>Hires: —</div>
+          </div>
+        </div>
+        <!-- Cut Shield: ON -->
+        <div style="flex:1;border:2px solid #c17817;border-radius:10px;padding:10px 12px;background:#fdf8f0;cursor:pointer;position:relative">
+          <div style="position:absolute;top:8px;right:8px;background:#c17817;color:#fff;width:18px;height:18px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:10px">✓</div>
+          <div style="font-weight:700;color:#c17817;font-size:12px;margin-bottom:4px">Cut Shield & Reallocate</div>
+          <div style="font-size:10px;color:#555;margin-bottom:6px">Discontinue underperformer, redirect resources</div>
+          <div style="display:flex;gap:12px;font-size:10px">
+            <div><span style="color:#888">Revenue:</span> <span style="color:#c44;font-weight:600">-$594K</span></div>
+            <div><span style="color:#888">Margin:</span> <span style="color:#2d6a4f;font-weight:600">+1.2%</span></div>
+            <div><span style="color:#888">Hires:</span> <span style="font-weight:600">-1</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ZONE 2: ACTIVE MOVE SLIDERS -->
+    <div style="padding:12px 16px;display:flex;gap:12px;border-bottom:1px solid #e8e8e8">
+      <!-- Wholesale sliders -->
+      <div style="flex:1;background:#f8faf7;border-radius:8px;padding:10px;border-left:3px solid #2d6a4f">
+        <div style="font-size:10px;font-weight:700;color:#2d6a4f;margin-bottom:8px">WHOLESALE SETTINGS</div>
+        <div style="margin-bottom:6px">
+          <div style="display:flex;justify-content:space-between;font-size:10px;color:#555"><span>Whole Foods Stores</span><strong>85</strong></div>
+          <div style="background:#ddd;height:5px;border-radius:3px;margin-top:3px"><div style="background:#2d6a4f;height:5px;width:100%;border-radius:3px"></div></div>
+        </div>
+        <div style="margin-bottom:6px">
+          <div style="display:flex;justify-content:space-between;font-size:10px;color:#555"><span>Units / Store / Month</span><strong>24</strong></div>
+          <div style="background:#ddd;height:5px;border-radius:3px;margin-top:3px"><div style="background:#2d6a4f;height:5px;width:35%;border-radius:3px"></div></div>
+        </div>
+        <div style="margin-bottom:6px">
+          <div style="display:flex;justify-content:space-between;font-size:10px;color:#555"><span>Target</span><strong style="color:#c44">Off</strong></div>
+        </div>
+        <div style="margin-bottom:6px">
+          <div style="display:flex;justify-content:space-between;font-size:10px;color:#555"><span>Wholesale Discount</span><strong>50%</strong></div>
+          <div style="background:#ddd;height:5px;border-radius:3px;margin-top:3px"><div style="background:#2d6a4f;height:5px;width:33%;border-radius:3px"></div></div>
+        </div>
+        <div style="font-size:9px;color:#2d6a4f;cursor:pointer;margin-top:4px">▸ Advanced settings</div>
+      </div>
+      <!-- Cut Shield sliders -->
+      <div style="flex:1;background:#fdf8f0;border-radius:8px;padding:10px;border-left:3px solid #c17817">
+        <div style="font-size:10px;font-weight:700;color:#c17817;margin-bottom:8px">CUT SHIELD SETTINGS</div>
+        <div style="margin-bottom:6px">
+          <div style="display:flex;justify-content:space-between;font-size:10px;color:#555"><span>Transition Quarter</span><strong>Q2 Y1</strong></div>
+          <div style="background:#ddd;height:5px;border-radius:3px;margin-top:3px"><div style="background:#c17817;height:5px;width:25%;border-radius:3px"></div></div>
+        </div>
+        <div style="margin-bottom:6px">
+          <div style="display:flex;justify-content:space-between;font-size:10px;color:#555"><span>Reallocate to Marketing</span><strong>60%</strong></div>
+          <div style="background:#ddd;height:5px;border-radius:3px;margin-top:3px"><div style="background:#c17817;height:5px;width:60%;border-radius:3px"></div></div>
+        </div>
+        <div style="margin-bottom:6px">
+          <div style="display:flex;justify-content:space-between;font-size:10px;color:#555"><span>Retain as Margin</span><strong>40%</strong></div>
+          <div style="background:#ddd;height:5px;border-radius:3px;margin-top:3px"><div style="background:#c17817;height:5px;width:40%;border-radius:3px"></div></div>
+        </div>
+      </div>
+      <!-- Placeholder for inactive -->
+      <div style="flex:1;background:#f5f5f5;border-radius:8px;padding:10px;border-left:3px solid #ddd;display:flex;align-items:center;justify-content:center">
+        <div style="text-align:center;color:#aaa;font-size:10px">
+          <div style="font-size:20px;margin-bottom:4px">+</div>
+          Enable "New Products" above<br>to configure
+        </div>
+      </div>
+    </div>
+
+    <!-- ZONE 3: PROJECTION CHARTS -->
+    <div style="padding:12px 16px">
+      <div style="display:flex;gap:12px;margin-bottom:10px">
+        <!-- Revenue chart -->
+        <div style="flex:2;background:#f8faf7;border-radius:8px;padding:10px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <div style="font-size:10px;font-weight:600;color:#333">Quarterly Revenue by Source</div>
+            <div style="display:flex;gap:8px;font-size:8px">
+              <span><span style="display:inline-block;width:8px;height:8px;background:#2d6a4f;border-radius:2px;vertical-align:middle"></span> DTC</span>
+              <span><span style="display:inline-block;width:8px;height:8px;background:#6b4c9a;border-radius:2px;vertical-align:middle"></span> Wholesale</span>
+              <span><span style="display:inline-block;width:8px;height:8px;background:#c17817;border-radius:2px;vertical-align:middle"></span> New Products</span>
+            </div>
+          </div>
+          <div style="display:flex;align-items:flex-end;gap:3px;height:100px">
+            <!-- Y1 quarters - stacked bars -->
+            <div style="flex:1;display:flex;flex-direction:column-reverse;height:100%">
+              <div style="font-size:7px;text-align:center;padding-top:2px;color:#888">Q1</div>
+              <div style="background:#2d6a4f;height:38%;border-radius:2px 2px 0 0"></div>
+              <div style="background:#6b4c9a;height:5%;"></div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column-reverse;height:100%">
+              <div style="font-size:7px;text-align:center;padding-top:2px;color:#888">Q2</div>
+              <div style="background:#2d6a4f;height:40%;border-radius:2px 2px 0 0"></div>
+              <div style="background:#6b4c9a;height:10%;"></div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column-reverse;height:100%">
+              <div style="font-size:7px;text-align:center;padding-top:2px;color:#888">Q3</div>
+              <div style="background:#2d6a4f;height:42%;border-radius:2px 2px 0 0"></div>
+              <div style="background:#6b4c9a;height:14%;"></div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column-reverse;height:100%">
+              <div style="font-size:7px;text-align:center;padding-top:2px;color:#888">Q4</div>
+              <div style="background:#2d6a4f;height:44%;border-radius:2px 2px 0 0"></div>
+              <div style="background:#6b4c9a;height:16%;"></div>
+            </div>
+            <!-- Y1/Y2 divider -->
+            <div style="width:1px;background:#ddd;height:100%"></div>
+            <!-- Y2 -->
+            <div style="flex:1;display:flex;flex-direction:column-reverse;height:100%">
+              <div style="font-size:7px;text-align:center;padding-top:2px;color:#888">Q5</div>
+              <div style="background:#2d6a4f;height:46%;border-radius:2px 2px 0 0"></div>
+              <div style="background:#6b4c9a;height:18%;"></div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column-reverse;height:100%">
+              <div style="font-size:7px;text-align:center;padding-top:2px;color:#888">Q6</div>
+              <div style="background:#2d6a4f;height:48%;border-radius:2px 2px 0 0"></div>
+              <div style="background:#6b4c9a;height:20%;"></div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column-reverse;height:100%">
+              <div style="font-size:7px;text-align:center;padding-top:2px;color:#888">Q7</div>
+              <div style="background:#2d6a4f;height:50%;border-radius:2px 2px 0 0"></div>
+              <div style="background:#6b4c9a;height:22%;"></div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column-reverse;height:100%">
+              <div style="font-size:7px;text-align:center;padding-top:2px;color:#888">Q8</div>
+              <div style="background:#2d6a4f;height:52%;border-radius:2px 2px 0 0"></div>
+              <div style="background:#6b4c9a;height:24%;"></div>
+            </div>
+            <!-- Y2/Y3 divider -->
+            <div style="width:1px;background:#ddd;height:100%"></div>
+            <!-- Y3 -->
+            <div style="flex:1;display:flex;flex-direction:column-reverse;height:100%">
+              <div style="font-size:7px;text-align:center;padding-top:2px;color:#888">Q9</div>
+              <div style="background:#2d6a4f;height:54%;border-radius:2px 2px 0 0"></div>
+              <div style="background:#6b4c9a;height:26%;"></div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column-reverse;height:100%">
+              <div style="font-size:7px;text-align:center;padding-top:2px;color:#888">Q10</div>
+              <div style="background:#2d6a4f;height:56%;border-radius:2px 2px 0 0"></div>
+              <div style="background:#6b4c9a;height:28%;"></div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column-reverse;height:100%">
+              <div style="font-size:7px;text-align:center;padding-top:2px;color:#888">Q11</div>
+              <div style="background:#2d6a4f;height:58%;border-radius:2px 2px 0 0"></div>
+              <div style="background:#6b4c9a;height:30%;"></div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column-reverse;height:100%">
+              <div style="font-size:7px;text-align:center;padding-top:2px;color:#888">Q12</div>
+              <div style="background:#2d6a4f;height:60%;border-radius:2px 2px 0 0"></div>
+              <div style="background:#6b4c9a;height:32%;border-radius:2px 2px 0 0"></div>
+            </div>
+          </div>
+          <div style="display:flex;justify-content:space-around;font-size:8px;color:#888;margin-top:4px;border-top:1px solid #eee;padding-top:3px">
+            <span>── Year 1 ──</span><span>── Year 2 ──</span><span>── Year 3 ──</span>
+          </div>
+        </div>
+        <!-- Side metrics -->
+        <div style="flex:1;display:flex;flex-direction:column;gap:8px">
+          <div style="background:#f0faf0;border-radius:8px;padding:10px;flex:1">
+            <div style="font-size:9px;color:#888">Gross Margin Trend</div>
+            <div style="display:flex;align-items:flex-end;gap:2px;height:40px;margin-top:6px">
+              <div style="flex:1;background:#2d6a4f;height:95%;border-radius:2px 2px 0 0"></div>
+              <div style="flex:1;background:#2d6a4f;height:88%;border-radius:2px 2px 0 0"></div>
+              <div style="flex:1;background:#2d6a4f;height:82%;border-radius:2px 2px 0 0"></div>
+              <div style="flex:1;background:#2d6a4f;height:78%;border-radius:2px 2px 0 0"></div>
+              <div style="flex:1;background:#74a98c;height:75%;border-radius:2px 2px 0 0"></div>
+              <div style="flex:1;background:#74a98c;height:73%;border-radius:2px 2px 0 0"></div>
+              <div style="flex:1;background:#74a98c;height:71%;border-radius:2px 2px 0 0"></div>
+              <div style="flex:1;background:#74a98c;height:70%;border-radius:2px 2px 0 0"></div>
+              <div style="flex:1;background:#4ecca3;height:69%;border-radius:2px 2px 0 0"></div>
+              <div style="flex:1;background:#4ecca3;height:68%;border-radius:2px 2px 0 0"></div>
+              <div style="flex:1;background:#4ecca3;height:68%;border-radius:2px 2px 0 0"></div>
+              <div style="flex:1;background:#4ecca3;height:68%;border-radius:2px 2px 0 0"></div>
+            </div>
+            <div style="font-size:9px;color:#555;margin-top:4px">76.4% → 68.2% <span style="color:#c44">▼</span></div>
+          </div>
+          <div style="background:#f5f0fa;border-radius:8px;padding:10px;flex:1">
+            <div style="font-size:9px;color:#888">Cumulative Investment</div>
+            <div style="font-size:20px;font-weight:700;color:#6b4c9a;margin-top:6px">$420K</div>
+            <div style="font-size:9px;color:#555;margin-top:2px">WS ops: $250K · Slotting: $50K · Mktg: $120K</div>
+          </div>
+          <div style="background:#fdf8f0;border-radius:8px;padding:10px;flex:1">
+            <div style="font-size:9px;color:#888">Team by Y3</div>
+            <div style="font-size:20px;font-weight:700;color:#c17817;margin-top:6px">64 <span style="font-size:11px;font-weight:400">(+5, -1)</span></div>
+            <div style="font-size:9px;color:#555;margin-top:2px">+3 WS ops · +2 mktg · -1 Shield</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Risk factors -->
+      <div style="background:#fff5f5;border-radius:8px;padding:10px;border-left:3px solid #e74c3c">
+        <div style="font-size:10px;font-weight:600;color:#c0392b;margin-bottom:6px">ACTIVE RISK FACTORS</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <div style="background:#fff;border:1px solid #f5c6cb;border-radius:6px;padding:6px 10px;font-size:10px">
+            <span style="color:#c0392b;font-weight:600">Brand Dilution</span>
+            <span style="color:#666"> — Retail presence may undermine premium DTC positioning</span>
+          </div>
+          <div style="background:#fff;border:1px solid #f5c6cb;border-radius:6px;padding:6px 10px;font-size:10px">
+            <span style="color:#c0392b;font-weight:600">Margin Compression</span>
+            <span style="color:#666"> — Wholesale at 38% gross vs 76% DTC drags blended margin</span>
+          </div>
+          <div style="background:#fff;border:1px solid #f5c6cb;border-radius:6px;padding:6px 10px;font-size:10px">
+            <span style="color:#c0392b;font-weight:600">Ops Complexity</span>
+            <span style="color:#666"> — EDI, retail compliance, chargebacks are new capabilities</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ZONE 4: PIN + DRAWER -->
+    <div style="padding:8px 16px;border-top:1px solid #e8e8e8;display:flex;justify-content:space-between;align-items:center">
+      <div style="display:flex;gap:8px;align-items:center">
+        <button style="background:#2d6a4f;color:#fff;border:none;border-radius:6px;padding:6px 14px;font-size:10px;cursor:pointer;font-weight:600">📌 Pin Current Scenario</button>
+        <input style="border:1px solid #ddd;border-radius:4px;padding:4px 8px;font-size:10px;width:160px" placeholder="Name: e.g. &quot;Wholesale + Cut Shield&quot;">
+      </div>
+      <div style="font-size:10px;color:#2d6a4f;cursor:pointer;font-weight:600">▲ Compare 3 Pinned Scenarios</div>
+    </div>
+
+    <!-- DRAWER (expanded) -->
+    <div style="background:#f0f4ee;padding:12px 16px;border-top:2px solid #2d6a4f">
+      <div style="font-size:10px;font-weight:700;color:#2d6a4f;margin-bottom:8px">SCENARIO COMPARISON</div>
+      <table style="width:100%;font-size:10px;border-collapse:collapse">
+        <thead>
+          <tr style="border-bottom:2px solid #2d6a4f">
+            <th style="text-align:left;padding:4px 8px;color:#888;font-weight:400">Metric</th>
+            <th style="text-align:center;padding:4px 8px;font-weight:600;color:#666">📌 Baseline<br><span style="font-weight:400;color:#999">DTC only</span></th>
+            <th style="text-align:center;padding:4px 8px;font-weight:600;color:#666">📌 WS + Cut Shield<br><span style="font-weight:400;color:#999">Wholesale, no Shield</span></th>
+            <th style="text-align:center;padding:4px 8px;font-weight:600;color:#2d6a4f;background:#e8f5e0;border-radius:4px 4px 0 0">📌 All Three Moves<br><span style="font-weight:400">WS + Products + Cut</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid #e0e0e0">
+            <td style="padding:4px 8px;color:#666">Y1 Revenue</td>
+            <td style="text-align:center;padding:4px 8px">$8.4M</td>
+            <td style="text-align:center;padding:4px 8px">$9.1M</td>
+            <td style="text-align:center;padding:4px 8px;background:#f0faf0;font-weight:600">$9.8M</td>
+          </tr>
+          <tr style="border-bottom:1px solid #e0e0e0">
+            <td style="padding:4px 8px;color:#666">Y2 Revenue</td>
+            <td style="text-align:center;padding:4px 8px">$9.1M</td>
+            <td style="text-align:center;padding:4px 8px">$10.8M</td>
+            <td style="text-align:center;padding:4px 8px;background:#f0faf0;font-weight:600">$12.2M</td>
+          </tr>
+          <tr style="border-bottom:1px solid #e0e0e0">
+            <td style="padding:4px 8px;color:#666">Y3 Revenue</td>
+            <td style="text-align:center;padding:4px 8px">$9.8M</td>
+            <td style="text-align:center;padding:4px 8px">$12.4M</td>
+            <td style="text-align:center;padding:4px 8px;background:#f0faf0;font-weight:600">$14.6M</td>
+          </tr>
+          <tr style="border-bottom:1px solid #e0e0e0">
+            <td style="padding:4px 8px;color:#666">Y3 Gross Margin</td>
+            <td style="text-align:center;padding:4px 8px;color:#2d6a4f">76.4%</td>
+            <td style="text-align:center;padding:4px 8px;color:#c17817">68.2%</td>
+            <td style="text-align:center;padding:4px 8px;background:#f0faf0;color:#c17817;font-weight:600">66.1%</td>
+          </tr>
+          <tr style="border-bottom:1px solid #e0e0e0">
+            <td style="padding:4px 8px;color:#666">3Y Investment</td>
+            <td style="text-align:center;padding:4px 8px">$0</td>
+            <td style="text-align:center;padding:4px 8px">$420K</td>
+            <td style="text-align:center;padding:4px 8px;background:#f0faf0;font-weight:600">$720K</td>
+          </tr>
+          <tr style="border-bottom:1px solid #e0e0e0">
+            <td style="padding:4px 8px;color:#666">Headcount Δ</td>
+            <td style="text-align:center;padding:4px 8px">+0</td>
+            <td style="text-align:center;padding:4px 8px">+5</td>
+            <td style="text-align:center;padding:4px 8px;background:#f0faf0;font-weight:600">+7</td>
+          </tr>
+          <tr>
+            <td style="padding:4px 8px;color:#666">Risk Level</td>
+            <td style="text-align:center;padding:4px 8px"><span style="color:#2d6a4f">●</span><span style="color:#ddd">●●</span> Low</td>
+            <td style="text-align:center;padding:4px 8px"><span style="color:#c17817">●●</span><span style="color:#ddd">●</span> Med</td>
+            <td style="text-align:center;padding:4px 8px;background:#f0faf0"><span style="color:#c0392b;font-weight:600">●●●</span> High</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+<div class="section">
+  <h3>Zone Summary</h3>
+  <p>The page has 5 zones stacked vertically:</p>
+  <ol style="font-size:14px;line-height:1.8">
+    <li><strong>Sticky header bar</strong> — Brand + live KPIs (Y3 revenue, margin, investment, headcount, risk) that update as you change anything</li>
+    <li><strong>Strategic move cards</strong> — Three toggle cards showing each move's impact summary. Click to enable/disable. Enabled cards are color-coded; disabled are grayed out.</li>
+    <li><strong>Slider panels</strong> — Only shows panels for enabled moves. Each has primary sliders + collapsible advanced settings. Disabled moves show a "enable above to configure" placeholder.</li>
+    <li><strong>Projection area</strong> — Stacked bar chart (12 quarters, color-coded by revenue source), margin trend, cumulative investment, headcount breakdown, and active risk factors.</li>
+    <li><strong>Pin bar + comparison drawer</strong> — Name and pin current config. Drawer collapses to show pinned scenario chips, expands to show full comparison table with all metrics side by side.</li>
+  </ol>
+</div>

@@ -1,0 +1,177 @@
+<h2>OKR Dashboard — UI Layout</h2>
+<p class="subtitle">How the scenario switcher, sidebar, and objective cards work together</p>
+
+<div class="mockup">
+  <div class="mockup-header">Dashboard Layout — Base Scenario Active</div>
+  <div class="mockup-body" style="display:flex; gap:0; min-height:480px; background:#1a1a2e; border-radius:8px; overflow:hidden; font-size:13px;">
+
+    <!-- Sidebar -->
+    <div style="width:260px; background:#16213e; padding:20px; flex-shrink:0; border-right:1px solid #2a2a4a;">
+      <div style="font-size:11px; text-transform:uppercase; letter-spacing:1px; color:#888; margin-bottom:12px;">Scenario</div>
+
+      <!-- Scenario buttons -->
+      <div style="display:flex; flex-direction:column; gap:6px; margin-bottom:24px;">
+        <div style="background:#0f3460; border:2px solid #e94560; border-radius:8px; padding:10px 12px; cursor:pointer;">
+          <div style="color:#e94560; font-weight:700; font-size:14px;">Base Case</div>
+          <div style="color:#aaa; font-size:11px;">$9.5M · Stabilize & optimize</div>
+        </div>
+        <div style="background:#1a1a2e; border:1px solid #333; border-radius:8px; padding:10px 12px; cursor:pointer;">
+          <div style="color:#ccc; font-weight:600; font-size:14px;">Upside</div>
+          <div style="color:#777; font-size:11px;">$12M · Selective expansion</div>
+        </div>
+        <div style="background:#1a1a2e; border:1px solid #333; border-radius:8px; padding:10px 12px; cursor:pointer;">
+          <div style="color:#ccc; font-weight:600; font-size:14px;">Downside</div>
+          <div style="color:#777; font-size:11px;">$7.5M · Protect margins</div>
+        </div>
+      </div>
+
+      <!-- Strategic context -->
+      <div style="font-size:11px; text-transform:uppercase; letter-spacing:1px; color:#888; margin-bottom:8px;">Strategic Context</div>
+      <div style="background:#1a1a2e; border-radius:6px; padding:10px; margin-bottom:20px; font-size:11px; color:#aaa; line-height:1.5;">
+        Fix the growth engine before expanding. Reduce CAC from $58→$45, grow subscription from 34%→40%, discontinue Shield. No wholesale this year.
+      </div>
+
+      <!-- Trigger points -->
+      <div style="font-size:11px; text-transform:uppercase; letter-spacing:1px; color:#888; margin-bottom:8px;">Trigger Points</div>
+      <div style="font-size:11px; color:#aaa; line-height:1.5;">
+        <div style="margin-bottom:6px; padding:6px 8px; background:#1a1a2e; border-radius:4px; border-left:3px solid #e94560;">↑ If CAC &lt; $42 by Q2 → shift to <span style="color:#4ecca3;">Upside</span></div>
+        <div style="padding:6px 8px; background:#1a1a2e; border-radius:4px; border-left:3px solid #e94560;">↓ If CAC &gt; $65 by Q2 → shift to <span style="color:#fc8621;">Downside</span></div>
+      </div>
+
+      <!-- Resource summary -->
+      <div style="font-size:11px; text-transform:uppercase; letter-spacing:1px; color:#888; margin-top:20px; margin-bottom:8px;">Resource Summary</div>
+      <div style="font-size:12px; color:#ccc; line-height:2;">
+        <div style="display:flex; justify-content:space-between;">
+          <span>Headcount</span><span style="color:#4ecca3;">60 → 63</span>
+        </div>
+        <div style="display:flex; justify-content:space-between;">
+          <span>New budget</span><span style="color:#4ecca3;">+$180K</span>
+        </div>
+        <div style="display:flex; justify-content:space-between;">
+          <span>Objectives</span><span>10</span>
+        </div>
+        <div style="display:flex; justify-content:space-between;">
+          <span>Key Results</span><span>32</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main content area -->
+    <div style="flex:1; padding:20px; overflow:auto;">
+      <!-- Filter bar -->
+      <div style="display:flex; gap:8px; margin-bottom:20px;">
+        <div style="background:#e94560; color:white; padding:5px 14px; border-radius:20px; font-size:12px; font-weight:600;">All</div>
+        <div style="background:#2a2a4a; color:#4ecca3; padding:5px 14px; border-radius:20px; font-size:12px;">Marketing</div>
+        <div style="background:#2a2a4a; color:#a78bfa; padding:5px 14px; border-radius:20px; font-size:12px;">Product</div>
+        <div style="background:#2a2a4a; color:#fc8621; padding:5px 14px; border-radius:20px; font-size:12px;">Operations</div>
+        <div style="background:#2a2a4a; color:#38bdf8; padding:5px 14px; border-radius:20px; font-size:12px;">Finance</div>
+      </div>
+
+      <!-- Objective cards grid -->
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+
+        <!-- Marketing card 1 -->
+        <div style="background:#16213e; border-radius:8px; padding:14px; border-left:4px solid #4ecca3;">
+          <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:8px;">
+            <div style="font-size:11px; color:#4ecca3; font-weight:600; text-transform:uppercase;">Marketing</div>
+            <div style="font-size:10px; background:#2a2a4a; color:#aaa; padding:2px 8px; border-radius:10px;">2 hires · $80K</div>
+          </div>
+          <div style="color:#eee; font-weight:600; font-size:14px; margin-bottom:10px;">Reduce Customer Acquisition Cost</div>
+          <div style="font-size:11px; color:#888; margin-bottom:4px;">Addresses: Growth Plateau, Rising CAC</div>
+          <div style="margin-top:10px; font-size:12px; color:#ccc;">
+            <div style="margin-bottom:6px; display:flex; align-items:center; gap:6px;">
+              <div style="width:6px; height:6px; border-radius:50%; background:#4ecca3;"></div>
+              CAC from $58 → $45 by Q4
+            </div>
+            <div style="margin-bottom:6px; display:flex; align-items:center; gap:6px;">
+              <div style="width:6px; height:6px; border-radius:50%; background:#4ecca3;"></div>
+              Organic channel share from 25% → 35%
+            </div>
+            <div style="display:flex; align-items:center; gap:6px;">
+              <div style="width:6px; height:6px; border-radius:50%; background:#4ecca3;"></div>
+              Launch referral program (target: 200 referrals/mo by Q3)
+            </div>
+          </div>
+        </div>
+
+        <!-- Marketing card 2 -->
+        <div style="background:#16213e; border-radius:8px; padding:14px; border-left:4px solid #4ecca3;">
+          <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:8px;">
+            <div style="font-size:11px; color:#4ecca3; font-weight:600; text-transform:uppercase;">Marketing</div>
+            <div style="font-size:10px; background:#2a2a4a; color:#aaa; padding:2px 8px; border-radius:10px;">1 hire · $40K</div>
+          </div>
+          <div style="color:#eee; font-weight:600; font-size:14px; margin-bottom:10px;">Grow Subscription & Retention</div>
+          <div style="font-size:11px; color:#888; margin-bottom:4px;">Addresses: Subscription Gap, Month-3 Churn</div>
+          <div style="margin-top:10px; font-size:12px; color:#ccc;">
+            <div style="margin-bottom:6px; display:flex; align-items:center; gap:6px;">
+              <div style="width:6px; height:6px; border-radius:50%; background:#4ecca3;"></div>
+              Subscription rate 34% → 40%
+            </div>
+            <div style="margin-bottom:6px; display:flex; align-items:center; gap:6px;">
+              <div style="width:6px; height:6px; border-radius:50%; background:#4ecca3;"></div>
+              90-day retention 62% → 70%
+            </div>
+            <div style="display:flex; align-items:center; gap:6px;">
+              <div style="width:6px; height:6px; border-radius:50%; background:#4ecca3;"></div>
+              Launch loyalty program by Q2
+            </div>
+          </div>
+        </div>
+
+        <!-- Product card -->
+        <div style="background:#16213e; border-radius:8px; padding:14px; border-left:4px solid #a78bfa;">
+          <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:8px;">
+            <div style="font-size:11px; color:#a78bfa; font-weight:600; text-transform:uppercase;">Product</div>
+            <div style="font-size:10px; background:#2a2a4a; color:#aaa; padding:2px 8px; border-radius:10px;">0 hires · $20K</div>
+          </div>
+          <div style="color:#eee; font-weight:600; font-size:14px; margin-bottom:10px;">Rationalize Product Portfolio</div>
+          <div style="font-size:11px; color:#888; margin-bottom:4px;">Addresses: Shield Underperformance, Margin Pressure</div>
+          <div style="margin-top:10px; font-size:12px; color:#ccc;">
+            <div style="margin-bottom:6px; display:flex; align-items:center; gap:6px;">
+              <div style="width:6px; height:6px; border-radius:50%; background:#a78bfa;"></div>
+              Ship or sunset Shield decision by Q1
+            </div>
+            <div style="display:flex; align-items:center; gap:6px;">
+              <div style="width:6px; height:6px; border-radius:50%; background:#a78bfa;"></div>
+              Blended gross margin 76.4% → 78%
+            </div>
+          </div>
+        </div>
+
+        <!-- Operations card -->
+        <div style="background:#16213e; border-radius:8px; padding:14px; border-left:4px solid #fc8621;">
+          <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:8px;">
+            <div style="font-size:11px; color:#fc8621; font-weight:600; text-transform:uppercase;">Operations</div>
+            <div style="font-size:10px; background:#2a2a4a; color:#aaa; padding:2px 8px; border-radius:10px;">0 hires · $30K</div>
+          </div>
+          <div style="color:#eee; font-weight:600; font-size:14px; margin-bottom:10px;">Reduce Fulfillment Cost per Order</div>
+          <div style="font-size:11px; color:#888; margin-bottom:4px;">Addresses: Margin Pressure, Shipping Costs +15%</div>
+          <div style="margin-top:10px; font-size:12px; color:#ccc;">
+            <div style="margin-bottom:6px; display:flex; align-items:center; gap:6px;">
+              <div style="width:6px; height:6px; border-radius:50%; background:#fc8621;"></div>
+              Shipping cost per order down 10%
+            </div>
+            <div style="display:flex; align-items:center; gap:6px;">
+              <div style="width:6px; height:6px; border-radius:50%; background:#fc8621;"></div>
+              Returns rate 4.2% → 3.5%
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div style="text-align:center; margin-top:16px; font-size:12px; color:#555;">↓ More cards below (Finance, additional objectives) ↓</div>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top:24px;">
+  <h3>Key Interactions</h3>
+  <ul style="line-height:1.8;">
+    <li><strong>Scenario switcher</strong> (sidebar) — Click to switch. Cards animate: shared objectives cross-fade with updated KR targets, scenario-specific cards slide in/out</li>
+    <li><strong>Function filter</strong> (pill bar) — Toggle to show/hide functional areas</li>
+    <li><strong>Card expand</strong> — Click any card to expand it, showing full KR detail, owner, timeline, and the strategic challenge it addresses</li>
+    <li><strong>Objective toggle</strong> — Each card has a subtle on/off toggle. Disabling an objective grays it out and updates the sidebar resource summary in real-time</li>
+    <li><strong>Resource summary</strong> (sidebar) — Always shows aggregate headcount and budget delta for the active scenario with current toggles</li>
+  </ul>
+</div>
