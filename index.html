@@ -3,7 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Verdana Strategic Planning — Guided Tour</title>
+<title>Demo: Verdana Strategic Planning — Agency State</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 body {
@@ -13,24 +16,29 @@ body {
   line-height: 1.6;
 }
 
+/* Wordmark */
+.wordmark {
+  position: absolute;
+  top: 20px;
+  left: 24px;
+  z-index: 200;
+  display: inline-block;
+}
+.wordmark img { display: block; height: 24px; width: auto; }
+
 /* Hero */
 .hero {
+  position: relative;
   background: #2d6a4f;
   color: #fff;
   padding: 60px 40px;
   text-align: center;
 }
-.hero-eyebrow {
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 3px;
-  opacity: 0.6;
-  margin-bottom: 10px;
-}
 .hero h1 {
   font-size: 32px;
   font-weight: 700;
   letter-spacing: -0.5px;
+  margin-top: 20px;
   margin-bottom: 8px;
 }
 .hero p {
@@ -41,24 +49,20 @@ body {
   line-height: 1.7;
 }
 
-/* Nav dots */
-.nav {
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-  padding: 20px 0 0;
-}
-.nav-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: #fff;
-}
-.nav-label {
-  font-size: 11px;
-  opacity: 0.6;
+/* Intro */
+.intro {
+  max-width: 720px;
+  margin: 40px auto 0;
+  padding: 0 24px;
+  font-size: 14px;
+  font-style: italic;
+  color: #777;
   text-align: center;
-  margin-top: 6px;
+  line-height: 1.7;
+}
+.intro a {
+  color: #2d6a4f;
+  text-decoration: underline;
 }
 
 /* Page container */
@@ -73,7 +77,7 @@ body {
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-  margin: 32px 0;
+  margin: 56px 0;
   overflow: hidden;
 }
 .tool-header {
@@ -99,19 +103,6 @@ body {
   font-weight: 700;
   color: #2d6a4f;
   vertical-align: middle;
-}
-.tool-status {
-  display: inline-block;
-  font-size: 10px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  padding: 2px 8px;
-  border-radius: 4px;
-  margin-left: 10px;
-  vertical-align: middle;
-  background: #e8f5e0;
-  color: #2d6a4f;
 }
 .tool-problem {
   margin-top: 10px;
@@ -180,30 +171,65 @@ body {
 }
 
 /* Footer */
-.footer {
-  text-align: center;
-  padding: 40px 24px;
-  font-size: 12px;
-  color: #aaa;
+footer {
+  padding: 3rem 0;
+  border-top: 1px solid #E0DFDC;
+  background: #fff;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+footer .footer-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.footer-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.footer-mark {
+  width: 56px;
+  height: 56px;
+  display: block;
+  flex-shrink: 0;
+}
+.footer-wordmark-link {
+  display: flex;
+  align-items: center;
+}
+.footer-wordmark-link img {
+  height: 22px;
+  width: auto;
+  display: block;
+}
+.footer-right {
+  font-size: 0.8125rem;
+  color: #5C5C5C;
+}
+@media (max-width: 768px) {
+  footer .footer-container {
+    flex-direction: column;
+    gap: 0.75rem;
+    text-align: center;
+  }
 }
 </style>
 </head>
 <body>
 
+<!-- Wordmark -->
+<a href="https://agencystate.ai" target="_blank" class="wordmark"><img src="assets/agency-state-wordmark-white.svg" alt="Agency State"></a>
+
 <!-- HERO -->
 <div class="hero">
-  <div class="hero-eyebrow">Verdana FY2027</div>
-  <h1>Strategic Planning Toolkit</h1>
-  <p>A suite of five interactive tools built to help Verdana's leadership navigate the growth plateau and chart a path forward. Each tool was built with a single prompt.</p>
-  <div class="nav">
-    <div class="nav-dot"></div>
-    <div class="nav-dot"></div>
-    <div class="nav-dot"></div>
-    <div class="nav-dot"></div>
-    <div class="nav-dot"></div>
-  </div>
-  <div class="nav-label">5 tools</div>
+  <h1>Demo: Verdana Strategic Planning</h1>
+  <p>A DTC wellness brand at a growth plateau. Five tools built with Claude Code to model scenarios, size markets, and chart a path forward. Scroll through to see how.</p>
 </div>
+
+<p class="intro">Each tool serves a unique purpose but they all share the same data and inform each other. See the <a href="https://github.com/gappler/demo-strategic-planning" target="_blank">GitHub repo</a> for brand, data, and related context.</p>
 
 <div class="page">
 
@@ -212,7 +238,6 @@ body {
     <div class="tool-header">
       <span class="tool-number">1</span>
       <span class="tool-name">OKR Goal Setting Tool</span>
-      <span class="tool-status">Built</span>
       <p class="tool-problem">Verdana needs to align 60 people around annual objectives, but the goals change depending on which strategic scenario plays out. This tool lets leadership switch between Base ($9.5M), Upside ($12M), and Downside ($7.5M) scenarios and see how objectives, key results, and resource requirements cascade across Marketing, Product, Operations, and Finance.</p>
     </div>
     <div class="tool-prompt">
@@ -220,7 +245,7 @@ body {
       <div class="prompt-text">"Build an OKR and annual goal setting tool for Verdana. Organize objectives by function across three strategic scenarios. Let me toggle objectives on/off and see resource impact in real time."</div>
     </div>
     <div class="tool-preview">
-      <iframe src="tools/okr_goal_setting.html" loading="lazy"></iframe>
+      <iframe src="tools/okr_goal_setting.html" loading="lazy" style="height: 700px;"></iframe>
       <div class="tool-preview-overlay">
         <a class="open-tool-btn" href="tools/okr_goal_setting.html" target="_blank">Open Full Tool &rarr;</a>
       </div>
@@ -232,7 +257,6 @@ body {
     <div class="tool-header">
       <span class="tool-number">2</span>
       <span class="tool-name">Market Sizing Calculator</span>
-      <span class="tool-status">Built</span>
       <p class="tool-problem">Before Verdana can decide between DTC optimization, wholesale expansion, or new product launches, leadership needs to quantify each lever. This calculator models three revenue channels with adjustable assumptions and real-time cross-channel effects like DTC cannibalization from wholesale.</p>
     </div>
     <div class="tool-prompt">
@@ -252,7 +276,6 @@ body {
     <div class="tool-header">
       <span class="tool-number">3</span>
       <span class="tool-name">Scenario Modeler</span>
-      <span class="tool-status">Built</span>
       <p class="tool-problem">Verdana can't pursue wholesale, new products, and product rationalization all at once. This modeler lets leadership toggle three strategic moves on/off, tune assumptions with sliders, and see 3-year quarterly projections for revenue, margins, investment, headcount, and risk. Pin named scenarios and compare them side by side.</p>
     </div>
     <div class="tool-prompt">
@@ -260,7 +283,7 @@ body {
       <div class="prompt-text">"Build a scenario modeler for Verdana. Model four strategic paths: stay the course (DTC only), expand into wholesale, launch two new products, or cut the underperforming SKU and reallocate resources. For each scenario, project 3-year revenue, margins, required investment, team headcount, and risk factors. Let me compare scenarios side by side and blend them — what if we do wholesale AND cut a SKU? Output as an interactive HTML file."</div>
     </div>
     <div class="tool-preview">
-      <iframe src="tools/scenario_modeler.html" loading="lazy"></iframe>
+      <iframe src="tools/scenario_modeler.html" loading="lazy" style="height: 550px;"></iframe>
       <div class="tool-preview-overlay">
         <a class="open-tool-btn" href="tools/scenario_modeler.html" target="_blank">Open Full Tool &rarr;</a>
       </div>
@@ -272,7 +295,6 @@ body {
     <div class="tool-header">
       <span class="tool-number">4</span>
       <span class="tool-name">Competitive Positioning Map</span>
-      <span class="tool-status">Built</span>
       <p class="tool-problem">Verdana competes against AG1, Moon Juice, Thorne, Ritual, Seed, and others — but how exactly? This interactive map plots 9 brands on a 2D grid with 6 selectable axes (price, clinical rigor, lifestyle branding, transparency, DTC focus, product breadth). Hover any brand to see how it compares to Verdana.</p>
     </div>
     <div class="tool-prompt">
@@ -292,7 +314,6 @@ body {
     <div class="tool-header">
       <span class="tool-number">5</span>
       <span class="tool-name">Executive Strategy Summary</span>
-      <span class="tool-status">Built</span>
       <p class="tool-problem">After exploring scenarios, sizing markets, and mapping competitors, leadership needs one document that synthesizes everything into a recommendation the board can review. This summary recommends "Wholesale + Cut Shield," backs it with evidence from each tool, projects 3-year financials, maps risks, and defines contingency triggers.</p>
     </div>
     <div class="tool-prompt">
@@ -300,49 +321,34 @@ body {
       <div class="prompt-text">"Build a tool that reads all the Verdana data — the brand definition, OKR goals, market sizing results, scenario model outputs, and competitive positioning — and generates a polished executive strategy summary. Include an executive overview, recommended strategic direction with rationale, 3-year financial projections, key risks, and immediate next steps. Output as both a formatted HTML presentation and a markdown document."</div>
     </div>
     <div class="tool-preview">
-      <iframe src="tools/executive_strategy_summary.html" loading="lazy"></iframe>
+      <iframe src="tools/executive_strategy_summary.html" loading="lazy" style="height: 600px;"></iframe>
       <div class="tool-preview-overlay">
         <a class="open-tool-btn" href="tools/executive_strategy_summary.html" target="_blank">Open Full Tool &rarr;</a>
       </div>
     </div>
   </div>
 
-  <!-- HOW THIS WAS BUILT -->
-  <div class="tool-card" style="margin-top: 48px;">
-    <div class="tool-header" style="border-bottom: none;">
-      <span class="tool-name" style="font-size: 22px;">How This Was Built</span>
-    </div>
-    <div style="padding: 0 28px 8px;">
-      <h3 style="font-size: 16px; font-weight: 700; color: #2d6a4f; margin-bottom: 12px;">Methodology</h3>
-      <p style="font-size: 14px; color: #555; line-height: 1.7; margin-bottom: 16px;">This toolkit was built by following a deliberate sequence:</p>
-      <ol style="font-size: 14px; color: #555; line-height: 1.7; padding-left: 20px; margin-bottom: 20px;">
-        <li style="margin-bottom: 12px;"><strong style="color: #333;">Business definition first.</strong> Before any tool was prompted, we defined Verdana &mdash; its revenue, margins, team size, product lines, competitive landscape, and the specific growth plateau it faces. Claude Code can&rsquo;t build something useful without knowing what &ldquo;useful&rdquo; means for your business.</li>
-        <li style="margin-bottom: 12px;"><strong style="color: #333;">Real-world data, not placeholders.</strong> Every number in these tools &mdash; the $7.2M revenue baseline, the 62% gross margins, the 9 competitor brands &mdash; comes from a structured data layer built before the first tool was touched. The tools read from this data; they don&rsquo;t invent it.</li>
-        <li style="margin-bottom: 12px;"><strong style="color: #333;">Sequential, compounding tools.</strong> Each tool feeds the next. The OKR tool established the goals. The market sizing calculator quantified the levers. The scenario modeler combined those levers into strategic paths. The competitive map provided external context. The executive summary synthesized all four into a board-ready recommendation. Remove any one layer and the final output loses fidelity.</li>
-        <li style="margin-bottom: 12px;"><strong style="color: #333;">One prompt per tool, built with Claude Code.</strong> Each of the five tools was generated from a single, well-crafted prompt &mdash; but &ldquo;well-crafted&rdquo; is the operative word. The prompt quality depends entirely on the groundwork laid in steps 1&ndash;3.</li>
-      </ol>
-
-      <h3 style="font-size: 16px; font-weight: 700; color: #2d6a4f; margin-bottom: 12px;">What This Means for Your Team</h3>
-      <p style="font-size: 14px; color: #555; line-height: 1.7; margin-bottom: 14px;">These aren&rsquo;t one-off demos. They&rsquo;re repeatable patterns.</p>
-      <p style="font-size: 14px; color: #555; line-height: 1.7; margin-bottom: 14px;">The version your team builds wouldn&rsquo;t say &ldquo;Verdana&rdquo; &mdash; it would use your actual revenue numbers, your product lines, your competitive set, your margin structure, your org chart. The OKR tool would reflect your real objectives. The scenario modeler would project your actual strategic options. The executive summary would recommend a path forward grounded in your data.</p>
-      <p style="font-size: 14px; color: #555; line-height: 1.7; margin-bottom: 14px;">This matters because the alternative is paying for SaaS planning tools that are 70% right &mdash; generic frameworks with your logo pasted on top. They don&rsquo;t know that your wholesale channel cannibalizes DTC at a specific rate, or that cutting your underperforming SKU frees up exactly enough margin to fund two new hires. Your version does, because it&rsquo;s built from your data from the start.</p>
-      <p style="font-size: 14px; color: #555; line-height: 1.7; margin-bottom: 8px;">The methodology behind this &mdash; business definition, data layer, sequential tool generation &mdash; is what we teach at <strong style="color: #2d6a4f;">Agency State</strong>. If you want to build your team&rsquo;s version of this toolkit, or apply the same pattern to financial modeling, product roadmapping, or operational planning, that&rsquo;s where to start.</p>
-    </div>
-  </div>
-
   <!-- CTA -->
-  <div style="text-align: center; padding: 48px 24px 16px;">
-    <h2 style="font-size: 24px; font-weight: 700; color: #2d6a4f; margin-bottom: 10px;">Learn How to Build for Your Team</h2>
-    <p style="font-size: 15px; color: #555; line-height: 1.7; max-width: 540px; margin: 0 auto 24px;">The methodology, prompts, and patterns behind this toolkit are all teachable. Agency State shows your team how to build custom planning tools from your own data.</p>
-    <a href="https://agencystate.ai" target="_blank" style="display: inline-block; background: #2d6a4f; color: #fff; text-decoration: none; font-size: 15px; font-weight: 600; padding: 12px 32px; border-radius: 8px; transition: background 0.2s;">Visit Agency State &rarr;</a>
+  <div style="text-align: center; padding: 96px 24px 80px;">
+    <h2 style="font-size: 32px; font-weight: 700; color: #2d6a4f; margin-bottom: 16px; letter-spacing: -0.5px;">Build tools like these for your team.</h2>
+    <p style="font-size: 17px; color: #555; line-height: 1.7; max-width: 580px; margin: 0 auto 32px;">Agency State teaches professionals how to capture collective knowledge and put AI to work with it.</p>
+    <a href="https://agencystate.ai" target="_blank" style="display: inline-block; background: #2d6a4f; color: #fff; text-decoration: none; font-size: 15px; font-weight: 600; padding: 14px 36px; border-radius: 8px; transition: background 0.2s;">Visit Agency State &rarr;</a>
   </div>
 
 </div>
 
-<div class="footer">
-  <p>Verdana Strategic Planning Toolkit &middot; Built April 2026</p>
-  <p>Each tool is a self-contained HTML file &mdash; no server, no dependencies, no build step.</p>
-</div>
+<!-- Footer -->
+<footer>
+  <div class="footer-container">
+    <div class="footer-left">
+      <img src="assets/mark.svg" alt="Agency State" class="footer-mark">
+      <a href="https://agencystate.ai" target="_blank" class="footer-wordmark-link">
+        <img src="assets/agency-state-wordmark.svg" alt="Agency State">
+      </a>
+    </div>
+    <p class="footer-right">Built with Claude Code</p>
+  </div>
+</footer>
 
 </body>
 </html>
