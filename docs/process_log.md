@@ -6,6 +6,24 @@ created: 2026-04-06
 
 # Process Log
 
+## 2026-04-13 — Index Page Convergence Restructure
+
+**Prompt:** Restructure the Verdana Strategic Planning demo (index.html) to surface the convergence from analysis to synthesis. This is NOT a linear pipeline like the Yowie Expanded demo — it's a convergent funnel. Tools 1–4 explore different dimensions; Tool 5 reads them all and produces a board-ready recommendation. The page should make that convergence visible. Add a sticky nav, rewrite the intro, add an "Analysis" section label, and insert a green "Synthesis" convergence block before Tool 5.
+
+**What was built:** Restructured `index.html` to visually communicate the convergent-funnel nature of the five tools. Added a sticky nav bar with anchors to each tool, rewrote the intro as a framing paragraph, added an uppercase "Analysis" section label before Tool 1, and inserted a green "Synthesis" block before Tool 5 showing the four inputs flowing into the Executive Summary.
+
+**Key decisions:**
+- Sticky nav uses the existing Verdana green (#2d6a4f) for link color with a light-green hover background and bottom border — matches the Yowie Ecosystem sticky nav pattern but in Verdana's palette
+- Intro split into two elements: a non-italic framing paragraph (`.intro`) and a separate italic GitHub link line (`.intro-sub`) — keeps the convergence framing primary and the repo link secondary
+- "Analysis" and "Synthesis" labels use the same uppercase small-caps style for visual symmetry, signaling the two phases of the funnel
+- Convergence block styled as a green card with white text, featuring a pill-based visual flow: `OKR Goals + Market Sizing + Scenarios + Competition → Executive Summary`. Kept simple rather than over-designing the flow diagram
+- Anchor IDs (`tool-1` through `tool-5`) added to each existing `.tool-card` — no changes to tool HTML, prompts, iframes, CTA, or footer per the explicit scope
+- No gate interstitials added — this demo has no human review stages, unlike the Yowie pipeline demo
+
+**Files created/modified:**
+- `index.html` (modified)
+- `docs/process_log.md` (modified)
+
 ## 2026-04-06 — Market Sizing Calculator
 
 **Prompt:** Build the Verdana Market Sizing Calculator as a single self-contained interactive HTML file, implementing the full design spec with three channels (DTC Supplements, Wholesale, New Product Line), cross-channel cannibalization effects, TAM funnel, and floating header KPIs.

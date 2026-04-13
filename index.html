@@ -49,20 +49,124 @@ body {
   line-height: 1.7;
 }
 
+/* Sticky Nav */
+.tool-nav {
+  background: #fff;
+  border-bottom: 1px solid #e0e0e0;
+  padding: 0 24px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  gap: 0;
+  overflow-x: auto;
+  justify-content: center;
+}
+.tool-nav a {
+  padding: 14px 18px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #2d6a4f;
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+  transition: color .15s, border-color .15s, background .15s;
+}
+.tool-nav a:hover {
+  background: #f0f6f2;
+  border-bottom-color: #2d6a4f;
+}
+
 /* Intro */
 .intro {
   max-width: 720px;
-  margin: 40px auto 0;
+  margin: 48px auto 0;
   padding: 0 24px;
-  font-size: 14px;
-  font-style: italic;
-  color: #777;
+  font-size: 15px;
+  color: #444;
   text-align: center;
-  line-height: 1.7;
+  line-height: 1.75;
 }
-.intro a {
+.intro-sub {
+  max-width: 720px;
+  margin: 14px auto 0;
+  padding: 0 24px;
+  font-size: 13px;
+  font-style: italic;
+  color: #888;
+  text-align: center;
+}
+.intro a, .intro-sub a {
   color: #2d6a4f;
   text-decoration: underline;
+}
+
+/* Section label */
+.section-label {
+  max-width: 1000px;
+  margin: 64px auto 0;
+  padding: 0 24px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #8aa69a;
+}
+
+/* Convergence block */
+.convergence {
+  background: #2d6a4f;
+  color: #fff;
+  border-radius: 12px;
+  padding: 40px 32px;
+  margin: 56px 0;
+  text-align: center;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+.convergence-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #b7d4c4;
+  margin-bottom: 14px;
+}
+.convergence-text {
+  font-size: 16px;
+  line-height: 1.7;
+  max-width: 680px;
+  margin: 0 auto 28px;
+  color: #f0f6f2;
+}
+.convergence-flow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.convergence-flow .pill {
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.25);
+  padding: 7px 14px;
+  border-radius: 999px;
+  color: #fff;
+}
+.convergence-flow .plus,
+.convergence-flow .arrow {
+  color: #b7d4c4;
+  font-weight: 700;
+}
+.convergence-flow .result {
+  background: #fff;
+  color: #2d6a4f;
+  padding: 7px 16px;
+  border-radius: 999px;
+}
+@media (max-width: 640px) {
+  .convergence-flow { font-size: 11px; }
 }
 
 /* Page container */
@@ -229,12 +333,24 @@ footer .footer-container {
   <p>A DTC wellness brand at a growth plateau. Five tools built with Claude Code to model scenarios, size markets, and chart a path forward. Scroll through to see how.</p>
 </div>
 
-<p class="intro">Each tool serves a unique purpose but they all share the same data and inform each other. See the <a href="https://github.com/gappler/demo-strategic-planning" target="_blank">GitHub repo</a> for brand, data, and related context.</p>
+<!-- Sticky Nav -->
+<nav class="tool-nav">
+  <a href="#tool-1">1. OKR Goals</a>
+  <a href="#tool-2">2. Market Sizing</a>
+  <a href="#tool-3">3. Scenarios</a>
+  <a href="#tool-4">4. Competition</a>
+  <a href="#tool-5">5. Executive Summary</a>
+</nav>
+
+<p class="intro">Verdana's leadership team needs to make three interconnected decisions — wholesale expansion, product rationalization, and new product launches. The first four tools each explore a different dimension of that problem: goals, market size, scenarios, and competitive position. The fifth reads the output of all four and synthesizes a single strategic recommendation. Scroll through the analysis, then see how it converges.</p>
+<p class="intro-sub">See the <a href="https://github.com/gappler/demo-strategic-planning" target="_blank">GitHub repo</a> for brand, data, and related context.</p>
 
 <div class="page">
 
+  <div class="section-label">Analysis</div>
+
   <!-- TOOL 1: OKR GOAL SETTING -->
-  <div class="tool-card">
+  <div class="tool-card" id="tool-1">
     <div class="tool-header">
       <span class="tool-number">1</span>
       <span class="tool-name">OKR Goal Setting Tool</span>
@@ -253,7 +369,7 @@ footer .footer-container {
   </div>
 
   <!-- TOOL 2: MARKET SIZING CALCULATOR -->
-  <div class="tool-card">
+  <div class="tool-card" id="tool-2">
     <div class="tool-header">
       <span class="tool-number">2</span>
       <span class="tool-name">Market Sizing Calculator</span>
@@ -272,7 +388,7 @@ footer .footer-container {
   </div>
 
   <!-- TOOL 3: SCENARIO MODELER -->
-  <div class="tool-card">
+  <div class="tool-card" id="tool-3">
     <div class="tool-header">
       <span class="tool-number">3</span>
       <span class="tool-name">Scenario Modeler</span>
@@ -291,7 +407,7 @@ footer .footer-container {
   </div>
 
   <!-- TOOL 4: COMPETITIVE POSITIONING MAP -->
-  <div class="tool-card">
+  <div class="tool-card" id="tool-4">
     <div class="tool-header">
       <span class="tool-number">4</span>
       <span class="tool-name">Competitive Positioning Map</span>
@@ -309,8 +425,25 @@ footer .footer-container {
     </div>
   </div>
 
+  <!-- Convergence block -->
+  <div class="convergence">
+    <div class="convergence-label">Synthesis</div>
+    <p class="convergence-text">Everything above explored a different dimension of Verdana's strategic position. The Executive Summary reads the OKR goals, market sizing results, scenario model outputs, and competitive positioning — all of it — and produces a single recommendation the board can review.</p>
+    <div class="convergence-flow">
+      <span class="pill">OKR Goals</span>
+      <span class="plus">+</span>
+      <span class="pill">Market Sizing</span>
+      <span class="plus">+</span>
+      <span class="pill">Scenarios</span>
+      <span class="plus">+</span>
+      <span class="pill">Competition</span>
+      <span class="arrow">&rarr;</span>
+      <span class="result">Executive Summary</span>
+    </div>
+  </div>
+
   <!-- TOOL 5: EXECUTIVE STRATEGY SUMMARY -->
-  <div class="tool-card">
+  <div class="tool-card" id="tool-5">
     <div class="tool-header">
       <span class="tool-number">5</span>
       <span class="tool-name">Executive Strategy Summary</span>
