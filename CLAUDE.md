@@ -30,7 +30,7 @@ After completing each tool, stage all changes and commit with a descriptive mess
 
 ## Logo and Layout Standards
 
-These standards apply across all demo repos.
+These standards apply across all demo repos for consistent Agency State branding.
 
 ### Logo Assets
 
@@ -41,7 +41,7 @@ These standards apply across all demo repos.
 ### Header
 
 - Agency State wordmark in top left, linked to `https://agencystate.ai`
-- Dark wordmark on light backgrounds, white wordmark on dark backgrounds
+- Use the dark wordmark on light backgrounds, white wordmark on dark backgrounds
 - Position: `absolute` (scrolls with hero), not `fixed`
 
 ### Footer
@@ -50,3 +50,11 @@ These standards apply across all demo repos.
 - Right: "Built with Claude Code" in Inter, `font-size: 0.8125rem`, color `#5C5C5C`
 - No URL text — the wordmark link is sufficient
 - Footer font is always Inter, regardless of the demo's other fonts
+
+## Fonts
+
+All demo pages and the main website use Inter as the primary font. Never use system fonts (`-apple-system`, `BlinkMacSystemFont`, etc.) as the primary font. Load Inter from Google Fonts.
+
+- Body text: Inter 400
+- Bold text: Inter 700
+- Headings: Inter 600 or 700
